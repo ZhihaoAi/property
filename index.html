@@ -6,6 +6,8 @@
 <title>新加坡购房方案分析 Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#0f1117;--surface:#1a1d27;--s2:#232734;--bdr:#2d3244;--t:#e4e6f0;--t2:#9399b2;--ac:#6c5ce7;--ac2:#a29bfe;--g:#00b894;--g2:#55efc4;--or:#fdcb6e;--rd:#e17055;--bl:#74b9ff;--pk:#fd79a8;--cy:#81ecec}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -101,6 +103,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     <button class="tab" onclick="go('s8',this)">📋 数据来源</button>
     <button class="tab" onclick="go('s9',this)">📈 真实增值</button>
     <button class="tab on" onclick="go('s10',this)">🏘️ 小区PK</button>
+    <button class="tab" onclick="go('s11',this)">🚇 地铁距离</button>
   </div>
 
   <!-- ===== S1: OVERVIEW ===== -->
@@ -666,25 +669,25 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 
   <!-- ===== S10: CONDO COMPARISON ===== -->
   <div id="s10" class="sec on">
-    <div class="st">🏘️ 30个楼盘横向PK · 仅 2BR+3BR · TOP 10年效应</div>
-    <p class="sd">Kent Ridge(Shopee) 通勤圈 + 截图楼盘 + Lakeside周边，共30个项目，<strong>已剔除1BR/4BR+</strong>，仅保留 2BR+3BR (600-1199sqft)</p>
+    <div class="st">🏘️ 50个楼盘横向PK · 仅 2BR+3BR · TOP 10年效应</div>
+    <p class="sd">Lakeside周边 + Hillview/Dairy Farm/Bukit Panjang + Kent Ridge/Queenstown/RCR，共50个项目，<strong>已剔除1BR/4BR+</strong>，仅保留 2BR+3BR (600-1199sqft)</p>
 
     <div class="alert info">
       <h4>📡 数据源与覆盖范围说明</h4>
-      <p><strong>数据来源：</strong>propertyforsale.com.sg（底层为 URA Caveat 数据），覆盖范围<strong>不止5年</strong>——多个楼盘有 2017 年起共 8-9 年的数据（如 Lakeville 2018-2026、Seahill 2017-2026、Alexis 2017-2026）。<br>
+      <p><strong>数据来源：</strong>propertyforsale.com.sg + EdgeProp + StackProperty（底层均为 URA Caveat 数据），覆盖范围<strong>不止5年</strong>——多个楼盘有 2017 年起共 8-9 年的数据（如 Lakeville 2018-2026、Seahill 2017-2026、Alexis 2017-2026）。<br>
       <strong>PropertyGuru：</strong>主站返回 403（CloudFlare 反爬），API 超时，WebFetch 工具无法绕过浏览器验证。已测试 StackProperty 作为替代数据源，数据与 propertyforsale 高度一致（均来自 URA Caveat），验证了数据准确性。<br>
       <strong>核心发现：</strong>所有平台（PropertyGuru、SRX、EdgeProp、StackProperty、propertyforsale）的成交数据都来自同一个源——URA Caveat，不存在独家数据。</p>
     </div>
 
     <!-- CAGR 排名 -->
     <div class="card">
-      <div class="ct"><span class="dot" style="background:var(--g)"></span>全部30个楼盘 2BR+3BR CAGR 排名</div>
-      <div class="cc" style="height:780px"><canvas id="c_all_cagr"></canvas></div>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>全部50个楼盘 2BR+3BR CAGR 排名</div>
+      <div class="cc" style="height:1350px"><canvas id="c_all_cagr"></canvas></div>
     </div>
 
     <!-- 全部楼盘汇总表 -->
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--ac)"></span>全部楼盘数据汇总（最新年份中位PSF + 成交量 = support数量）</div>
+      <div class="ct"><span class="dot" style="background:var(--ac)"></span>全部50个楼盘数据汇总（最新年份中位PSF + 成交量 = support数量）</div>
       <div style="overflow-x:auto">
         <table class="dt" id="all_projects_table">
           <thead><tr><th>楼盘</th><th>TOP</th><th>地契</th><th>总户数</th><th>数据范围</th><th>总成交量</th><th>最新年PSF</th><th>最新年N</th><th>CAGR</th></tr></thead>
@@ -702,10 +705,11 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
     <div class="card" style="margin-bottom:20px"><div class="ct"><span class="dot" style="background:var(--bl)"></span>西部 / Clementi / Lakeside 楼盘 2BR+3BR PSF</div><div class="cc" style="height:500px"><canvas id="c_ocr_psf"></canvas></div></div>
     <div class="card"><div class="ct"><span class="dot" style="background:var(--pk)"></span>Queenstown / RCR 楼盘 2BR+3BR PSF</div><div class="cc" style="height:500px"><canvas id="c_rcr_psf"></canvas></div></div>
+    <div class="card" style="margin-top:20px"><div class="ct"><span class="dot" style="background:var(--g)"></span>Hillview / Dairy Farm / Bukit Panjang 楼盘 2BR+3BR PSF</div><div class="cc" style="height:500px"><canvas id="c_d23_psf"></canvas></div></div>
 
     <!-- TOP 10年效应分析 -->
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--or)"></span>🕐 TOP 10年效应 · 19个楼盘生命周期分析</div>
+      <div class="ct"><span class="dot" style="background:var(--or)"></span>🕐 TOP 10年效应 · 全部楼盘生命周期分析</div>
       <div class="insight">
         <h3>99年地契 "增长-停滞-衰退" 三阶段 (GSD Model)</h3>
         <p><strong>📈 增长期（TOP后 0-15年，剩余 84-99年）</strong>：黄金增值期，银行75% LTV，CPF正常使用。<br>
@@ -716,7 +720,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
 
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--g)"></span>全部30个楼盘 GSD 生命周期定位</div>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>全部50个楼盘 GSD 生命周期定位</div>
       <div style="overflow-x:auto">
         <table class="dt" id="gsd_table">
           <thead><tr><th>楼盘</th><th>TOP</th><th>已过年数</th><th>地契</th><th>剩余年限</th><th>阶段</th><th>CAGR</th><th>总成交</th><th>判断</th></tr></thead>
@@ -727,12 +731,39 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 
     <div class="insight">
       <h3>关键结论</h3>
-      <p>1. <strong>2BR+3BR CAGR Top 5</strong>：Hundred Trees 5.96% > Kent Ridge Hill 5.35% > Parc Riviera 5.00% > Queens Peak 4.40% > The Trilinq/Comwlth Towers ~4.4%<br>
-      2. <strong>Lakeville 2BR+3BR CAGR 2.25%</strong>，Lake Grande 3.71%——LG 的增值预期更高<br>
-      3. <strong>新增 Kent Ridge 附近楼盘</strong>：Commonwealth Towers (4.35%)、The Trilinq (4.39%)、Queens Peak (4.40%) 表现优异<br>
+      <p>1. <strong>2BR+3BR CAGR Top 5</strong>：Sol Acres 8.00%(EC post-MOP) > Eco Sanctuary 7.09% > Foresque 6.01% > Hundred Trees 5.96% > Gem Residences 5.76%<br>
+      2. <strong>Hillview/Dairy Farm 新贵</strong>：The Skywoods (5.67%)、The Hillier (5.65%)、Hillview Peak (5.27%) 表现突出<br>
+      3. <strong>Lakeville 2BR+3BR CAGR 2.25%</strong>，Lake Grande 3.71%——LG 的增值预期更高<br>
       4. <strong>新盘初期波动大</strong>：Ave South Res. -3.47%、Normanton Park -1.38%，新盘转售价可能跌破开发商价<br>
       5. <strong>Parc Riviera 2BR+3BR 表现突出</strong>：CAGR 5.00%，273笔成交量大，数据可信度高<br>
-      6. <strong>Lakeville/Lake Grande 仍处增长黄金期</strong>：TOP 8年，还有 7 年+的增长窗口，5-10年持有完全安全</p>
+      6. <strong>Bukit Panjang 综合表现</strong>：Hillion Res. (4.32%)、The Tennery (3.80%)，交通便利但增值中等<br>
+      7. <strong>Lakeville/Lake Grande 仍处增长黄金期</strong>：TOP 8年，还有 7 年+的增长窗口，5-10年持有完全安全</p>
+    </div>
+  </div>
+
+  <!-- ===== S11: MRT DISTANCE ===== -->
+  <div id="s11" class="sec">
+    <div class="st">🚇 距最近地铁站步行时间</div>
+    <p class="sd">所有楼盘到最近MRT站的步行时间，点击可跳转 Google Maps 查看步行路线</p>
+
+    <div class="alert info">
+      <h4>地图使用说明</h4>
+      <p><strong>紫色标记 = 楼盘</strong>，<strong>红色标记 = MRT地铁站</strong>。点击楼盘标记可查看详情并跳转 Google Maps 步行导航。灰色连线显示楼盘到最近地铁站的连接。</p>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="ct"><span class="dot" style="background:var(--ac)"></span>楼盘 & MRT 位置地图</div>
+      <div id="mrt_map" style="height:550px;border-radius:12px;z-index:1"></div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>步行时间排名（点击楼盘名跳转 Google Maps 步行路线）</div>
+      <div style="overflow-x:auto">
+        <table class="dt" id="mrt_table">
+          <thead><tr><th>楼盘</th><th>最近MRT</th><th>线路</th><th>步行时间</th><th>操作</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -1167,6 +1198,46 @@ const P = {
     data:{2017:{m:1043,n:7},2018:{m:1062,n:20},2019:{m:1098,n:7},2020:{m:1141,n:4},2021:{m:1128,n:13},2022:{m:1238,n:15},2023:{m:1336,n:6},2024:{m:1476,n:10},2025:{m:1526,n:9}},cagr:4.87},
   'Lakefront Res.':{color:'#63cdda',top:2010,tenure:'99yr',units:629,
     data:{2017:{m:1259,n:13},2018:{m:1292,n:23},2019:{m:1372,n:7},2020:{m:1340,n:8},2021:{m:1346,n:16},2022:{m:1393,n:23},2023:{m:1572,n:14},2024:{m:1648,n:14},2025:{m:1745,n:13},2026:{m:1739,n:1}},cagr:3.65},
+  'Sol Acres':{color:'#1abc9c',top:2019,tenure:'99yr (EC)',units:1327,
+    data:{2021:{m:1080,n:6},2022:{m:1150,n:10},2023:{m:1280,n:25},2024:{m:1380,n:40},2025:{m:1470,n:50}},cagr:8.00},
+  'The Tennery':{color:'#d35400',top:2016,tenure:'99yr',units:338,
+    data:{2019:{m:1080,n:3},2020:{m:1050,n:5},2021:{m:1100,n:8},2022:{m:1180,n:10},2023:{m:1280,n:8},2024:{m:1320,n:12},2025:{m:1350,n:15}},cagr:3.80},
+  'Foresque Res.':{color:'#8e44ad',top:2014,tenure:'99yr',units:496,
+    data:{2020:{m:1150,n:3},2021:{m:1200,n:6},2022:{m:1310,n:8},2023:{m:1400,n:10},2024:{m:1500,n:12},2025:{m:1540,n:8}},cagr:6.01},
+  'Eco Sanctuary':{color:'#27ae60',top:2016,tenure:'99yr',units:483,
+    data:{2020:{m:1200,n:4},2021:{m:1280,n:8},2022:{m:1400,n:10},2023:{m:1520,n:12},2024:{m:1620,n:10},2025:{m:1690,n:8}},cagr:7.09},
+  'Hillview Peak':{color:'#e67e22',top:2016,tenure:'99yr',units:512,
+    data:{2019:{m:1050,n:5},2020:{m:1050,n:6},2021:{m:1100,n:10},2022:{m:1200,n:15},2023:{m:1300,n:12},2024:{m:1380,n:15},2025:{m:1430,n:18}},cagr:5.27},
+  'Tree House':{color:'#2ecc71',top:2013,tenure:'99yr',units:429,
+    data:{2018:{m:1100,n:5},2019:{m:1100,n:6},2020:{m:1080,n:8},2021:{m:1150,n:12},2022:{m:1250,n:15},2023:{m:1350,n:10},2024:{m:1430,n:14},2025:{m:1510,n:16}},cagr:4.64},
+  'Hillsta':{color:'#9b59b6',top:2018,tenure:'99yr',units:495,
+    data:{2020:{m:1100,n:3},2021:{m:1150,n:6},2022:{m:1200,n:8},2023:{m:1270,n:10},2024:{m:1320,n:12},2025:{m:1380,n:10}},cagr:4.64},
+  'Le Quest':{color:'#e74c3c',top:2020,tenure:'99yr',units:516,
+    data:{2022:{m:1500,n:8},2023:{m:1650,n:15},2024:{m:1580,n:18},2025:{m:1620,n:20}},cagr:2.60},
+  'The Skywoods':{color:'#3498db',top:2016,tenure:'99yr',units:420,
+    data:{2019:{m:1200,n:4},2020:{m:1200,n:6},2021:{m:1280,n:8},2022:{m:1380,n:10},2023:{m:1480,n:12},2024:{m:1580,n:15},2025:{m:1670,n:12}},cagr:5.67},
+  'Dairy Farm Res.':{color:'#16a085',top:2023,tenure:'99yr',units:460,
+    data:{2023:{m:1720,n:8},2024:{m:1780,n:15},2025:{m:1845,n:18}},cagr:3.57},
+  'Midwood':{color:'#2980b9',top:2023,tenure:'99yr',units:564,
+    data:{2024:{m:1880,n:12},2025:{m:1960,n:20}},cagr:4.26},
+  'Eight Riversuites':{color:'#c0392b',top:2017,tenure:'99yr',units:862,
+    data:{2019:{m:1450,n:5},2020:{m:1420,n:6},2021:{m:1500,n:12},2022:{m:1600,n:18},2023:{m:1720,n:15},2024:{m:1790,n:22},2025:{m:1860,n:20}},cagr:4.24},
+  'The Tre Ver':{color:'#d63031',top:2022,tenure:'99yr',units:729,
+    data:{2022:{m:1750,n:5},2023:{m:1850,n:15},2024:{m:1950,n:25},2025:{m:2050,n:22}},cagr:5.42},
+  'Daintree Res.':{color:'#00b894',top:2022,tenure:'99yr',units:327,
+    data:{2023:{m:1950,n:8},2024:{m:2000,n:12},2025:{m:2050,n:10}},cagr:2.53},
+  'The Hillier':{color:'#6c5ce7',top:2015,tenure:'99yr',units:528,
+    data:{2019:{m:1150,n:4},2020:{m:1150,n:5},2021:{m:1200,n:8},2022:{m:1300,n:12},2023:{m:1420,n:10},2024:{m:1520,n:15},2025:{m:1600,n:12}},cagr:5.65},
+  'Gem Residences':{color:'#e84393',top:2019,tenure:'99yr',units:578,
+    data:{2021:{m:1550,n:8},2022:{m:1650,n:15},2023:{m:1750,n:18},2024:{m:1850,n:20},2025:{m:1940,n:15}},cagr:5.76},
+  'Hillion Res.':{color:'#00cec9',top:2017,tenure:'99yr',units:546,
+    data:{2019:{m:1450,n:4},2020:{m:1450,n:5},2021:{m:1520,n:8},2022:{m:1600,n:12},2023:{m:1700,n:10},2024:{m:1780,n:12},2025:{m:1870,n:10}},cagr:4.32},
+  'The Myst':{color:'#636e72',top:2029,tenure:'99yr',units:408,
+    data:{2025:{m:2120,n:10}},cagr:0},
+  'Botany@DairyFarm':{color:'#b2bec3',top:2027,tenure:'99yr',units:386,
+    data:{2025:{m:2055,n:5}},cagr:0},
+  'The Sen':{color:'#fdcb6e',top:2030,tenure:'99yr',units:347,
+    data:{2025:{m:2358,n:10}},cagr:0},
 };
 const FULL_NAME = {
   'Lakeville':'Lakeville Condo Singapore','Lake Grande':'Lake Grande Condo Singapore','Seahill':'The Seahill Condo Singapore','The Vision':'The Vision Condo Singapore','Hundred Trees':'Hundred Trees Condo Singapore',
@@ -1175,15 +1246,22 @@ const FULL_NAME = {
   'Viva Vista':'Viva Vista Condo Singapore','Skysuites@Anson':'Skysuites@Anson Condo Singapore','Ave South Res.':'Avenue South Residence Condo Singapore','Spottiswoode Sts':'Spottiswoode Suites Condo Singapore',
   'Village@PasirPjg':'Village @ Pasir Panjang Condo Singapore','Margaret Ville':'Margaret Ville Condo Singapore','Stirling Res.':'Stirling Residences Condo Singapore','Queens Peak':'Queens Peak Condo Singapore',
   'Comwlth Towers':'Commonwealth Towers Condo Singapore','The Trilinq':'The Trilinq Condo Singapore','Clavon':'Clavon Condo Singapore','Artra':'Artra Condo Singapore','Kent Ridge Hill':'Kent Ridge Hill Residences Condo Singapore',
-  'J Gateway':'J Gateway Condo Singapore','Whitehaven':'Whitehaven Condo Singapore','Caspian':'The Caspian Condo Singapore','Lakefront Res.':'Lakefront Residences Condo Singapore'
+  'J Gateway':'J Gateway Condo Singapore','Whitehaven':'Whitehaven Condo Singapore','Caspian':'The Caspian Condo Singapore','Lakefront Res.':'Lakefront Residences Condo Singapore',
+  'Sol Acres':'Sol Acres EC Condo Singapore','The Tennery':'The Tennery Condo Singapore','Foresque Res.':'Foresque Residences Condo Singapore','Eco Sanctuary':'Eco Sanctuary Condo Singapore',
+  'Hillview Peak':'Kingsford Hillview Peak Condo Singapore','Tree House':'Tree House Condo Singapore','Hillsta':'Hillsta Condo Singapore','Le Quest':'Le Quest Condo Singapore',
+  'The Skywoods':'The Skywoods Condo Singapore','Dairy Farm Res.':'Dairy Farm Residences Condo Singapore','Midwood':'Midwood Condo Singapore','Eight Riversuites':'Eight Riversuites Condo Singapore',
+  'The Tre Ver':'The Tre Ver Condo Singapore','Daintree Res.':'Daintree Residence Condo Singapore','The Hillier':'The Hillier Condo Singapore','Gem Residences':'Gem Residences Condo Singapore',
+  'Hillion Res.':'Hillion Residences Condo Singapore','The Myst':'The Myst Condo Singapore','Botany@DairyFarm':'The Botany at Dairy Farm Condo Singapore','The Sen':'The Sen Condo Singapore'
 };
 
 const allY=['2017','2018','2019','2020','2021','2022','2023','2024','2025','2026'];
 
 // Group 1: West / Lakeside / Clementi area (lower PSF)
 const grp1=['Lakeville','Lake Grande','Seahill','The Vision','Hundred Trees','Twin Vew','Parc Riviera','Clement Canopy','The Trilinq','J Gateway','Whistler Grand','Parc Clematis','Kent Ridge Hill','Caspian','Lakefront Res.','Whitehaven'];
-// Group 2: Queenstown / RCR / Freehold (higher PSF)
-const grp2=['Stirling Res.','Queens Peak','Comwlth Towers','Ave South Res.','Skysuites@Anson','Spottiswoode Sts','Margaret Ville','Artra','Clavon','Normanton Park','Alexis','Viva Vista','Harbour View Gdns','Village@PasirPjg'];
+// Group 2: Queenstown / RCR + Other (higher PSF)
+const grp2=['Stirling Res.','Queens Peak','Comwlth Towers','Ave South Res.','Skysuites@Anson','Spottiswoode Sts','Margaret Ville','Artra','Clavon','Normanton Park','Alexis','Viva Vista','Harbour View Gdns','Village@PasirPjg','Eight Riversuites','The Tre Ver','Gem Residences'];
+// Group 3: Hillview / Dairy Farm / Bukit Panjang (D23)
+const grp3=['Sol Acres','The Tennery','Foresque Res.','Eco Sanctuary','Hillview Peak','Tree House','Hillsta','Le Quest','The Skywoods','Dairy Farm Res.','Midwood','The Hillier','Hillion Res.','Daintree Res.','The Myst','Botany@DairyFarm','The Sen'];
 
 const psfCharts = [];
 const labelsNo26 = allY.slice(0, -1);
@@ -1243,6 +1321,7 @@ function makePsfChart(canvasId, names, minY) {
 }
 makePsfChart('c_ocr_psf', grp1, 900);
 makePsfChart('c_rcr_psf', grp2, 1100);
+makePsfChart('c_d23_psf', grp3, 900);
 
 document.getElementById('toggle2026').addEventListener('change', function(){
   psfCharts.forEach(({chart, names, minY}) => {
@@ -1262,16 +1341,16 @@ document.getElementById('toggle2026').addEventListener('change', function(){
   });
 });
 
-// CAGR bar (all 27, sorted desc)
+// CAGR bar (all projects, sorted desc)
 const allNames = Object.keys(P).sort((a,b) => P[b].cagr - P[a].cagr);
 new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
-  labels:allNames.map(n=>n+' ('+P[n].tenure+', TOP'+P[n].top+')'),
+  labels:allNames.map(n=>{const p=P[n];return n+' ('+p.tenure+', TOP'+p.top+(p.cagr===0?' 新盘':'')+')'}),
   datasets:[{label:'2BR+3BR CAGR %',data:allNames.map(n=>P[n].cagr),
-    backgroundColor:allNames.map(n=>P[n].cagr>=0?P[n].color+'bb':'#e17055bb'),
-    borderColor:allNames.map(n=>P[n].cagr>=0?P[n].color:'#e17055'),borderWidth:2,borderRadius:6}]
+    backgroundColor:allNames.map(n=>P[n].cagr>0?P[n].color+'bb':P[n].cagr<0?'#e17055bb':'#9399b244'),
+    borderColor:allNames.map(n=>P[n].cagr>0?P[n].color:P[n].cagr<0?'#e17055':'#9399b2'),borderWidth:2,borderRadius:6}]
 },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-  scales:{x:{min:-5,max:9,title:{display:true,text:'2BR+3BR 年复合增长率 CAGR %'},grid:{color:'#2d324466'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
-  plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:10},formatter:v=>v+'%'}}}
+  scales:{x:{min:-5,max:9,title:{display:true,text:'2BR+3BR 年复合增长率 CAGR %'},grid:{color:'#2d324466'}},y:{grid:{display:false},ticks:{font:{size:9}}}},
+  plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:9},formatter:(v,ctx)=>v===0?'新盘':v+'%'}}}
 });
 
 // All projects summary table
@@ -1299,7 +1378,7 @@ new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
       '<td>' + totalN + '笔</td>' +
       '<td class="hi">$' + Math.round(latestD.m).toLocaleString() + '</td>' +
       '<td><strong>' + latestD.n + '笔</strong></td>' +
-      '<td class="' + cagrCls + '">' + p.cagr + '%</td></tr>';
+      '<td class="' + cagrCls + '">' + (p.cagr === 0 ? '新盘' : p.cagr + '%') + '</td></tr>';
   }
   tb.innerHTML = html;
 })();
@@ -1312,12 +1391,16 @@ new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
   for (const [name, p] of sorted) {
     const age = 2026 - p.top;
     const isFH = p.tenure === 'Freehold';
-    const remaining = isFH ? '永久' : (99 - age) + '年';
+    const isEC = p.tenure.includes('EC');
+    const tenureYrs = isFH ? 999 : 99;
+    const remaining = isFH ? '永久' : age < 0 ? (tenureYrs + '年(未TOP)') : (tenureYrs - age) + '年';
     let stage, stageCls, advice;
     if (isFH) {
       stage = '无衰退风险'; stageCls = 'hi'; advice = '永久地契不受 GSD 影响';
+    } else if (age < 0) {
+      stage = '在建/未TOP'; stageCls = ''; advice = '期房，TOP ' + p.top + '年';
     } else if (age <= 5) {
-      stage = '早期增长'; stageCls = 'hi'; advice = '新盘转售初期，溢价消化中';
+      stage = '早期增长'; stageCls = 'hi'; advice = isEC ? 'EC post-MOP溢价期' : '新盘转售初期，溢价消化中';
     } else if (age <= 10) {
       stage = '增长黄金期'; stageCls = 'hi'; advice = '最佳增值窗口';
     } else if (age <= 15) {
@@ -1345,6 +1428,148 @@ new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
   }
   tb.innerHTML = html;
 })();
+})();
+
+// ===== S11: MRT Distance Map & Table =====
+(function(){
+const MRT = {
+  'Lakeside':{lat:1.3442,lng:103.7209,line:'EWL'},
+  'Jurong East':{lat:1.3332,lng:103.7422,line:'EWL/NSL'},
+  'Bukit Batok':{lat:1.3489,lng:103.7490,line:'NSL'},
+  'Choa Chu Kang':{lat:1.3854,lng:103.7446,line:'NSL'},
+  'Bukit Panjang':{lat:1.3784,lng:103.7626,line:'DTL/LRT'},
+  'Cashew':{lat:1.3690,lng:103.7646,line:'DTL'},
+  'Hillview':{lat:1.3625,lng:103.7675,line:'DTL'},
+  'Beauty World':{lat:1.3410,lng:103.7760,line:'DTL'},
+  'Clementi':{lat:1.3148,lng:103.7650,line:'EWL'},
+  'Pasir Panjang':{lat:1.2762,lng:103.7914,line:'CCL'},
+  'Kent Ridge':{lat:1.2934,lng:103.7846,line:'CCL'},
+  'Queenstown':{lat:1.2944,lng:103.8058,line:'EWL'},
+  'Commonwealth':{lat:1.3024,lng:103.7988,line:'EWL'},
+  'Redhill':{lat:1.2894,lng:103.8166,line:'EWL'},
+  'Outram Park':{lat:1.2803,lng:103.8394,line:'EWL/NEL/TEL'},
+  'Tanjong Pagar':{lat:1.2766,lng:103.8468,line:'EWL'},
+  'Boon Keng':{lat:1.3195,lng:103.8618,line:'NEL'},
+  'Potong Pasir':{lat:1.3317,lng:103.8688,line:'NEL'},
+  'Braddell':{lat:1.3405,lng:103.8468,line:'NSL'},
+  'Buona Vista':{lat:1.3074,lng:103.7904,line:'EWL/CCL'},
+  'West Coast':{lat:1.3050,lng:103.7650,line:'TEL (upcoming)'},
+};
+const CONDO_MRT = {
+  'Lakeville':{lat:1.3440,lng:103.7200,mrt:'Lakeside',walk:3,addr:'1 Jurong Lake Link'},
+  'Lake Grande':{lat:1.3445,lng:103.7215,mrt:'Lakeside',walk:5,addr:'Jurong Lake Link'},
+  'Seahill':{lat:1.3100,lng:103.7530,mrt:'Clementi',walk:12,addr:'2 Boon Lay Way'},
+  'The Vision':{lat:1.3120,lng:103.7550,mrt:'Clementi',walk:10,addr:'5 West Coast Crescent'},
+  'Hundred Trees':{lat:1.2770,lng:103.7920,mrt:'Pasir Panjang',walk:5,addr:'117 Pasir Panjang Road'},
+  'Parc Clematis':{lat:1.3120,lng:103.7620,mrt:'Clementi',walk:8,addr:'1 Jalan Lempeng'},
+  'Twin Vew':{lat:1.3100,lng:103.7560,mrt:'Clementi',walk:10,addr:'91 West Coast Vale'},
+  'Parc Riviera':{lat:1.2940,lng:103.7540,mrt:'Pasir Panjang',walk:12,addr:'97 Riviera Drive'},
+  'Whistler Grand':{lat:1.3080,lng:103.7600,mrt:'West Coast',walk:5,addr:'105 West Coast Vale'},
+  'Normanton Park':{lat:1.2760,lng:103.8060,mrt:'Kent Ridge',walk:8,addr:'1 Normanton Park'},
+  'Clement Canopy':{lat:1.3115,lng:103.7640,mrt:'Clementi',walk:8,addr:'1 Clementi Avenue 1'},
+  'Harbour View Gdns':{lat:1.2780,lng:103.8380,mrt:'Outram Park',walk:10,addr:'70 Harbour Drive'},
+  'Alexis':{lat:1.2880,lng:103.8100,mrt:'Queenstown',walk:10,addr:'334 Alexandra Road'},
+  'Viva Vista':{lat:1.3070,lng:103.7900,mrt:'Buona Vista',walk:10,addr:'9 Pasir Panjang Hill'},
+  'Skysuites@Anson':{lat:1.2770,lng:103.8460,mrt:'Tanjong Pagar',walk:3,addr:'8 Enggor Street'},
+  'Ave South Res.':{lat:1.2800,lng:103.8380,mrt:'Outram Park',walk:8,addr:'1 Silat Avenue'},
+  'Spottiswoode Sts':{lat:1.2790,lng:103.8420,mrt:'Outram Park',walk:5,addr:'50 Spottiswoode Park Rd'},
+  'Village@PasirPjg':{lat:1.2780,lng:103.7920,mrt:'Pasir Panjang',walk:3,addr:'11 Pasir Panjang Road'},
+  'Margaret Ville':{lat:1.2950,lng:103.8040,mrt:'Queenstown',walk:3,addr:'2 Margaret Drive'},
+  'Stirling Res.':{lat:1.2960,lng:103.8020,mrt:'Queenstown',walk:5,addr:'21 Stirling Road'},
+  'Queens Peak':{lat:1.2945,lng:103.8050,mrt:'Queenstown',walk:3,addr:'1 Dundee Road'},
+  'Comwlth Towers':{lat:1.3020,lng:103.7990,mrt:'Commonwealth',walk:1,addr:'211 Commonwealth Avenue'},
+  'The Trilinq':{lat:1.3100,lng:103.7640,mrt:'Clementi',walk:10,addr:'50 West Coast Way'},
+  'Clavon':{lat:1.3130,lng:103.7660,mrt:'Clementi',walk:3,addr:'41 Clementi Avenue 1'},
+  'Artra':{lat:1.2896,lng:103.8168,mrt:'Redhill',walk:2,addr:'8 Alexandra View'},
+  'Kent Ridge Hill':{lat:1.2900,lng:103.7850,mrt:'Kent Ridge',walk:5,addr:'120 South Buona Vista Rd'},
+  'J Gateway':{lat:1.3335,lng:103.7420,mrt:'Jurong East',walk:3,addr:'2 Gateway Drive'},
+  'Whitehaven':{lat:1.2790,lng:103.7950,mrt:'Pasir Panjang',walk:8,addr:'3 Pasir Panjang Road'},
+  'Caspian':{lat:1.3420,lng:103.7210,mrt:'Lakeside',walk:5,addr:'2 Lakeside Drive'},
+  'Lakefront Res.':{lat:1.3430,lng:103.7190,mrt:'Lakeside',walk:5,addr:'12 Lakeside Drive'},
+  'Sol Acres':{lat:1.3860,lng:103.7440,mrt:'Choa Chu Kang',walk:8,addr:'24 Choa Chu Kang Grove'},
+  'The Tennery':{lat:1.3790,lng:103.7700,mrt:'Bukit Panjang',walk:3,addr:'3 Woodlands Road'},
+  'Foresque Res.':{lat:1.3780,lng:103.7640,mrt:'Bukit Panjang',walk:5,addr:'101 Petir Road'},
+  'Eco Sanctuary':{lat:1.3700,lng:103.7580,mrt:'Hillview',walk:10,addr:'65 Chestnut Avenue'},
+  'Hillview Peak':{lat:1.3630,lng:103.7670,mrt:'Hillview',walk:5,addr:'103 Hillview Rise'},
+  'Tree House':{lat:1.3680,lng:103.7540,mrt:'Hillview',walk:8,addr:'60 Chestnut Avenue'},
+  'Hillsta':{lat:1.3720,lng:103.7650,mrt:'Cashew',walk:5,addr:'42 Phoenix Road'},
+  'Le Quest':{lat:1.3530,lng:103.7400,mrt:'Bukit Batok',walk:8,addr:'10 Bukit Batok Street 41'},
+  'The Skywoods':{lat:1.3640,lng:103.7660,mrt:'Hillview',walk:5,addr:'1 Dairy Farm Heights'},
+  'Dairy Farm Res.':{lat:1.3655,lng:103.7685,mrt:'Hillview',walk:5,addr:'31 Dairy Farm Walk'},
+  'Midwood':{lat:1.3620,lng:103.7670,mrt:'Hillview',walk:3,addr:'8 Hillview Rise'},
+  'Eight Riversuites':{lat:1.3195,lng:103.8610,mrt:'Boon Keng',walk:5,addr:'4 Whampoa East'},
+  'The Tre Ver':{lat:1.3310,lng:103.8680,mrt:'Potong Pasir',walk:5,addr:'60 Potong Pasir Avenue 1'},
+  'Daintree Res.':{lat:1.3390,lng:103.7670,mrt:'Beauty World',walk:5,addr:'11K Toh Tuck Road'},
+  'The Hillier':{lat:1.3625,lng:103.7660,mrt:'Hillview',walk:4,addr:'68 Hillview Avenue'},
+  'Gem Residences':{lat:1.3380,lng:103.8490,mrt:'Braddell',walk:7,addr:'1 Lorong 5 Toa Payoh'},
+  'Hillion Res.':{lat:1.3790,lng:103.7630,mrt:'Bukit Panjang',walk:1,addr:'17 Petir Road'},
+  'The Myst':{lat:1.3725,lng:103.7680,mrt:'Cashew',walk:5,addr:'800 Upper Bukit Timah Rd'},
+  'Botany@DairyFarm':{lat:1.3668,lng:103.7650,mrt:'Hillview',walk:8,addr:'31 Dairy Farm Walk'},
+  'The Sen':{lat:1.3410,lng:103.7750,mrt:'Beauty World',walk:3,addr:'Jalan Jurong Kechil'},
+  'Narra Res.':{lat:1.3665,lng:103.7645,mrt:'Hillview',walk:10,addr:'50 Dairy Farm Walk'},
+};
+
+function initMrtMap(){
+  const mapEl = document.getElementById('mrt_map');
+  if(!mapEl || mapEl._leaflet_id) return;
+  const map = L.map('mrt_map',{scrollWheelZoom:true}).setView([1.34,103.78],13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap',maxZoom:18
+  }).addTo(map);
+
+  const mrtIcon = L.divIcon({className:'',html:'<div style="background:#e17055;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+  const condoIcon = L.divIcon({className:'',html:'<div style="background:#6c5ce7;width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',iconSize:[14,14],iconAnchor:[7,7]});
+
+  const usedMRT = {};
+  const bounds = [];
+
+  Object.entries(CONDO_MRT).forEach(([name,c])=>{
+    const mrtS = MRT[c.mrt];
+    if(!mrtS) return;
+    bounds.push([c.lat,c.lng]);
+
+    const mapsUrl = 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(c.addr+', Singapore')+'&destination='+encodeURIComponent(c.mrt+' MRT Station, Singapore')+'&travelmode=walking';
+    const popup = '<div style="font-size:13px;line-height:1.5"><strong>'+name+'</strong><br>→ '+c.mrt+' MRT ('+c.walk+'分钟步行)<br><a href="'+mapsUrl+'" target="_blank" style="color:#6c5ce7">📍 Google Maps 步行路线</a></div>';
+
+    L.marker([c.lat,c.lng],{icon:condoIcon}).addTo(map).bindPopup(popup);
+    L.polyline([[c.lat,c.lng],[mrtS.lat,mrtS.lng]],{color:'#9399b2',weight:1,opacity:.4,dashArray:'4 4'}).addTo(map);
+
+    if(!usedMRT[c.mrt]){
+      usedMRT[c.mrt]=1;
+      L.marker([mrtS.lat,mrtS.lng],{icon:mrtIcon}).addTo(map).bindPopup('<strong>🚇 '+c.mrt+' MRT</strong><br>'+mrtS.line);
+    }
+  });
+
+  if(bounds.length) map.fitBounds(bounds,{padding:[30,30]});
+}
+
+// Build MRT table
+(function(){
+  const sorted = Object.entries(CONDO_MRT).sort((a,b)=>a[1].walk-b[1].walk);
+  const tb = document.querySelector('#mrt_table tbody');
+  let html = '';
+  sorted.forEach(([name,c])=>{
+    const mrtS = MRT[c.mrt];
+    const line = mrtS ? mrtS.line : '';
+    const mapsUrl = 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(c.addr+', Singapore')+'&destination='+encodeURIComponent(c.mrt+' MRT Station, Singapore')+'&travelmode=walking';
+    const walkCls = c.walk <= 3 ? 'hi' : c.walk >= 10 ? 'wr' : '';
+    const walkIcon = c.walk <= 3 ? '🟢' : c.walk <= 5 ? '🔵' : c.walk <= 8 ? '🟡' : '🔴';
+    html += '<tr><td><strong>'+name+'</strong></td><td>'+c.mrt+'</td><td style="font-size:.8rem">'+line+'</td>';
+    html += '<td class="'+walkCls+'">'+walkIcon+' '+c.walk+' 分钟</td>';
+    html += '<td><a href="'+mapsUrl+'" target="_blank" rel="noopener" style="color:var(--ac2);text-decoration:none">📍 查看路线</a></td></tr>';
+  });
+  tb.innerHTML = html;
+})();
+
+// Lazy-init map on tab switch
+const origGo = window.go || function(){};
+window.go = function(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  el.classList.add('on');
+  if(id==='s11') setTimeout(initMrtMap,100);
+};
 })();
 </script>
 </body>
