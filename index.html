@@ -82,7 +82,12 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 .insight p{color:var(--t2);font-size:.9rem;line-height:1.7}
 .insight strong{color:var(--t)}
 .wealth-num{font-size:2rem;font-weight:800}
-@media(max-width:768px){.hero{padding:40px 20px 30px}.hero h1{font-size:1.6rem}.g2,.g3{grid-template-columns:1fr}.tab{font-size:.78rem;padding:10px 12px}.ctn{padding:14px 10px 40px}}
+.cagr-row{display:flex;align-items:center;margin-bottom:2px;height:24px}
+.cagr-label{width:270px;font-size:11px;text-align:right;padding-right:10px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--t2)}
+.cagr-bar-area{flex:1;position:relative;height:18px;background:var(--s2);border-radius:3px;overflow:visible}
+.cagr-bar{position:absolute;height:100%;border-radius:3px;transition:width .3s}
+.cagr-val{width:55px;font-size:11px;font-weight:700;text-align:left;padding-left:8px;flex-shrink:0;color:var(--t)}
+@media(max-width:768px){.hero{padding:40px 20px 30px}.hero h1{font-size:1.6rem}.g2,.g3{grid-template-columns:1fr}.tab{font-size:.78rem;padding:10px 12px}.ctn{padding:14px 10px 40px}.cagr-label{width:180px;font-size:9px}}
 </style>
 </head>
 <body>
@@ -131,13 +136,13 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
         <table class="dt">
           <thead><tr><th>对比项</th><th>Lakeville</th><th>Lake Grande</th><th>Avenue South Res.</th></tr></thead>
           <tbody>
-            <tr><td>地址</td><td>1 Jurong Lake Link</td><td>Jurong Lake Link</td><td>1-13 Silat Avenue</td></tr>
+            <tr><td>地址</td><td>13 Jurong Lake Link</td><td>3 Gateway Drive</td><td>1-13 Silat Avenue</td></tr>
             <tr><td>区域</td><td>D22 OCR</td><td>D22 OCR</td><td class="hi">D03 RCR</td></tr>
             <tr><td>开发商</td><td>MCL Land</td><td>MCL Land</td><td>UOL/UIC/Kheng Leong</td></tr>
             <tr><td>TOP</td><td>2018（8年）</td><td>2019（7年）</td><td class="hi">2023（3年）</td></tr>
             <tr><td>剩余地契</td><td>~87年</td><td>~94年</td><td class="hi">~96年</td></tr>
             <tr><td>总户数</td><td>696</td><td>710</td><td>1,074</td></tr>
-            <tr><td>最近MRT</td><td>Lakeside (3min)</td><td>Lakeside (5min)</td><td>Outram Park (多线)</td></tr>
+            <tr><td>最近MRT</td><td>Lakeside (10min)</td><td>Lakeside (7min)</td><td>Outram Park (10min)</td></tr>
             <tr><td>2BR面积</td><td>635-872sqft</td><td>614-958sqft</td><td>657-807sqft</td></tr>
             <tr><td>2BR总价</td><td class="hi">$1.17M-$1.40M</td><td>$1.03M-$1.61M</td><td class="wr">$1.29M-$1.82M</td></tr>
             <tr><td>3BR面积</td><td>721-1,141sqft</td><td>904-980sqft</td><td>~1,100sqft</td></tr>
@@ -679,10 +684,10 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <strong>核心发现：</strong>所有平台（PropertyGuru、SRX、EdgeProp、StackProperty、propertyforsale）的成交数据都来自同一个源——URA Caveat，不存在独家数据。</p>
     </div>
 
-    <!-- CAGR 排名 -->
+    <!-- CAGR 排名 (HTML bars for searchable text) -->
     <div class="card">
       <div class="ct"><span class="dot" style="background:var(--g)"></span>全部50个楼盘 2BR+3BR CAGR 排名</div>
-      <div class="cc" style="height:1350px"><canvas id="c_all_cagr"></canvas></div>
+      <div id="cagr_html_chart"></div>
     </div>
 
     <!-- 全部楼盘汇总表 -->
@@ -744,11 +749,12 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S11: MRT DISTANCE ===== -->
   <div id="s11" class="sec">
     <div class="st">🚇 距最近地铁站步行时间</div>
-    <p class="sd">所有楼盘到最近MRT站的步行时间，点击可跳转 Google Maps 查看步行路线</p>
+    <p class="sd">所有楼盘到最近MRT站的步行时间估算，基于坐标距离 + Google Maps 校准，点击可跳转 Google Maps 查看实际步行路线</p>
 
     <div class="alert info">
       <h4>地图使用说明</h4>
-      <p><strong>紫色标记 = 楼盘</strong>，<strong>红色标记 = MRT地铁站</strong>。点击楼盘标记可查看详情并跳转 Google Maps 步行导航。灰色连线显示楼盘到最近地铁站的连接。</p>
+      <p><strong>紫色标记 = 楼盘</strong>，<strong>红色标记 = MRT地铁站</strong>。点击楼盘标记可查看详情并跳转 Google Maps 步行导航。灰色连线显示楼盘到最近地铁站的连接。<br>
+      <strong>⚠️ 步行时间为估算值</strong>（直线距离 × 1.3 路径系数 ÷ 67m/min 步行速度），部分已用 Google Maps 实测校准。实际步行时间受路线、红绿灯、地形等因素影响，建议点击"查看路线"获取精确导航。</p>
     </div>
 
     <div class="card" style="margin-bottom:20px">
@@ -1341,17 +1347,35 @@ document.getElementById('toggle2026').addEventListener('change', function(){
   });
 });
 
-// CAGR bar (all projects, sorted desc)
+// CAGR bar (HTML-based for searchable text)
 const allNames = Object.keys(P).sort((a,b) => P[b].cagr - P[a].cagr);
-new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
-  labels:allNames.map(n=>{const p=P[n];return n+' ('+p.tenure+', TOP'+p.top+(p.cagr===0?' 新盘':'')+')'}),
-  datasets:[{label:'2BR+3BR CAGR %',data:allNames.map(n=>P[n].cagr),
-    backgroundColor:allNames.map(n=>P[n].cagr>0?P[n].color+'bb':P[n].cagr<0?'#e17055bb':'#9399b244'),
-    borderColor:allNames.map(n=>P[n].cagr>0?P[n].color:P[n].cagr<0?'#e17055':'#9399b2'),borderWidth:2,borderRadius:6}]
-},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-  scales:{x:{min:-5,max:9,title:{display:true,text:'2BR+3BR 年复合增长率 CAGR %'},grid:{color:'#2d324466'}},y:{grid:{display:false},ticks:{font:{size:9}}}},
-  plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:9},formatter:(v,ctx)=>v===0?'新盘':v+'%'}}}
-});
+(function(){
+  const ct = document.getElementById('cagr_html_chart');
+  const minC=-5,maxC=9,range=maxC-minC;
+  const zeroPos = Math.abs(minC)/range*100;
+  allNames.forEach(name=>{
+    const p=P[name];
+    const row=document.createElement('div');row.className='cagr-row';
+    const lbl=document.createElement('span');lbl.className='cagr-label';
+    lbl.textContent=name+' ('+p.tenure+', TOP'+p.top+(p.cagr===0?' 新盘':'')+')';
+    const barArea=document.createElement('div');barArea.className='cagr-bar-area';
+    const bar=document.createElement('div');bar.className='cagr-bar';
+    if(p.cagr>=0){
+      const w=Math.min(p.cagr/range*100,100-zeroPos);
+      bar.style.left=zeroPos+'%';bar.style.width=w+'%';
+      bar.style.background=p.color+'bb';bar.style.borderRight='2px solid '+p.color;
+    }else{
+      const w=Math.min(Math.abs(p.cagr)/range*100,zeroPos);
+      bar.style.left=(zeroPos-w)+'%';bar.style.width=w+'%';
+      bar.style.background='#e17055bb';bar.style.borderLeft='2px solid #e17055';
+    }
+    const val=document.createElement('span');val.className='cagr-val';
+    val.textContent=p.cagr===0?'新盘':p.cagr+'%';
+    val.style.color=p.cagr>0?p.color:p.cagr<0?'#e17055':'#9399b2';
+    barArea.appendChild(bar);row.appendChild(lbl);row.appendChild(barArea);row.appendChild(val);
+    ct.appendChild(row);
+  });
+})();
 
 // All projects summary table
 (function(){
@@ -1434,16 +1458,24 @@ new Chart(document.getElementById('c_all_cagr'),{type:'bar',data:{
 (function(){
 const MRT = {
   'Lakeside':{lat:1.3442,lng:103.7209,line:'EWL'},
+  'Chinese Garden':{lat:1.3423,lng:103.7322,line:'EWL'},
   'Jurong East':{lat:1.3332,lng:103.7422,line:'EWL/NSL'},
-  'Bukit Batok':{lat:1.3489,lng:103.7490,line:'NSL'},
+  'Bukit Batok':{lat:1.3489,lng:103.749,line:'NSL'},
   'Choa Chu Kang':{lat:1.3854,lng:103.7446,line:'NSL'},
   'Bukit Panjang':{lat:1.3784,lng:103.7626,line:'DTL/LRT'},
-  'Cashew':{lat:1.3690,lng:103.7646,line:'DTL'},
+  'Cashew':{lat:1.369,lng:103.7646,line:'DTL'},
   'Hillview':{lat:1.3625,lng:103.7675,line:'DTL'},
-  'Beauty World':{lat:1.3410,lng:103.7760,line:'DTL'},
-  'Clementi':{lat:1.3148,lng:103.7650,line:'EWL'},
-  'Pasir Panjang':{lat:1.2762,lng:103.7914,line:'CCL'},
+  'Beauty World':{lat:1.341,lng:103.776,line:'DTL'},
+  'Clementi':{lat:1.3148,lng:103.765,line:'EWL'},
+  'Dover':{lat:1.3113,lng:103.7785,line:'EWL'},
+  'Buona Vista':{lat:1.3074,lng:103.7904,line:'EWL/CCL'},
+  'one-north':{lat:1.2996,lng:103.787,line:'CCL'},
   'Kent Ridge':{lat:1.2934,lng:103.7846,line:'CCL'},
+  'Haw Par Villa':{lat:1.2827,lng:103.7816,line:'CCL'},
+  'Pasir Panjang':{lat:1.2762,lng:103.7914,line:'CCL'},
+  'Labrador Park':{lat:1.272,lng:103.8025,line:'CCL'},
+  'Telok Blangah':{lat:1.2707,lng:103.8099,line:'CCL'},
+  'HarbourFront':{lat:1.2655,lng:103.8213,line:'CCL/NEL'},
   'Queenstown':{lat:1.2944,lng:103.8058,line:'EWL'},
   'Commonwealth':{lat:1.3024,lng:103.7988,line:'EWL'},
   'Redhill':{lat:1.2894,lng:103.8166,line:'EWL'},
@@ -1452,61 +1484,59 @@ const MRT = {
   'Boon Keng':{lat:1.3195,lng:103.8618,line:'NEL'},
   'Potong Pasir':{lat:1.3317,lng:103.8688,line:'NEL'},
   'Braddell':{lat:1.3405,lng:103.8468,line:'NSL'},
-  'Buona Vista':{lat:1.3074,lng:103.7904,line:'EWL/CCL'},
-  'West Coast':{lat:1.3050,lng:103.7650,line:'TEL (upcoming)'},
 };
 const CONDO_MRT = {
-  'Lakeville':{lat:1.3440,lng:103.7200,mrt:'Lakeside',walk:3,addr:'1 Jurong Lake Link'},
-  'Lake Grande':{lat:1.3445,lng:103.7215,mrt:'Lakeside',walk:5,addr:'Jurong Lake Link'},
-  'Seahill':{lat:1.3100,lng:103.7530,mrt:'Clementi',walk:12,addr:'2 Boon Lay Way'},
-  'The Vision':{lat:1.3120,lng:103.7550,mrt:'Clementi',walk:10,addr:'5 West Coast Crescent'},
-  'Hundred Trees':{lat:1.2770,lng:103.7920,mrt:'Pasir Panjang',walk:5,addr:'117 Pasir Panjang Road'},
-  'Parc Clematis':{lat:1.3120,lng:103.7620,mrt:'Clementi',walk:8,addr:'1 Jalan Lempeng'},
-  'Twin Vew':{lat:1.3100,lng:103.7560,mrt:'Clementi',walk:10,addr:'91 West Coast Vale'},
-  'Parc Riviera':{lat:1.2940,lng:103.7540,mrt:'Pasir Panjang',walk:12,addr:'97 Riviera Drive'},
-  'Whistler Grand':{lat:1.3080,lng:103.7600,mrt:'West Coast',walk:5,addr:'105 West Coast Vale'},
-  'Normanton Park':{lat:1.2760,lng:103.8060,mrt:'Kent Ridge',walk:8,addr:'1 Normanton Park'},
-  'Clement Canopy':{lat:1.3115,lng:103.7640,mrt:'Clementi',walk:8,addr:'1 Clementi Avenue 1'},
-  'Harbour View Gdns':{lat:1.2780,lng:103.8380,mrt:'Outram Park',walk:10,addr:'70 Harbour Drive'},
-  'Alexis':{lat:1.2880,lng:103.8100,mrt:'Queenstown',walk:10,addr:'334 Alexandra Road'},
-  'Viva Vista':{lat:1.3070,lng:103.7900,mrt:'Buona Vista',walk:10,addr:'9 Pasir Panjang Hill'},
-  'Skysuites@Anson':{lat:1.2770,lng:103.8460,mrt:'Tanjong Pagar',walk:3,addr:'8 Enggor Street'},
-  'Ave South Res.':{lat:1.2800,lng:103.8380,mrt:'Outram Park',walk:8,addr:'1 Silat Avenue'},
-  'Spottiswoode Sts':{lat:1.2790,lng:103.8420,mrt:'Outram Park',walk:5,addr:'50 Spottiswoode Park Rd'},
-  'Village@PasirPjg':{lat:1.2780,lng:103.7920,mrt:'Pasir Panjang',walk:3,addr:'11 Pasir Panjang Road'},
-  'Margaret Ville':{lat:1.2950,lng:103.8040,mrt:'Queenstown',walk:3,addr:'2 Margaret Drive'},
-  'Stirling Res.':{lat:1.2960,lng:103.8020,mrt:'Queenstown',walk:5,addr:'21 Stirling Road'},
-  'Queens Peak':{lat:1.2945,lng:103.8050,mrt:'Queenstown',walk:3,addr:'1 Dundee Road'},
-  'Comwlth Towers':{lat:1.3020,lng:103.7990,mrt:'Commonwealth',walk:1,addr:'211 Commonwealth Avenue'},
-  'The Trilinq':{lat:1.3100,lng:103.7640,mrt:'Clementi',walk:10,addr:'50 West Coast Way'},
-  'Clavon':{lat:1.3130,lng:103.7660,mrt:'Clementi',walk:3,addr:'41 Clementi Avenue 1'},
-  'Artra':{lat:1.2896,lng:103.8168,mrt:'Redhill',walk:2,addr:'8 Alexandra View'},
-  'Kent Ridge Hill':{lat:1.2900,lng:103.7850,mrt:'Kent Ridge',walk:5,addr:'120 South Buona Vista Rd'},
-  'J Gateway':{lat:1.3335,lng:103.7420,mrt:'Jurong East',walk:3,addr:'2 Gateway Drive'},
-  'Whitehaven':{lat:1.2790,lng:103.7950,mrt:'Pasir Panjang',walk:8,addr:'3 Pasir Panjang Road'},
-  'Caspian':{lat:1.3420,lng:103.7210,mrt:'Lakeside',walk:5,addr:'2 Lakeside Drive'},
-  'Lakefront Res.':{lat:1.3430,lng:103.7190,mrt:'Lakeside',walk:5,addr:'12 Lakeside Drive'},
-  'Sol Acres':{lat:1.3860,lng:103.7440,mrt:'Choa Chu Kang',walk:8,addr:'24 Choa Chu Kang Grove'},
-  'The Tennery':{lat:1.3790,lng:103.7700,mrt:'Bukit Panjang',walk:3,addr:'3 Woodlands Road'},
-  'Foresque Res.':{lat:1.3780,lng:103.7640,mrt:'Bukit Panjang',walk:5,addr:'101 Petir Road'},
-  'Eco Sanctuary':{lat:1.3700,lng:103.7580,mrt:'Hillview',walk:10,addr:'65 Chestnut Avenue'},
-  'Hillview Peak':{lat:1.3630,lng:103.7670,mrt:'Hillview',walk:5,addr:'103 Hillview Rise'},
-  'Tree House':{lat:1.3680,lng:103.7540,mrt:'Hillview',walk:8,addr:'60 Chestnut Avenue'},
-  'Hillsta':{lat:1.3720,lng:103.7650,mrt:'Cashew',walk:5,addr:'42 Phoenix Road'},
-  'Le Quest':{lat:1.3530,lng:103.7400,mrt:'Bukit Batok',walk:8,addr:'10 Bukit Batok Street 41'},
+  'Lakeville':{lat:1.3401,lng:103.7213,mrt:'Lakeside',walk:10,addr:'13 Jurong Lake Link'},
+  'Lake Grande':{lat:1.3419,lng:103.7234,mrt:'Lakeside',walk:7,addr:'3 Gateway Drive'},
+  'Seahill':{lat:1.2993,lng:103.7500,mrt:'Clementi',walk:21,addr:'2 Boon Lay Way'},
+  'The Vision':{lat:1.3040,lng:103.7545,mrt:'Clementi',walk:15,addr:'1 West Coast Crescent'},
+  'Hundred Trees':{lat:1.2810,lng:103.7910,mrt:'Pasir Panjang',walk:10,addr:'100 Pasir Panjang Road'},
+  'Parc Clematis':{lat:1.3058,lng:103.7637,mrt:'Clementi',walk:12,addr:'1 Jalan Lempeng'},
+  'Twin Vew':{lat:1.3076,lng:103.7557,mrt:'Clementi',walk:15,addr:'91 West Coast Vale'},
+  'Parc Riviera':{lat:1.2820,lng:103.7615,mrt:'Haw Par Villa',walk:25,addr:'97 Riviera Drive'},
+  'Whistler Grand':{lat:1.3077,lng:103.7576,mrt:'Clementi',walk:13,addr:'105 West Coast Vale'},
+  'Normanton Park':{lat:1.2800,lng:103.7990,mrt:'Labrador Park',walk:20,addr:'1 Normanton Park'},
+  'Clement Canopy':{lat:1.3100,lng:103.7660,mrt:'Clementi',walk:11,addr:'1 Clementi Avenue 1'},
+  'Harbour View Gdns':{lat:1.2700,lng:103.8160,mrt:'Telok Blangah',walk:13,addr:'70 Harbour Drive'},
+  'Alexis':{lat:1.2895,lng:103.8090,mrt:'Queenstown',walk:13,addr:'334 Alexandra Road'},
+  'Viva Vista':{lat:1.2910,lng:103.7885,mrt:'Kent Ridge',walk:8,addr:'9 Pasir Panjang Hill'},
+  'Skysuites@Anson':{lat:1.2770,lng:103.8460,mrt:'Tanjong Pagar',walk:2,addr:'8 Enggor Street'},
+  'Ave South Res.':{lat:1.2775,lng:103.8355,mrt:'Outram Park',walk:10,addr:'1 Silat Avenue'},
+  'Spottiswoode Sts':{lat:1.2790,lng:103.8420,mrt:'Outram Park',walk:6,addr:'50 Spottiswoode Park Rd'},
+  'Village@PasirPjg':{lat:1.2780,lng:103.7920,mrt:'Pasir Panjang',walk:4,addr:'11 Pasir Panjang Road'},
+  'Margaret Ville':{lat:1.2954,lng:103.7995,mrt:'Queenstown',walk:9,addr:'2 Margaret Drive'},
+  'Stirling Res.':{lat:1.2965,lng:103.8020,mrt:'Queenstown',walk:9,addr:'21 Stirling Road'},
+  'Queens Peak':{lat:1.2945,lng:103.8050,mrt:'Queenstown',walk:2,addr:'1 Dundee Road'},
+  'Comwlth Towers':{lat:1.3020,lng:103.7983,mrt:'Commonwealth',walk:1,addr:'211 Commonwealth Avenue'},
+  'The Trilinq':{lat:1.3049,lng:103.7610,mrt:'Clementi',walk:13,addr:'50 West Coast Way'},
+  'Clavon':{lat:1.3130,lng:103.7660,mrt:'Clementi',walk:4,addr:'41 Clementi Avenue 1'},
+  'Artra':{lat:1.2896,lng:103.8168,mrt:'Redhill',walk:1,addr:'8 Alexandra View'},
+  'Kent Ridge Hill':{lat:1.2900,lng:103.7850,mrt:'Kent Ridge',walk:7,addr:'120 South Buona Vista Rd'},
+  'J Gateway':{lat:1.3335,lng:103.7420,mrt:'Jurong East',walk:1,addr:'2 Gateway Drive'},
+  'Whitehaven':{lat:1.2784,lng:103.7950,mrt:'Pasir Panjang',walk:9,addr:'5 Pasir Panjang Road'},
+  'Caspian':{lat:1.3383,lng:103.7197,mrt:'Lakeside',walk:13,addr:'1 Lakeside Drive'},
+  'Lakefront Res.':{lat:1.3395,lng:103.7191,mrt:'Lakeside',walk:11,addr:'2 Lakeside Drive'},
+  'Sol Acres':{lat:1.3930,lng:103.7380,mrt:'Choa Chu Kang',walk:22,addr:'24 Choa Chu Kang Grove'},
+  'The Tennery':{lat:1.3790,lng:103.7625,mrt:'Bukit Panjang',walk:1,addr:'3 Woodlands Road'},
+  'Foresque Res.':{lat:1.3780,lng:103.7640,mrt:'Bukit Panjang',walk:3,addr:'101 Petir Road'},
+  'Eco Sanctuary':{lat:1.3700,lng:103.7580,mrt:'Cashew',walk:14,addr:'65 Chestnut Avenue'},
+  'Hillview Peak':{lat:1.3630,lng:103.7670,mrt:'Hillview',walk:2,addr:'103 Hillview Rise'},
+  'Tree House':{lat:1.3680,lng:103.7540,mrt:'Cashew',walk:23,addr:'60 Chestnut Avenue'},
+  'Hillsta':{lat:1.3720,lng:103.7650,mrt:'Cashew',walk:7,addr:'42 Phoenix Road'},
+  'Le Quest':{lat:1.3530,lng:103.7400,mrt:'Bukit Batok',walk:21,addr:'10 Bukit Batok Street 41'},
   'The Skywoods':{lat:1.3640,lng:103.7660,mrt:'Hillview',walk:5,addr:'1 Dairy Farm Heights'},
-  'Dairy Farm Res.':{lat:1.3655,lng:103.7685,mrt:'Hillview',walk:5,addr:'31 Dairy Farm Walk'},
-  'Midwood':{lat:1.3620,lng:103.7670,mrt:'Hillview',walk:3,addr:'8 Hillview Rise'},
-  'Eight Riversuites':{lat:1.3195,lng:103.8610,mrt:'Boon Keng',walk:5,addr:'4 Whampoa East'},
-  'The Tre Ver':{lat:1.3310,lng:103.8680,mrt:'Potong Pasir',walk:5,addr:'60 Potong Pasir Avenue 1'},
-  'Daintree Res.':{lat:1.3390,lng:103.7670,mrt:'Beauty World',walk:5,addr:'11K Toh Tuck Road'},
-  'The Hillier':{lat:1.3625,lng:103.7660,mrt:'Hillview',walk:4,addr:'68 Hillview Avenue'},
+  'Dairy Farm Res.':{lat:1.3655,lng:103.7685,mrt:'Hillview',walk:7,addr:'31 Dairy Farm Walk'},
+  'Midwood':{lat:1.3620,lng:103.7670,mrt:'Hillview',walk:2,addr:'8 Hillview Rise'},
+  'Eight Riversuites':{lat:1.3195,lng:103.8610,mrt:'Boon Keng',walk:2,addr:'4 Whampoa East'},
+  'The Tre Ver':{lat:1.3310,lng:103.8680,mrt:'Potong Pasir',walk:2,addr:'60 Potong Pasir Avenue 1'},
+  'Daintree Res.':{lat:1.3390,lng:103.7670,mrt:'Beauty World',walk:15,addr:'11K Toh Tuck Road'},
+  'The Hillier':{lat:1.3598,lng:103.7635,mrt:'Hillview',walk:10,addr:'68 Hillview Avenue'},
   'Gem Residences':{lat:1.3380,lng:103.8490,mrt:'Braddell',walk:7,addr:'1 Lorong 5 Toa Payoh'},
-  'Hillion Res.':{lat:1.3790,lng:103.7630,mrt:'Bukit Panjang',walk:1,addr:'17 Petir Road'},
-  'The Myst':{lat:1.3725,lng:103.7680,mrt:'Cashew',walk:5,addr:'800 Upper Bukit Timah Rd'},
-  'Botany@DairyFarm':{lat:1.3668,lng:103.7650,mrt:'Hillview',walk:8,addr:'31 Dairy Farm Walk'},
-  'The Sen':{lat:1.3410,lng:103.7750,mrt:'Beauty World',walk:3,addr:'Jalan Jurong Kechil'},
-  'Narra Res.':{lat:1.3665,lng:103.7645,mrt:'Hillview',walk:10,addr:'50 Dairy Farm Walk'},
+  'Hillion Res.':{lat:1.3790,lng:103.7630,mrt:'Bukit Panjang',walk:2,addr:'17 Petir Road'},
+  'The Myst':{lat:1.3725,lng:103.7680,mrt:'Cashew',walk:11,addr:'800 Upper Bukit Timah Rd'},
+  'Botany@DairyFarm':{lat:1.3668,lng:103.7650,mrt:'Cashew',walk:5,addr:'1 Dairy Farm Walk'},
+  'The Sen':{lat:1.3410,lng:103.7750,mrt:'Beauty World',walk:2,addr:'2 Jalan Jurong Kechil'},
+  'Narra Res.':{lat:1.3665,lng:103.7645,mrt:'Cashew',walk:5,addr:'50 Dairy Farm Walk'},
 };
 
 function initMrtMap(){
