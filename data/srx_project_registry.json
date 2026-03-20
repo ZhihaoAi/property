@@ -1,0 +1,657 @@
+{
+  "generated_at": "2026-03-18T15:19:46",
+  "projects": {
+    "the_skywoods": {
+      "slug": "the_skywoods",
+      "name": "The Skywoods",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2016,
+      "tenure": "99yr",
+      "units": 420,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-skywoods/sales-transactions",
+      "source_csv": "the_skywoods_transactions.csv",
+      "record_count": 143,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-skywoods-33122/last-transacted-prices",
+          "source_csv": "srx/the_skywoods_transactions.csv",
+          "record_count": 47
+        }
+      ]
+    },
+    "the_botany_at_dairy_farm": {
+      "slug": "the_botany_at_dairy_farm",
+      "name": "The Botany At Dairy Farm",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2027,
+      "tenure": "99yr",
+      "units": 386,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-botany-at-dairy-farm/sales-transactions",
+      "source_csv": "the_botany_at_dairy_farm_transactions.csv",
+      "record_count": 381,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-botany-at-dairy-farm-107021/last-transacted-prices",
+          "source_csv": "srx/the_botany_at_dairy_farm_transactions.csv",
+          "record_count": 138
+        }
+      ]
+    },
+    "sol_acres": {
+      "slug": "sol_acres",
+      "name": "Sol Acres",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2018,
+      "tenure": "99yr",
+      "units": 1327,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/sol-acres/sales-transactions",
+      "source_csv": "sol_acres_transactions.csv",
+      "record_count": 1000,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/sol-acres-70092/last-transacted-prices",
+          "source_csv": "srx/sol_acres_transactions.csv",
+          "record_count": 203
+        }
+      ]
+    },
+    "eco_sanctuary": {
+      "slug": "eco_sanctuary",
+      "name": "Eco Sanctuary",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2016,
+      "tenure": "99yr",
+      "units": 483,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/eco-sanctuary/sales-transactions",
+      "source_csv": "eco_sanctuary_transactions.csv",
+      "record_count": 203,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/eco-sanctuary-28152/last-transacted-prices",
+          "source_csv": "srx/eco_sanctuary_transactions.csv",
+          "record_count": 29
+        }
+      ]
+    },
+    "foresque_residences": {
+      "slug": "foresque_residences",
+      "name": "Foresque Residences",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2014,
+      "tenure": "99yr",
+      "units": 496,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/foresque-residences/sales-transactions",
+      "source_csv": "foresque_residences_transactions.csv",
+      "record_count": 181,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/foresque-residences-13642/last-transacted-prices",
+          "source_csv": "srx/foresque_residences_transactions.csv",
+          "record_count": 35
+        }
+      ]
+    },
+    "gem_residences": {
+      "slug": "gem_residences",
+      "name": "Gem Residences",
+      "region_group": "Queenstown / RCR + Other",
+      "top_year": 2019,
+      "tenure": "99yr",
+      "units": 578,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/gem-residences/sales-transactions",
+      "source_csv": "gem_residences_transactions.csv",
+      "record_count": 471,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/gem-residences-74162/last-transacted-prices",
+          "source_csv": "srx/gem_residences_transactions.csv",
+          "record_count": 63
+        }
+      ]
+    },
+    "the_hillier": {
+      "slug": "the_hillier",
+      "name": "The Hillier",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2016,
+      "tenure": "99yr",
+      "units": 528,
+      "property_type": "Apartment",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-hillier/sales-transactions",
+      "source_csv": "the_hillier_transactions.csv",
+      "record_count": 235,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-hillier-20552/last-transacted-prices",
+          "source_csv": "srx/the_hillier_transactions.csv",
+          "record_count": 50
+        }
+      ]
+    },
+    "the_tre_ver": {
+      "slug": "the_tre_ver",
+      "name": "The Tre Ver",
+      "region_group": "Queenstown / RCR + Other",
+      "top_year": 2022,
+      "tenure": "99yr",
+      "units": 729,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-tre-ver/sales-transactions",
+      "source_csv": "the_tre_ver_transactions.csv",
+      "record_count": 1000,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-tre-ver-83062/last-transacted-prices",
+          "source_csv": "srx/the_tre_ver_transactions.csv",
+          "record_count": 124
+        }
+      ]
+    },
+    "hillview_peak": {
+      "slug": "hillview_peak",
+      "name": "Kingsford Hillview Peak",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2017,
+      "tenure": "99yr",
+      "units": 512,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/kingsford-hillview-peak/sales-transactions",
+      "source_csv": "hillview_peak_transactions.csv",
+      "record_count": 212,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/kingsford-hillview-peak-30242/last-transacted-prices",
+          "source_csv": "srx/hillview_peak_transactions.csv",
+          "record_count": 64
+        }
+      ]
+    },
+    "tree_house": {
+      "slug": "tree_house",
+      "name": "Tree House",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2013,
+      "tenure": "99yr",
+      "units": 429,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/tree-house/sales-transactions",
+      "source_csv": "tree_house_transactions.csv",
+      "record_count": 189,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/tree-house-9822/last-transacted-prices",
+          "source_csv": "srx/tree_house_transactions.csv",
+          "record_count": 34
+        }
+      ]
+    },
+    "hillsta": {
+      "slug": "hillsta",
+      "name": "Hillsta",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2016,
+      "tenure": "99yr",
+      "units": 416,
+      "property_type": "Condominium",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/hillsta/sales-transactions",
+      "source_csv": "hillsta_transactions.csv",
+      "record_count": 205,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/hillsta-23901/last-transacted-prices",
+          "source_csv": "srx/hillsta_transactions.csv",
+          "record_count": 42
+        }
+      ]
+    },
+    "hillion_residences": {
+      "slug": "hillion_residences",
+      "name": "Hillion Residences",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2017,
+      "tenure": "99yr",
+      "units": 546,
+      "property_type": "Apartment",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/hillion-residences-31222/last-transacted-prices",
+      "source_csv": "hillion_residences_transactions.csv",
+      "record_count": 54,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/hillion-residences/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "midwood": {
+      "slug": "midwood",
+      "name": "Midwood",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2023,
+      "tenure": "99yr",
+      "units": 564,
+      "property_type": "Condominium",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/midwood-87102/last-transacted-prices",
+      "source_csv": "midwood_transactions.csv",
+      "record_count": 76,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/midwood/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "eight_riversuites": {
+      "slug": "eight_riversuites",
+      "name": "Eight Riversuites",
+      "region_group": "Queenstown / RCR + Other",
+      "top_year": 2016,
+      "tenure": "99yr",
+      "units": 862,
+      "property_type": "Condominium",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/eight-riversuites-23851/last-transacted-prices",
+      "source_csv": "eight_riversuites_transactions.csv",
+      "record_count": 105,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/eight-riversuites/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "the_tennery": {
+      "slug": "the_tennery",
+      "name": "The Tennery",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2014,
+      "tenure": "99yr",
+      "units": 338,
+      "property_type": "Apartment",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-tennery/sales-transactions",
+      "source_csv": "the_tennery_transactions.csv",
+      "record_count": 184,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-tennery-11032/last-transacted-prices",
+          "source_csv": "srx/the_tennery_transactions.csv",
+          "record_count": 52
+        }
+      ]
+    },
+    "dairy_farm_residences": {
+      "slug": "dairy_farm_residences",
+      "name": "Dairy Farm Residences",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2023,
+      "tenure": "99yr",
+      "units": 460,
+      "property_type": "Apartment",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/dairy-farm-residences-87591/last-transacted-prices",
+      "source_csv": "dairy_farm_residences_transactions.csv",
+      "record_count": 53,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/dairy-farm-residences/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "le_quest": {
+      "slug": "le_quest",
+      "name": "Le Quest",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2020,
+      "tenure": "99yr",
+      "units": 516,
+      "property_type": "Apartment",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/le-quest-79662/last-transacted-prices",
+      "source_csv": "le_quest_transactions.csv",
+      "record_count": 64,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/le-quest/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "daintree_residence": {
+      "slug": "daintree_residence",
+      "name": "Daintree Residence",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2022,
+      "tenure": "99yr",
+      "units": 327,
+      "property_type": "Condominium",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/daintree-residence-83182/last-transacted-prices",
+      "source_csv": "daintree_residence_transactions.csv",
+      "record_count": 48,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/daintree-residence/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "the_myst": {
+      "slug": "the_myst",
+      "name": "The Myst",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": 2027,
+      "tenure": "99yr",
+      "units": 408,
+      "property_type": "Condominium",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/the-myst-107441/last-transacted-prices",
+      "source_csv": "the_myst_transactions.csv",
+      "record_count": 169,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/the-myst/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "the_sen": {
+      "slug": "the_sen",
+      "name": "The Sen",
+      "region_group": "Hillview / Dairy Farm / Bukit Panjang",
+      "top_year": null,
+      "tenure": "99yr",
+      "units": null,
+      "property_type": "Condominium",
+      "source_kind": "srx_csv",
+      "source_label": "SRX last-transacted-prices",
+      "source_url": "https://www.srx.com.sg/condo/the-sen-287681/last-transacted-prices",
+      "source_csv": "the_sen_transactions.csv",
+      "record_count": 97,
+      "secondary_sources": [],
+      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/the-sen/sales-transactions",
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+    },
+    "alexis": {
+      "slug": "alexis",
+      "record_count": 107,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "alexis_transactions.csv"
+    },
+    "artra": {
+      "slug": "artra",
+      "record_count": 467,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "artra_transactions.csv"
+    },
+    "avenue_south_residence": {
+      "slug": "avenue_south_residence",
+      "record_count": 1000,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "avenue_south_residence_transactions.csv"
+    },
+    "caspian": {
+      "slug": "caspian",
+      "record_count": 226,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "caspian_transactions.csv"
+    },
+    "clavon": {
+      "slug": "clavon",
+      "record_count": 657,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "clavon_transactions.csv"
+    },
+    "clement_canopy": {
+      "slug": "clement_canopy",
+      "record_count": 650,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "clement_canopy_transactions.csv"
+    },
+    "commonwealth_towers": {
+      "slug": "commonwealth_towers",
+      "record_count": 590,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "commonwealth_towers_transactions.csv"
+    },
+    "harbour_view_gardens": {
+      "slug": "harbour_view_gardens",
+      "record_count": 65,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "harbour_view_gardens_transactions.csv"
+    },
+    "hundred_trees": {
+      "slug": "hundred_trees",
+      "record_count": 118,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "hundred_trees_transactions.csv"
+    },
+    "j_gateway": {
+      "slug": "j_gateway",
+      "record_count": 236,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "j_gateway_transactions.csv"
+    },
+    "kent_ridge_hill": {
+      "slug": "kent_ridge_hill",
+      "record_count": 627,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "kent_ridge_hill_transactions.csv"
+    },
+    "lakefront": {
+      "slug": "lakefront",
+      "record_count": 211,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "lakefront_transactions.csv"
+    },
+    "lakegrande": {
+      "slug": "lakegrande",
+      "record_count": 306,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "lakegrande_transactions.csv"
+    },
+    "lakeville": {
+      "slug": "lakeville",
+      "record_count": 195,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "lakeville_transactions.csv"
+    },
+    "margaret_ville": {
+      "slug": "margaret_ville",
+      "record_count": 384,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "margaret_ville_transactions.csv"
+    },
+    "normanton_park": {
+      "slug": "normanton_park",
+      "record_count": 1000,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "normanton_park_transactions.csv"
+    },
+    "parc_clematis": {
+      "slug": "parc_clematis",
+      "record_count": 1000,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "parc_clematis_transactions.csv"
+    },
+    "parc_riviera": {
+      "slug": "parc_riviera",
+      "record_count": 876,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "parc_riviera_transactions.csv"
+    },
+    "queens_peak": {
+      "slug": "queens_peak",
+      "record_count": 664,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "queens_peak_transactions.csv"
+    },
+    "seahill": {
+      "slug": "seahill",
+      "record_count": 171,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "seahill_transactions.csv"
+    },
+    "skysuites_anson": {
+      "slug": "skysuites_anson",
+      "record_count": 235,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "skysuites_anson_transactions.csv"
+    },
+    "spottiswoode_suites": {
+      "slug": "spottiswoode_suites",
+      "record_count": 97,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "spottiswoode_suites_transactions.csv"
+    },
+    "stirling_residences": {
+      "slug": "stirling_residences",
+      "record_count": 1000,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "stirling_residences_transactions.csv"
+    },
+    "the_trilinq": {
+      "slug": "the_trilinq",
+      "record_count": 503,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "the_trilinq_transactions.csv"
+    },
+    "the_vision": {
+      "slug": "the_vision",
+      "record_count": 128,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "the_vision_transactions.csv"
+    },
+    "twin_vew": {
+      "slug": "twin_vew",
+      "record_count": 659,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "twin_vew_transactions.csv"
+    },
+    "village_pasir_panjang": {
+      "slug": "village_pasir_panjang",
+      "record_count": 37,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "village_pasir_panjang_transactions.csv"
+    },
+    "viva_vista": {
+      "slug": "viva_vista",
+      "record_count": 65,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "viva_vista_transactions.csv"
+    },
+    "whistler_grand": {
+      "slug": "whistler_grand",
+      "record_count": 927,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "whistler_grand_transactions.csv"
+    },
+    "whitehaven": {
+      "slug": "whitehaven",
+      "record_count": 39,
+      "secondary_sources": [],
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_csv": "whitehaven_transactions.csv"
+    }
+  }
+}

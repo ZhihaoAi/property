@@ -16,7 +16,7 @@ MONTH_MAP = {
 }
 
 # Project metadata: top_year, tenure, units (units may be None if unknown)
-PROJECT_INFO = {
+BASE_PROJECT_INFO = {
     "lakeville": {"top_year": 2018, "tenure": "99yr", "units": 696},
     "lakegrande": {"top_year": 2018, "tenure": "99yr", "units": 374},
     "seahill": {"top_year": 2011, "tenure": "99yr", "units": 478},
@@ -48,6 +48,28 @@ PROJECT_INFO = {
     "caspian": {"top_year": 2008, "tenure": "99yr", "units": 712},
     "lakefront": {"top_year": 2010, "tenure": "99yr", "units": 629},
 }
+
+REGISTRY_PATH = Path(__file__).resolve().parent / "data" / "srx_project_registry.json"
+
+
+def load_registry_info() -> dict:
+    if not REGISTRY_PATH.exists():
+        return {}
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    projects = payload.get("projects", {})
+    registry_info = {}
+    for slug, item in projects.items():
+        normalized = {}
+        for key in ("top_year", "tenure", "units"):
+            value = item.get(key)
+            if value is not None:
+                normalized[key] = value
+        if normalized:
+            registry_info[slug] = normalized
+    return registry_info
+
+
+PROJECT_INFO = {**BASE_PROJECT_INFO, **load_registry_info()}
 
 
 def parse_year(date_str: str) -> str:
@@ -239,38 +261,9 @@ def main():
     base = Path(__file__).resolve().parent
     data_dir = base / "data"
 
-    # All projects: existing + new + optional (skip if CSV not found)
     project_configs = [
-        ("lakeville", "lakeville_transactions.csv"),
-        ("lakegrande", "lakegrande_transactions.csv"),
-        ("seahill", "seahill_transactions.csv"),
-        ("the_vision", "the_vision_transactions.csv"),
-        ("hundred_trees", "hundred_trees_transactions.csv"),
-        ("parc_clematis", "parc_clematis_transactions.csv"),
-        ("twin_vew", "twin_vew_transactions.csv"),
-        ("parc_riviera", "parc_riviera_transactions.csv"),
-        ("whistler_grand", "whistler_grand_transactions.csv"),
-        ("normanton_park", "normanton_park_transactions.csv"),
-        ("clement_canopy", "clement_canopy_transactions.csv"),
-        ("harbour_view_gardens", "harbour_view_gardens_transactions.csv"),
-        ("alexis", "alexis_transactions.csv"),
-        ("viva_vista", "viva_vista_transactions.csv"),
-        ("skysuites_anson", "skysuites_anson_transactions.csv"),
-        ("avenue_south_residence", "avenue_south_residence_transactions.csv"),
-        ("spottiswoode_suites", "spottiswoode_suites_transactions.csv"),
-        ("village_pasir_panjang", "village_pasir_panjang_transactions.csv"),
-        ("margaret_ville", "margaret_ville_transactions.csv"),
-        ("stirling_residences", "stirling_residences_transactions.csv"),
-        ("queens_peak", "queens_peak_transactions.csv"),
-        ("commonwealth_towers", "commonwealth_towers_transactions.csv"),
-        ("the_trilinq", "the_trilinq_transactions.csv"),
-        ("clavon", "clavon_transactions.csv"),
-        ("artra", "artra_transactions.csv"),
-        ("kent_ridge_hill", "kent_ridge_hill_transactions.csv"),
-        ("j_gateway", "j_gateway_transactions.csv"),
-        ("whitehaven", "whitehaven_transactions.csv"),
-        ("caspian", "caspian_transactions.csv"),
-        ("lakefront", "lakefront_transactions.csv"),
+        (csv_path.name.replace("_transactions.csv", ""), csv_path.name)
+        for csv_path in sorted(data_dir.glob("*_transactions.csv"))
     ]
 
     result = {}
