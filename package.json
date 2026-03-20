@@ -1,0 +1,30 @@
+{
+  "name": "property-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Frontend and automation tooling for the Singapore property dashboard",
+  "scripts": {
+    "build:data": "python3 build_dashboard_data.py",
+    "fetch:srx": "node scripts/fetch_missing_srx_transactions.cjs",
+    "sync:vendor": "node scripts/sync_vendor.cjs",
+    "postinstall": "npm run sync:vendor",
+    "install:browsers": "playwright install chromium",
+    "predev": "npm run build:data",
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "preserve": "npm run build:data",
+    "serve": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "pretest:e2e": "npm run build:data",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "leaflet": "^1.9.4",
+    "vite": "^7.3.1"
+  }
+}
