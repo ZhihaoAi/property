@@ -45,6 +45,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .compare-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .mini-note{font-size:.82rem;color:var(--t2)}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.exp-btn{background:none;border:1px solid var(--bdr);color:var(--ac2);border-radius:8px;padding:4px 8px;cursor:pointer}
+.exp-btn:hover{border-color:var(--ac);color:var(--t)}
+.exp-detail td{background:rgba(108,92,231,.06)}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.detail-item{padding:8px 10px;border:1px solid var(--bdr);border-radius:10px;background:var(--s2)}
+.detail-item .l{font-size:.75rem;color:var(--t2);margin-bottom:2px}
+.detail-item .v{font-size:.92rem;color:var(--t)}
 table.dt{width:100%;border-collapse:collapse;font-size:.86rem}
 table.dt th{background:var(--s2);padding:11px 13px;text-align:left;font-weight:600;color:var(--t2);border-bottom:2px solid var(--bdr);white-space:nowrap}
 table.dt td{padding:9px 13px;border-bottom:1px solid var(--bdr)}
@@ -119,7 +126,6 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     <button class="tab" onclick="go('s6',this)">👤 贷款策略</button>
     <button class="tab" onclick="go('s7',this)">🧠 决策过程</button>
     <button class="tab" onclick="go('s8',this)">📋 数据来源</button>
-    <button class="tab" onclick="go('s9',this)">📈 真实增值</button>
     <button class="tab on" onclick="go('s10',this)">🏘️ 小区PK</button>
     <button class="tab" onclick="go('s12',this)">🗂️ 已爬数据</button>
     <button class="tab" onclick="go('s13',this)">🏢 URA项目页</button>
@@ -174,7 +180,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S2: PRICES ===== -->
   <div id="s2" class="sec">
     <div class="st">💰 成交价格深度分析</div>
-    <p class="sd">基于 propertyforsale.com.sg (URA Caveat) 真实转售成交记录 · 按户型分类 · 日期降序</p>
+    <p class="sd">基于默认 `resale-only` 主数据（propertyforsale resale / URA resale fallback） · 按户型分类 · 日期降序</p>
 
     <div class="g2">
       <div class="card">
@@ -502,12 +508,13 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="card">
         <div class="ct"><span class="dot" style="background:var(--ac)"></span>成交数据来源</div>
         <ul class="sl">
-          <li><strong>`data/*_transactions.csv`</strong> — 当前已爬 30 个楼盘的 resale 成交 CSV</li>
+          <li><strong>`data/*_transactions.csv`</strong> — 当前默认口径的 resale 成交 CSV</li>
           <li><strong>`data/detailed/*`</strong> — 从 propertyforsale 原始页抽出的详细成交明细</li>
           <li><strong>`data/poc_layout/*`</strong> — Lakeville / Lake Grande 的 99.co 户型映射 POC</li>
           <li><strong>`data/appreciation_analysis.json`</strong> — `analyze.py` 生成的小区 PK 年度统计</li>
           <li><strong>`data/dashboard_data.json`</strong> — `build_dashboard_data.py` 生成的前端统一数据源</li>
-          <li><strong>propertyforsale.com.sg</strong> — 当前主成交来源（底层为 URA Caveat）</li>
+          <li><strong>propertyforsale.com.sg</strong> — 默认 resale 主成交来源</li>
+          <li><strong>URA Data Service</strong> — propertyforsale 不可用时的 resale fallback</li>
           <li><strong>99.co 搜索缓存片段</strong> — 仅用于 Lakeville / Lake Grande 的 bed/bath 分类参考</li>
         </ul>
       </div>
@@ -543,120 +550,24 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
   </div>
 
-  <!-- ===== S9: REAL APPRECIATION (2BR+3BR ONLY) ===== -->
-  <div id="s9" class="sec">
-    <div class="st">📈 真实历史增值（仅 2BR + 3BR）</div>
-    <p class="sd">已剔除 1BR 和 4BR+ 数据，仅保留你们关注的 2BR(600-849sqft) + 3BR(850-1199sqft) 成交记录</p>
-
-    <div class="alert info">
-      <h4>计算方法</h4>
-      <p>1. 原始数据：propertyforsale.com.sg 全部 Resale 成交，<strong>仅保留 600-1199 sqft（2BR+3BR）</strong><br>
-      2. 每年取中位数 PSF（median），CAGR = (末年PSF / 起始年PSF)^(1/年数) - 1<br>
-      3. 脚本 <code>analyze.py</code>，原始 CSV 在 <code>data/</code> 目录</p>
-    </div>
-
-    <div class="kpi-r">
-      <div class="kpi"><div class="l">Lakeville 2BR+3BR CAGR</div><div class="v" style="color:var(--bl)">2.25%</div><div class="c">2018-2026 · 140笔</div></div>
-      <div class="kpi"><div class="l">Lake Grande 2BR+3BR CAGR</div><div class="v" style="color:var(--ac2)">3.71%</div><div class="c">2020-2026 · 120笔</div></div>
-      <div class="kpi"><div class="l">LV 2BR CAGR</div><div class="v" style="color:var(--cy)">2.59%</div><div class="c">2018-2026</div></div>
-      <div class="kpi"><div class="l">LV 3BR CAGR</div><div class="v" style="color:var(--or)">2.67%</div><div class="c">2018-2026</div></div>
-      <div class="kpi"><div class="l">LG 2BR CAGR</div><div class="v" style="color:var(--pk)">3.95%</div><div class="c">2020-2026</div></div>
-      <div class="kpi"><div class="l">LG 3BR CAGR</div><div class="v" style="color:var(--g2)">3.95%</div><div class="c">2020-2026</div></div>
-    </div>
-
-    <div class="g2">
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--bl)"></span>2BR+3BR 年度中位PSF走势</div><div class="cc"><canvas id="c_appr_overall"></canvas></div></div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--g)"></span>2BR+3BR 年度增值率（YoY %）</div><div class="cc"><canvas id="c_appr_yoy"></canvas></div></div>
-    </div>
-
-    <div class="g2" style="margin-top:20px">
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--ac)"></span>Lakeville 2BR vs 3BR 年度中位PSF</div><div class="cc t"><canvas id="c_lv_type"></canvas></div></div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--pk)"></span>Lake Grande 2BR vs 3BR 年度中位PSF</div><div class="cc t"><canvas id="c_lg_type"></canvas></div></div>
-    </div>
-
-    <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>2BR vs 3BR CAGR 对比</div>
-      <div class="cc s"><canvas id="c_cagr"></canvas></div>
-    </div>
-
-    <div class="g2" style="margin-top:20px">
-      <div class="card">
-        <div class="ct"><span class="dot" style="background:var(--bl)"></span>Lakeville 2BR+3BR 年度数据</div>
-        <div style="overflow-x:auto">
-          <table class="dt">
-            <thead><tr><th>年份</th><th>中位PSF</th><th>成交量</th><th>同比增值</th></tr></thead>
-            <tbody id="tb_lv"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ct"><span class="dot" style="background:var(--ac2)"></span>Lake Grande 2BR+3BR 年度数据</div>
-        <div style="overflow-x:auto">
-          <table class="dt">
-            <thead><tr><th>年份</th><th>中位PSF</th><th>成交量</th><th>同比增值</th></tr></thead>
-            <tbody id="tb_lg"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="g2" style="margin-top:20px">
-      <div class="card">
-        <div class="ct"><span class="dot" style="background:var(--bl)"></span>Lakeville 户型CAGR（仅2BR/3BR）</div>
-        <div style="overflow-x:auto">
-          <table class="dt">
-            <thead><tr><th>户型</th><th>起始年</th><th>起始PSF</th><th>最新年</th><th>最新PSF</th><th>CAGR</th></tr></thead>
-            <tbody>
-              <tr><td>2BR</td><td>2018</td><td>$1,385</td><td>2026</td><td>$1,700</td><td>2.59%</td></tr>
-              <tr><td>3BR</td><td>2018</td><td>$1,505</td><td>2026</td><td>$1,858</td><td>2.67%</td></tr>
-              <tr style="font-weight:700;background:var(--s2)"><td>2BR+3BR</td><td>2018</td><td>$1,488</td><td>2026</td><td>$1,779</td><td>2.25%</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ct"><span class="dot" style="background:var(--ac2)"></span>Lake Grande 户型CAGR（仅2BR/3BR）</div>
-        <div style="overflow-x:auto">
-          <table class="dt">
-            <thead><tr><th>户型</th><th>起始年</th><th>起始PSF</th><th>最新年</th><th>最新PSF</th><th>CAGR</th></tr></thead>
-            <tbody>
-              <tr><td>2BR</td><td>2020</td><td>$1,466</td><td>2026</td><td>$1,850</td><td class="hi">3.95%</td></tr>
-              <tr><td>3BR</td><td>2020</td><td>$1,512</td><td>2026</td><td>$1,908</td><td class="hi">3.95%</td></tr>
-              <tr style="font-weight:700;background:var(--s2)"><td>2BR+3BR</td><td>2020</td><td>$1,499</td><td>2026</td><td>$1,865</td><td>3.71%</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="insight">
-      <h3>数据洞察（仅 2BR+3BR）</h3>
-      <p>1. <strong>Lake Grande 2BR+3BR CAGR 3.71%</strong> 显著优于 Lakeville 的 2.25%，两者 3BR CAGR 差距更大（3.95% vs 2.67%）<br>
-      2. <strong>LG 2BR 和 3BR 增值同步</strong>：均为 3.95% CAGR，说明各户型均衡受益<br>
-      3. <strong>LV 3BR 略优于 2BR</strong>：2.67% vs 2.59%，但差异不大<br>
-      4. <strong>剔除 1BR/4BR+ 后 LV 整体 CAGR 从 2.40% 降至 2.25%</strong>，说明 LV 大户型（4BR+ CAGR 5.62%）拉高了整体均值<br>
-      5. <strong>对于你们的购买决策</strong>：LG 2BR/3BR 的增值预期（~3.95%/年）高于 LV（~2.6%/年），但 LV 单价更低、投资余力更大</p>
-    </div>
-  </div>
-
   <!-- ===== S10: CONDO COMPARISON ===== -->
   <div id="s10" class="sec on">
     <div class="st">🏘️ 小区PK · 当前已爬数据</div>
-    <p class="sd">当前 PK 改成三套口径：一套是 `propertyforsale / URA caveat` 公开窗口的整体 CAGR；一套是精细到 `2b1b / 2b2b / 3b2b` 的真实户型 CAGR；新增一套是按面积近似分桶后的 `2b1b / 2b2b / 3b2b` CAGR，把三个 data bar 放在同一行里对比。</p>
+    <p class="sd">当前默认口径是 `resale-only`。PK 仍分三套：一套看默认主源窗口的整体 CAGR；一套看精细到 `2b1b / 2b2b / 3b2b` 的真实户型 CAGR；一套看按面积近似分桶后的 `2b1b / 2b2b / 3b2b` CAGR，把三个 data bar 放在同一行里对比。</p>
 
     <div class="kpi-r" id="pk_kpis"></div>
 
     <div class="alert info">
       <h4>📡 数据源与覆盖范围说明</h4>
-      <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件都由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json` 与 `data/poc_layout/*` 自动生成。<br>
-      <strong>口径 1：</strong>`主源整体 CAGR` 使用当前每个项目的主源窗口计算年度中位 `PSF`；`propertyforsale / URA caveat` 主源和仍保留 `SRX fallback` 主源的项目都会进入这套排名。<br>
-      <strong>口径 2：</strong>`细户型 CAGR` 只展示当前已经做完 `2b1b / 2b2b / 3b2b` 映射的小区，并在每个户型旁单独标出覆盖年限。<br>
+      <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件都由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json`、`data/layout_mapping/*` 自动生成；若正式映射文件缺失，才回退到旧的 `data/poc_layout/*`。<br>
+      <strong>口径 1：</strong>`主源整体 CAGR` 使用当前每个项目默认 `resale-only` 主源窗口计算年度中位 `PSF`；当前主源优先 `propertyforsale resale`，拿不到时用 `URA resale fallback`。<br>
+      <strong>口径 2：</strong>`细户型 CAGR` 只展示当前已经做完正式 `2b1b / 2b2b / 3b2b` 映射的小区，并在每个户型旁单独标出覆盖年限。<br>
       <strong>口径 3：</strong>`面积近似 CAGR` 用统一面积带粗分：`2b1b = 600-699 sqft`、`2b2b = 700-849 sqft`、`3b2b = 850-1199 sqft`，并按三个桶里可用 `CAGR` 的平均值降序排。<br>
-      <strong>注意：</strong>少数项目的 `propertyforsale` 页面目前会回验证码，所以这些项目暂时保留 `SRX` 主源；已经补抓成功的前 `SRX` 项目则只把旧窗口保留在 `data/srx/*` 作为备份，不再算作 `SRX` 主源。`propertyforsale / URA` 公开窗口项目会单独保留一张附加表。</p>
+      <strong>注意：</strong>默认不再把 `New Sale / Sub Sale` 混进主 CSV。若某项目本地缓存里拿不到 resale，则该项目会退出默认集；历史 `SRX` 窗口只保留在 `data/srx/*` 作为备份，不再是默认主口径。</p>
     </div>
 
     <div class="card">
-      <div class="ct"><span class="dot" style="background:var(--g)"></span>口径 1 · 全部主源整体 CAGR 排名（propertyforsale + SRX fallback）</div>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>口径 1 · 全部默认主源整体 CAGR 排名（propertyforsale resale + URA resale fallback）</div>
       <div id="overall_cagr_chart"></div>
     </div>
 
@@ -671,10 +582,10 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
 
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--bl)"></span>附加 · propertyforsale / URA 公开窗口 CAGR 汇总</div>
+      <div class="ct"><span class="dot" style="background:var(--bl)"></span>附加 · propertyforsale resale 主源 CAGR 汇总</div>
       <div style="overflow-x:auto">
         <table class="dt" id="all_source_cagr_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>来源</th><th>年限</th><th>总成交量</th><th>最新年PSF</th><th>最新年N</th><th>公开窗口CAGR</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>来源</th><th>年限</th><th>总成交量</th><th>最新年PSF</th><th>最新年N</th><th>propertyforsale resale CAGR</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -717,14 +628,14 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
         <div class="ct"><span class="dot" style="background:var(--or)"></span>口径说明</div>
         <div class="insight" style="margin:0">
           <h3>当前数据口径</h3>
-          <p>1. <strong>全量小区表</strong>：直接来自本地 `data/*_transactions.csv`，当前优先用 `propertyforsale` 的公开窗口全成交，少数验证码拦截项目保留 `SRX` 主源。<br>
-          已补抓成功的前 `SRX` 项目会继续在 `data/srx/*` 保留备份窗口，表格来源列会同时列出主源和备份源。<br>
-          2. <strong>细户型分类</strong>：目前只对 Lakeville / Lake Grande 做了 `小户型 / 2b1b / 2b2b / 3b2b / 大户型` 映射。<br>
-          3. <strong>口径 1 PK</strong>：默认看当前主源窗口的整体 CAGR，`propertyforsale` 主源和 `SRX fallback` 主源都会进入。<br>
+          <p>1. <strong>全量小区表</strong>：直接来自本地 `data/*_transactions.csv`，默认只保留 `resale-only` 成交；当前优先用 `propertyforsale resale`，拿不到时用 `URA resale fallback`。<br>
+          历史 `SRX` 窗口只继续保留在 `data/srx/*` 作为备份，表格来源列会同时列出主源和备份源。<br>
+          2. <strong>细户型分类</strong>：目前只对 Lakeville / Lake Grande 做了 `小户型 / 2b1b / 2b2b / 3b2b / 大户型` 映射，优先读取正式 `data/layout_mapping/*`，缺失时才回退旧 `poc_layout`。<br>
+          3. <strong>口径 1 PK</strong>：默认看当前 resale 主源窗口的整体 CAGR，`propertyforsale resale` 主源和 `URA resale fallback` 主源都会进入。<br>
           4. <strong>口径 2 PK</strong>：只看已经拿到 `2b1b / 2b2b / 3b2b` 数据的小区，并分别展示每个桶的覆盖年限。<br>
           5. <strong>口径 3 PK</strong>：按面积近似分桶，统一用 `600-699 / 700-849 / 850-1199 sqft` 粗分出 `2b1b / 2b2b / 3b2b`。<br>
-          6. <strong>公开窗口</strong>：这里指 `propertyforsale` 页面当前公开可见的完整成交窗口，不等于从 `TOP` 起全部年份。<br>
-          7. <strong>SRX 项目</strong>：在下表里展示的是当前主源窗口的整体 CAGR；若 `propertyforsale` 页面被验证码拦截，会先保留 `SRX` 主源。<br>
+          6. <strong>propertyforsale resale</strong>：这里指 propertyforsale 页面里显式标记为 `Resale` 的成交，不会默认混入 `New Sale / Sub Sale`。<br>
+          7. <strong>URA fallback</strong>：这里只在本地拿不到 propertyforsale resale 时启用，并且只保留 `typeOfSale = 转售`。<br>
           8. <strong>待确认</strong>：表示当前公开片段存在冲突，或者面积尚未拿到足够多的户型证据，不会强行归类。</p>
         </div>
       </div>
@@ -734,7 +645,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="ct"><span class="dot" style="background:var(--ac)"></span>已爬小区明细</div>
       <div style="overflow-x:auto">
         <table class="dt" id="scraped_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>来源数据</th><th>成交数</th><th>时间范围</th><th>常见面积</th><th>主源最新PSF</th><th>主源整体CAGR</th><th>公开窗口PK</th><th>细户型PK</th><th>面积近似PK</th><th>详细明细</th><th>细户型POC</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>来源数据</th><th>成交数</th><th>时间范围</th><th>常见面积</th><th>主源最新PSF</th><th>主源整体CAGR</th><th>口径1 PK</th><th>细户型PK</th><th>面积近似PK</th><th>详细明细</th><th>细户型映射</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -1081,102 +992,6 @@ new Chart(document.getElementById('c_score'),{type:'bar',data:{
   plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:15},formatter:v=>v+'分'}}}
 });
 
-// ===== S9: Real Appreciation Charts (2BR+3BR ONLY) =====
-(function(){
-const LV_23 = {2018:1488, 2019:1425, 2020:1432, 2021:1486, 2022:1564, 2023:1653, 2024:1713, 2025:1766, 2026:1779};
-const LG_23 = {2020:1499, 2021:1551, 2022:1601, 2023:1724, 2024:1812, 2025:1859, 2026:1865};
-const LV_23N = {2018:4, 2019:3, 2020:9, 2021:25, 2022:32, 2023:15, 2024:23, 2025:27, 2026:2};
-const LG_23N = {2020:4, 2021:13, 2022:27, 2023:20, 2024:25, 2025:24, 2026:7};
-
-const LV_2BR = {2018:1385, 2019:1448, 2020:1445, 2021:1511, 2022:1574, 2023:1614, 2024:1700, 2025:1721, 2026:1700};
-const LV_3BR = {2018:1505, 2019:1262, 2020:1385, 2021:1478, 2022:1496, 2023:1757, 2024:1724, 2025:1850, 2026:1858};
-const LG_2BR = {2020:1466, 2021:1557, 2022:1638, 2023:1728, 2024:1799, 2025:1844, 2026:1850};
-const LG_3BR = {2020:1512, 2021:1542, 2022:1541, 2023:1720, 2024:1847, 2025:1892, 2026:1908};
-
-const allYears = ['2018','2019','2020','2021','2022','2023','2024','2025','2026'];
-function vals(obj, keys) { return keys.map(k => obj[k] || null); }
-function yoy(obj) {
-  const ks = Object.keys(obj).sort();
-  const r = {};
-  for (let i = 1; i < ks.length; i++) r[ks[i]] = +((obj[ks[i]] / obj[ks[i-1]] - 1) * 100).toFixed(1);
-  return r;
-}
-
-// 2BR+3BR PSF trend
-new Chart(document.getElementById('c_appr_overall'), {type:'line', data:{
-  labels: allYears,
-  datasets:[
-    {label:'Lakeville 2BR+3BR', data:vals(LV_23, allYears), borderColor:C.bl, backgroundColor:C.bl+'22', fill:true, tension:.3, pointRadius:5, pointHoverRadius:7},
-    {label:'Lake Grande 2BR+3BR', data:vals(LG_23, allYears), borderColor:C.pr, backgroundColor:C.pr+'22', fill:true, tension:.3, pointRadius:5, pointHoverRadius:7},
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    scales:{y:{title:{display:true,text:'中位 PSF (S$)'},grid:{color:'#2d324466'}}, x:{grid:{display:false}}},
-    plugins:{legend:{position:'top'}, datalabels:{display:true, anchor:'top', align:'top', color:'#e4e6f0', font:{size:10,weight:'bold'}, formatter:v=>v?'$'+v:''}}
-}});
-
-// YoY %
-const lvYoY = yoy(LV_23), lgYoY = yoy(LG_23);
-const yoyYears = ['2019','2020','2021','2022','2023','2024','2025','2026'];
-new Chart(document.getElementById('c_appr_yoy'), {type:'bar', data:{
-  labels: yoyYears,
-  datasets:[
-    {label:'Lakeville YoY%', data:yoyYears.map(y=>lvYoY[y]||null), backgroundColor:yoyYears.map(y=>(lvYoY[y]||0)>=0?C.bl+'99':C.rd+'99'), borderColor:yoyYears.map(y=>(lvYoY[y]||0)>=0?C.bl:C.rd), borderWidth:1},
-    {label:'Lake Grande YoY%', data:yoyYears.map(y=>lgYoY[y]||null), backgroundColor:yoyYears.map(y=>(lgYoY[y]||0)>=0?C.pr+'99':C.rd+'99'), borderColor:yoyYears.map(y=>(lgYoY[y]||0)>=0?C.pr:C.rd), borderWidth:1},
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    scales:{y:{title:{display:true,text:'同比增值 %'},grid:{color:'#2d324466'}}, x:{grid:{display:false}}},
-    plugins:{legend:{position:'top'}, datalabels:{display:true, anchor:'end', align:'top', font:{size:10,weight:'bold'}, color:'#e4e6f0', formatter:v=>v!=null?v+'%':''}}
-}});
-
-// LV 2BR vs 3BR
-new Chart(document.getElementById('c_lv_type'), {type:'line', data:{
-  labels: allYears,
-  datasets:[
-    {label:'2BR', data:vals(LV_2BR, allYears), borderColor:C.bl, pointRadius:5, tension:.3, borderWidth:3},
-    {label:'3BR', data:vals(LV_3BR, allYears), borderColor:C.gn, pointRadius:5, tension:.3, borderWidth:3},
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    scales:{y:{title:{display:true,text:'中位 PSF'},min:1100,grid:{color:'#2d324466'}}, x:{grid:{display:false}}},
-    plugins:{legend:{position:'top'}, datalabels:{display:true, anchor:'top', align:'top', color:'#e4e6f0', font:{size:9,weight:'bold'}, formatter:v=>v?'$'+v:''}}
-}});
-
-// LG 2BR vs 3BR
-new Chart(document.getElementById('c_lg_type'), {type:'line', data:{
-  labels: allYears,
-  datasets:[
-    {label:'2BR', data:vals(LG_2BR, allYears), borderColor:C.pr, pointRadius:5, tension:.3, borderWidth:3},
-    {label:'3BR', data:vals(LG_3BR, allYears), borderColor:C.gn, pointRadius:5, tension:.3, borderWidth:3},
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    scales:{y:{title:{display:true,text:'中位 PSF'},min:1100,grid:{color:'#2d324466'}}, x:{grid:{display:false}}},
-    plugins:{legend:{position:'top'}, datalabels:{display:true, anchor:'top', align:'top', color:'#e4e6f0', font:{size:9,weight:'bold'}, formatter:v=>v?'$'+v:''}}
-}});
-
-// CAGR comparison bar (only 2BR/3BR)
-new Chart(document.getElementById('c_cagr'), {type:'bar', data:{
-  labels:['2BR','3BR','2BR+3BR'],
-  datasets:[
-    {label:'Lakeville', data:[2.59,2.67,2.25], backgroundColor:C.bl+'bb', borderColor:C.bl, borderWidth:1, borderRadius:6},
-    {label:'Lake Grande', data:[3.95,3.95,3.71], backgroundColor:C.pr+'bb', borderColor:C.pr, borderWidth:1, borderRadius:6},
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    scales:{y:{title:{display:true,text:'CAGR %'},grid:{color:'#2d324466'},min:0,max:5}, x:{grid:{display:false}}},
-    plugins:{legend:{position:'top'}, datalabels:{display:true, anchor:'end', align:'top', font:{size:12,weight:'bold'}, color:'#e4e6f0', formatter:v=>v+'%'}}
-}});
-
-// Dynamic tables (2BR+3BR data)
-function fillTable(tbId, data, cnt) {
-  const tb = document.getElementById(tbId);
-  const years = Object.keys(data).sort();
-  let html = '';
-  for (let i = 0; i < years.length; i++) {
-    const y = years[i], psf = data[y], c = cnt[y]||'';
-    let change = '-';
-    if (i > 0) { const prev = data[years[i-1]]; change = ((psf/prev-1)*100).toFixed(1) + '%'; }
-    const cls = i>0 ? (parseFloat(change)>=0 ? 'hi' : 'bd') : '';
-    html += '<tr><td>'+y+'</td><td>$'+psf.toLocaleString()+'</td><td>'+c+'笔</td><td class="'+cls+'">'+change+'</td></tr>';
-  }
-  tb.innerHTML = html;
-}
-fillTable('tb_lv', LV_23, LV_23N);
-fillTable('tb_lg', LG_23, LG_23N);
-})();
-
 // ===== Local dashboard data: S2 / S10 / S12 =====
 (function(){
 const DASHBOARD_COLORS = [
@@ -1274,7 +1089,7 @@ function renderPk(data){
   document.getElementById('pk_kpis').innerHTML = [
     '<div class="kpi"><div class="l">当前已爬楼盘</div><div class="v" style="color:var(--g2)">' + (data.meta?.project_count || 0) + '</div><div class="c">来自本地 CSV</div></div>',
     '<div class="kpi"><div class="l">口径1项目</div><div class="v" style="color:var(--pr)">' + overallProjects.length + '</div><div class="c">全部主源整体 CAGR</div></div>',
-    '<div class="kpi"><div class="l">propertyforsale 项目</div><div class="v" style="color:var(--pr)">' + (data.meta?.overall_comparison_project_count || propertyforsaleProjects.length) + '</div><div class="c">公开窗口主源</div></div>',
+    '<div class="kpi"><div class="l">propertyforsale resale</div><div class="v" style="color:var(--pr)">' + (data.meta?.overall_comparison_project_count || propertyforsaleProjects.length) + '</div><div class="c">主源窗口</div></div>',
     '<div class="kpi"><div class="l">面积近似项目</div><div class="v" style="color:var(--cy)">' + (data.meta?.area_proxy_comparison_project_count || proxyProjects.length) + '</div><div class="c">口径 3 · 三个 data bar</div></div>',
     '<div class="kpi"><div class="l">细户型项目</div><div class="v" style="color:var(--or)">' + (data.meta?.layout_comparison_project_count || layoutProjects.length) + '</div><div class="c">口径 2 · 真实户型映射</div></div>',
     '<div class="kpi"><div class="l">主源窗口成交量</div><div class="v" style="color:var(--bl)">' + totalOverallRows + '</div><div class="c">用于口径 1 年度中位PSF</div></div>',
@@ -1450,10 +1265,10 @@ function renderPk(data){
 function renderScrapedData(data){
   document.getElementById('scrape_kpis').innerHTML = [
     '<div class="kpi"><div class="l">已爬楼盘</div><div class="v" style="color:var(--g2)">' + data.meta.project_count + '</div><div class="c">当前本地 CSV</div></div>',
-    '<div class="kpi"><div class="l">总成交记录</div><div class="v" style="color:var(--bl)">' + data.meta.total_records + '</div><div class="c">主源 CSV 全部成交行数</div></div>',
-    '<div class="kpi"><div class="l">propertyforsale 项目</div><div class="v" style="color:var(--pr)">' + data.meta.ura_project_count + '</div><div class="c">公开窗口主源</div></div>',
-    '<div class="kpi"><div class="l">SRX fallback</div><div class="v" style="color:var(--or)">' + data.meta.srx_project_count + '</div><div class="c">当前主源</div></div>',
-    '<div class="kpi"><div class="l">SRX 备份源</div><div class="v" style="color:var(--or)">' + (data.meta.srx_backup_project_count || 0) + '</div><div class="c">已补抓项目仍保留 data/srx</div></div>',
+    '<div class="kpi"><div class="l">总成交记录</div><div class="v" style="color:var(--bl)">' + data.meta.total_records + '</div><div class="c">默认 resale CSV 全部成交行数</div></div>',
+    '<div class="kpi"><div class="l">propertyforsale resale</div><div class="v" style="color:var(--pr)">' + (data.meta.propertyforsale_project_count || 0) + '</div><div class="c">默认主源</div></div>',
+    '<div class="kpi"><div class="l">URA resale fallback</div><div class="v" style="color:var(--or)">' + (data.meta.ura_resale_project_count || 0) + '</div><div class="c">propertyforsale 不可用时启用</div></div>',
+    '<div class="kpi"><div class="l">SRX 历史备份</div><div class="v" style="color:var(--or)">' + (data.meta.srx_backup_project_count || 0) + '</div><div class="c">仅保留 data/srx 备查</div></div>',
     '<div class="kpi"><div class="l">面积近似项目</div><div class="v" style="color:var(--cy)">' + data.meta.area_proxy_comparison_project_count + '</div><div class="c">口径 3 全量覆盖</div></div>',
     '<div class="kpi"><div class="l">细户型项目</div><div class="v" style="color:var(--ac2)">' + data.meta.layout_comparison_project_count + '</div><div class="c">Lakeville / Lake Grande</div></div>',
     '<div class="kpi"><div class="l">详细明细 CSV</div><div class="v" style="color:var(--ac2)">' + data.meta.detailed_project_count + '</div><div class="c">已抽详细字段</div></div>',
@@ -1477,6 +1292,7 @@ function renderScrapedData(data){
     const overallPkStatus = project.overall_pk_included ? '已纳入' : '-';
     const layoutPkStatus = data.focus_projects && data.focus_projects[project.slug] ? '已纳入' : '-';
     const areaProxyStatus = project.area_proxy_pk_included ? '已纳入' : '-';
+    const layoutMappingStatus = project.has_layout_mapping ? '已覆盖' : '-';
     const sourceText = (project.all_sources && project.all_sources.length)
       ? project.all_sources.map(source => [source.source_csv || '-', source.source_label || ''].filter(Boolean).join(' · ')).join('<br>')
       : [project.source_csv || project.csv_file || '-', project.source || ''].filter(Boolean).join(' · ');
@@ -1493,7 +1309,7 @@ function renderScrapedData(data){
       '<td>' + layoutPkStatus + '</td>' +
       '<td>' + areaProxyStatus + '</td>' +
       '<td>' + (project.has_detailed_csv ? '已生成' : '-') + '</td>' +
-      '<td>' + (project.has_layout_poc ? '已覆盖' : '-') + '</td>' +
+      '<td>' + layoutMappingStatus + '</td>' +
     '</tr>';
   }).join('');
 }
@@ -1511,6 +1327,21 @@ function fmtUraQuarter(value){
   return '20' + value.slice(0, 2) + ' Q' + value.slice(-1);
 }
 
+function fmtUraSaleType(value){
+  const mapping = {
+    '1': '新盘',
+    '2': '分售',
+    '3': '转售',
+  };
+  return mapping[String(value)] || (value || '-');
+}
+
+function fmtUraRange(range, formatter){
+  if (!Array.isArray(range) || !range.length) return '-';
+  if (range.length === 1) return formatter(range[0]);
+  return formatter(range[0]) + ' → ' + formatter(range[1]);
+}
+
 function renderSimpleTable(targetId, headers, rows, emptyMessage){
   const target = document.getElementById(targetId);
   if (!target) return;
@@ -1526,6 +1357,55 @@ function renderSimpleTable(targetId, headers, rows, emptyMessage){
   });
   html += '</tbody></table></div>';
   target.innerHTML = html;
+}
+
+function renderUraTransactionTable(targetId, rows){
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  if (!rows.length) {
+    target.innerHTML = '<div class="mini-note">这个项目当前没有 URA 成交记录。</div>';
+    return;
+  }
+
+  let html = '<div style="overflow-x:auto"><table class="dt"><thead><tr>' +
+    '<th>合同月</th><th>面积sqm</th><th>楼层</th><th>价格</th><th>物业类型</th><th>详情</th>' +
+    '</tr></thead><tbody>';
+
+  rows.forEach((item, index) => {
+    const detailId = targetId + '_detail_' + index;
+    html += '<tr>' +
+      '<td>' + fmtUraContractDate(item.contractDate) + '</td>' +
+      '<td>' + (item.area || '-') + '</td>' +
+      '<td>' + (item.floorRange || '-') + '</td>' +
+      '<td>' + fmtMoney(item.price || 0) + '</td>' +
+      '<td>' + (item.propertyType || '-') + '</td>' +
+      '<td><button class="exp-btn" type="button" data-detail-id="' + detailId + '">展开</button></td>' +
+    '</tr>';
+
+    html += '<tr id="' + detailId + '" class="exp-detail" style="display:none"><td colspan="6">' +
+      '<div class="detail-grid">' +
+        '<div class="detail-item"><div class="l">行政区</div><div class="v">D' + (item.district || '-') + '</div></div>' +
+        '<div class="detail-item"><div class="l">地契</div><div class="v">' + (item.tenure || '-') + '</div></div>' +
+        '<div class="detail-item"><div class="l">面积口径</div><div class="v">' + (item.typeOfArea || '-') + '</div></div>' +
+        '<div class="detail-item"><div class="l">成交类型</div><div class="v">' + fmtUraSaleType(item.typeOfSale) + '</div></div>' +
+        '<div class="detail-item"><div class="l">户数</div><div class="v">' + (item.noOfUnits || '-') + '</div></div>' +
+        '<div class="detail-item"><div class="l">批次</div><div class="v">' + (item.batch || '-') + '</div></div>' +
+      '</div>' +
+    '</td></tr>';
+  });
+
+  html += '</tbody></table></div>';
+  target.innerHTML = html;
+
+  target.querySelectorAll('.exp-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const detail = document.getElementById(button.dataset.detailId);
+      if (!detail) return;
+      const isOpen = detail.style.display !== 'none';
+      detail.style.display = isOpen ? 'none' : 'table-row';
+      button.textContent = isOpen ? '展开' : '收起';
+    });
+  });
 }
 
 function renderUraProjectBrowser(data){
@@ -1556,16 +1436,16 @@ function renderUraProjectBrowser(data){
     const project = projects.find(item => item.slug === slug) || defaultProject;
     const local = project.localComparison || {};
     document.getElementById('ura_project_kpis').innerHTML = [
-      '<div class="kpi"><div class="l">URA 成交</div><div class="v" style="color:var(--ac2)">' + fmtCount(project.transactionCount) + '</div><div class="c">' + ((project.transactionDateRange || []).join(' → ') || '-').replace(' -> ', ' → ') + '</div></div>',
-      '<div class="kpi"><div class="l">URA 租金中位数</div><div class="v" style="color:var(--or)">' + fmtCount(project.rentalMedianCount) + '</div><div class="c">' + ((project.rentalMedianRange || []).join(' → ') || '-') + '</div></div>',
-      '<div class="kpi"><div class="l">URA 租约</div><div class="v" style="color:var(--pk)">' + fmtCount(project.rentalContractCount) + '</div><div class="c">' + ((project.rentalContractRange || []).join(' → ') || '-') + '</div></div>',
+      '<div class="kpi"><div class="l">URA 成交</div><div class="v" style="color:var(--ac2)">' + fmtCount(project.transactionCount) + '</div><div class="c">' + fmtUraRange(project.transactionDateRange, fmtUraContractDate) + '</div></div>',
+      '<div class="kpi"><div class="l">URA 租金中位数</div><div class="v" style="color:var(--or)">' + fmtCount(project.rentalMedianCount) + '</div><div class="c">' + fmtUraRange(project.rentalMedianRange, fmtUraQuarter) + '</div></div>',
+      '<div class="kpi"><div class="l">URA 租约</div><div class="v" style="color:var(--pk)">' + fmtCount(project.rentalContractCount) + '</div><div class="c">' + fmtUraRange(project.rentalContractRange, fmtUraQuarter) + '</div></div>',
       '<div class="kpi"><div class="l">本地主源成交</div><div class="v" style="color:' + (local.matched ? 'var(--g2)' : 'var(--t2)') + '">' + (local.matched ? fmtCount(local.record_count) : '-') + '</div><div class="c">' + (local.matched ? (local.name + ' · ' + (local.source || '-')) : '当前未匹配') + '</div></div>',
     ].join('');
 
     document.getElementById('ura_project_summary').innerHTML =
       '<div class="ai" style="margin-bottom:12px"><div class="l">项目</div><div class="v">' + project.name + '</div><div class="l">' + (project.street || '-') + '</div></div>' +
       '<div class="ai" style="margin-bottom:12px"><div class="l">行政区</div><div class="v">D' + ((project.districts || []).join(', D') || '-') + '</div><div class="l mono">SVY21 ' + ((project.coords && project.coords.x) || '-') + ', ' + ((project.coords && project.coords.y) || '-') + '</div></div>' +
-      '<div class="ai"><div class="l">URA 覆盖</div><div class="v">成交 ' + fmtCount(project.transactionCount) + ' · 租中位 ' + fmtCount(project.rentalMedianCount) + ' · 租约 ' + fmtCount(project.rentalContractCount) + '</div><div class="l">成交范围 ' + ((project.transactionDateRange || []).join(' → ') || '-') + '</div></div>';
+      '<div class="ai"><div class="l">URA 覆盖</div><div class="v">成交 ' + fmtCount(project.transactionCount) + ' · 租中位 ' + fmtCount(project.rentalMedianCount) + ' · 租约 ' + fmtCount(project.rentalContractCount) + '</div><div class="l">成交范围 ' + fmtUraRange(project.transactionDateRange, fmtUraContractDate) + '</div></div>';
 
     if (local.matched) {
       const gap = local.transaction_count_gap;
@@ -1580,17 +1460,9 @@ function renderUraProjectBrowser(data){
         '<div class="alert"><p>这个 URA 项目目前没有和本地已爬成交数据自动匹配上。原因通常是当前仓库还没爬这个楼盘，或者楼盘名规范化后仍不完全一致。</p></div>';
     }
 
-    renderSimpleTable(
+    renderUraTransactionTable(
       'ura_transactions_table',
-      ['合同月', '面积sqm', '楼层', '价格', '物业类型'],
-      (project.latestTransactions || []).slice().reverse().map(item => [
-        fmtUraContractDate(item.contractDate),
-        item.area || '-',
-        item.floorRange || '-',
-        fmtMoney(item.price || 0),
-        item.propertyType || '-',
-      ]),
-      '这个项目当前没有 URA 成交记录。'
+      (project.latestTransactions || []).slice().reverse()
     );
 
     renderSimpleTable(
