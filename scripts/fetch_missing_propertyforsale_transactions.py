@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """
-Refresh propertyforsale transaction CSVs into a single "all sale types" format.
+Refresh the repo's default transaction CSVs.
 
-- Existing propertyforsale markdown caches are rebuilt locally into full-window CSVs.
-- Missing SRX-only projects are fetched from propertyforsale HTML pages.
+Default behavior is `resale-only`:
+
+- Existing propertyforsale markdown caches are rebuilt into resale CSVs.
+- Existing propertyforsale HTML caches are reused when available.
+- When propertyforsale resale rows are unavailable, local URA resale rows are used
+  as the default fallback.
 - Existing SRX CSVs are preserved under data/srx/ as secondary sources.
-- Existing propertyforsale resale-only CSVs are preserved under
-  data/propertyforsale_resale_backup/ before overwrite.
+
+Use `--sale-scope all` only for explicit requests that need New Sale / Sub Sale.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
 import html
 import json
 import re
 import shutil
-import sys
 import time
 import urllib.request
 from datetime import datetime
@@ -26,8 +30,10 @@ from pathlib import Path
 ROOT_DIR = Path("/Users/zhihao.ai/projects/property")
 DATA_DIR = ROOT_DIR / "data"
 SRX_BACKUP_DIR = DATA_DIR / "srx"
-PROPERTYFORSALE_BACKUP_DIR = DATA_DIR / "propertyforsale_resale_backup"
+LEGACY_PROPERTYFORSALE_RESALE_DIR = DATA_DIR / "propertyforsale_resale_backup"
+PROPERTYFORSALE_PRIMARY_BACKUP_DIR = DATA_DIR / "propertyforsale_primary_backup"
 HTML_CACHE_DIR = DATA_DIR / "propertyforsale_html"
+URA_INDEX_PATH = DATA_DIR / "ura" / "projects_index.json"
 LEGACY_MARKDOWN_DIR = Path(
     "/Users/zhihao.ai/.cursor/projects/Users-zhihao-ai-projects-property/agent-tools"
 )
@@ -35,6 +41,7 @@ REGISTRY_PATH = DATA_DIR / "srx_project_registry.json"
 
 USER_AGENT = "Mozilla/5.0"
 VALID_SALE_TYPES = {"New Sale", "Sub Sale", "Resale"}
+DEFAULT_SALE_TYPES = frozenset({"Resale"})
 MONTH_MAP = {
     "January": "Jan",
     "February": "Feb",
@@ -49,7 +56,26 @@ MONTH_MAP = {
     "November": "Nov",
     "December": "Dec",
 }
-PRIMARY_PROPERTYFORSALE_LABEL = "propertyforsale.com.sg all-sales CSV"
+MONTH_NUM_TO_ABBR = {
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
+}
+PRIMARY_PROPERTYFORSALE_RESALE_LABEL = "propertyforsale.com.sg resale CSV"
+PRIMARY_PROPERTYFORSALE_ALL_SALES_LABEL = "propertyforsale.com.sg all-sales CSV"
+PRIMARY_URA_RESALE_LABEL = "URA PMI resale CSV"
+PRIMARY_URA_RESALE_URL = "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction"
+URA_RESALE_TYPE_CODE = "3"
+SQM_TO_SQFT = 10.7639
 CAPTCHA_PATTERNS = ("recaptcha", "g-recaptcha", "captcha")
 
 PROJECTS = [
@@ -110,8 +136,29 @@ class PropertyForSaleCaptchaError(RuntimeError):
     pass
 
 
-def selected_projects() -> list[dict]:
-    filters = set(sys.argv[1:])
+class PropertyForSaleNoMatchingRowsError(RuntimeError):
+    pass
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("projects", nargs="*", help="Optional project slugs to refresh")
+    parser.add_argument(
+        "--sale-scope",
+        choices=("resale", "all"),
+        default="resale",
+        help="Default is resale-only. Use all only for explicit New Sale/Sub Sale work.",
+    )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Use local markdown / HTML / URA caches only and skip network fetches.",
+    )
+    return parser.parse_args()
+
+
+def selected_projects(filters: list[str]) -> list[dict]:
+    filters = set(filters)
     if not filters:
         return PROJECTS
     return [project for project in PROJECTS if project["slug"] in filters]
@@ -136,6 +183,16 @@ def save_registry(payload: dict) -> None:
 
 def build_url(page_slug: str) -> str:
     return f"https://www.propertyforsale.com.sg/{page_slug}/sales-transactions"
+
+
+def selected_sale_types(sale_scope: str) -> frozenset[str]:
+    return DEFAULT_SALE_TYPES if sale_scope == "resale" else frozenset(VALID_SALE_TYPES)
+
+
+def propertyforsale_label_for_scope(sale_scope: str) -> str:
+    if sale_scope == "resale":
+        return PRIMARY_PROPERTYFORSALE_RESALE_LABEL
+    return PRIMARY_PROPERTYFORSALE_ALL_SALES_LABEL
 
 
 def fetch_html(url: str) -> str:
@@ -174,7 +231,19 @@ def strip_tags(value: str) -> str:
     return html.unescape(re.sub(r"\s+", " ", text)).strip()
 
 
-def parse_html_table_rows(page_html: str) -> list[dict]:
+def sort_rows(rows: list[dict]) -> list[dict]:
+    return sorted(
+        rows,
+        key=lambda row: (
+            int(str(row["date"])[-4:]),
+            list(MONTH_NUM_TO_ABBR.values()).index(str(row["date"])[:3]) + 1,
+            int(row["price"]),
+            int(row["sqft"]),
+        ),
+    )
+
+
+def parse_html_table_rows(page_html: str, sale_types: frozenset[str]) -> list[dict]:
     table_match = re.search(
         r'<table id="records_list".*?<tbody>(.*?)</tbody>',
         page_html,
@@ -205,7 +274,7 @@ def parse_html_table_rows(page_html: str) -> list[dict]:
         else:
             continue
 
-        if sale_type not in VALID_SALE_TYPES:
+        if sale_type not in sale_types:
             continue
 
         try:
@@ -221,12 +290,12 @@ def parse_html_table_rows(page_html: str) -> list[dict]:
             continue
 
     if not rows:
-        raise ValueError("no valid transaction rows parsed from propertyforsale HTML")
+        raise PropertyForSaleNoMatchingRowsError("no matching sale rows parsed from propertyforsale HTML")
 
-    return rows
+    return sort_rows(rows)
 
 
-def parse_markdown_rows(markdown_text: str) -> list[dict]:
+def parse_markdown_rows(markdown_text: str, sale_types: frozenset[str]) -> list[dict]:
     rows: list[dict] = []
     in_table = False
 
@@ -259,7 +328,7 @@ def parse_markdown_rows(markdown_text: str) -> list[dict]:
             psf_raw = parts[10]
             price_raw = parts[11]
 
-        if sale_type not in VALID_SALE_TYPES:
+        if sale_type not in sale_types:
             continue
 
         try:
@@ -275,9 +344,9 @@ def parse_markdown_rows(markdown_text: str) -> list[dict]:
             continue
 
     if not rows:
-        raise ValueError("no valid transaction rows parsed from propertyforsale markdown")
+        raise PropertyForSaleNoMatchingRowsError("no matching sale rows parsed from propertyforsale markdown")
 
-    return rows
+    return sort_rows(rows)
 
 
 def write_csv(path: Path, rows: list[dict]) -> None:
@@ -292,11 +361,25 @@ def count_csv_rows(path: Path) -> int:
         return sum(1 for _ in csv.DictReader(handle))
 
 
-def backup_existing_propertyforsale_csv(slug: str) -> Path | None:
+def read_csv_rows(path: Path) -> list[dict]:
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def load_legacy_propertyforsale_resale_rows(slug: str) -> list[dict] | None:
+    backup_csv = LEGACY_PROPERTYFORSALE_RESALE_DIR / f"{slug}_transactions.csv"
+    if not backup_csv.exists():
+        return None
+    return read_csv_rows(backup_csv)
+
+
+def backup_existing_propertyforsale_csv(slug: str, current_registry_entry: dict) -> Path | None:
+    if current_registry_entry.get("source_kind") != "propertyforsale_csv":
+        return None
     primary_csv = DATA_DIR / f"{slug}_transactions.csv"
     if not primary_csv.exists():
         return None
-    backup_csv = PROPERTYFORSALE_BACKUP_DIR / primary_csv.name
+    backup_csv = PROPERTYFORSALE_PRIMARY_BACKUP_DIR / primary_csv.name
     if backup_csv.exists():
         return backup_csv
     shutil.copy2(primary_csv, backup_csv)
@@ -325,11 +408,6 @@ def dedupe_secondary_sources(existing: list[dict]) -> list[dict]:
         source_csv = str(normalized.get("source_csv", ""))
         if source_kind == "srx_csv" and source_csv and "/" not in source_csv:
             normalized["source_csv"] = f"srx/{Path(source_csv).name}"
-        if (
-            source_kind == "propertyforsale_csv"
-            and normalized.get("source_label") == "propertyforsale.com.sg resale CSV"
-        ):
-            normalized["source_label"] = PRIMARY_PROPERTYFORSALE_LABEL
         key = (
             str(normalized.get("source_kind", "")),
             str(normalized.get("source_csv", "")),
@@ -347,6 +425,7 @@ def update_registry_for_primary_propertyforsale(
     slug: str,
     propertyforsale_url: str | None,
     record_count: int,
+    source_label: str,
 ) -> None:
     projects = registry_payload["projects"]
     current = dict(projects.get(slug, {}))
@@ -372,7 +451,7 @@ def update_registry_for_primary_propertyforsale(
         {
             "slug": slug,
             "source_kind": "propertyforsale_csv",
-            "source_label": PRIMARY_PROPERTYFORSALE_LABEL,
+            "source_label": source_label,
             "source_url": propertyforsale_url or existing_propertyforsale_url,
             "source_csv": f"{slug}_transactions.csv",
             "record_count": record_count,
@@ -384,33 +463,92 @@ def update_registry_for_primary_propertyforsale(
     projects[slug] = current
 
 
-def update_registry_for_srx_fallback(
+def update_registry_for_primary_ura(
     registry_payload: dict,
     slug: str,
-    propertyforsale_url: str,
-    reason: str,
+    record_count: int,
+    propertyforsale_url: str | None,
+    propertyforsale_reason: str | None,
 ) -> None:
     projects = registry_payload["projects"]
     current = dict(projects.get(slug, {}))
-    primary_csv = DATA_DIR / f"{slug}_transactions.csv"
-    source_csv = str(current.get("source_csv", f"{slug}_transactions.csv"))
-    record_count = current.get("record_count")
-    if record_count is None and primary_csv.exists():
-        record_count = count_csv_rows(primary_csv)
+    secondary_sources = list(current.get("secondary_sources", []))
+    backup_csv = SRX_BACKUP_DIR / f"{slug}_transactions.csv"
+    if current.get("source_kind") == "srx_csv" and backup_csv.exists():
+        secondary_sources.insert(
+            0,
+            {
+                "source_kind": "srx_csv",
+                "source_label": current.get("source_label", "SRX last-transacted-prices"),
+                "source_url": current.get("source_url"),
+                "source_csv": f"srx/{slug}_transactions.csv",
+                "record_count": current.get("record_count"),
+            },
+        )
 
     current.update(
         {
             "slug": slug,
-            "source_kind": current.get("source_kind", "srx_csv"),
-            "source_label": current.get("source_label", "SRX last-transacted-prices"),
-            "source_url": current.get("source_url"),
-            "source_csv": Path(source_csv).name if "/" in source_csv else source_csv,
+            "source_kind": "ura_resale_csv",
+            "source_label": PRIMARY_URA_RESALE_LABEL,
+            "source_url": PRIMARY_URA_RESALE_URL,
+            "source_csv": f"{slug}_transactions.csv",
             "record_count": record_count,
-            "secondary_sources": dedupe_secondary_sources(list(current.get("secondary_sources", []))),
-            "propertyforsale_blocked_url": propertyforsale_url,
-            "propertyforsale_blocked_reason": reason,
+            "secondary_sources": dedupe_secondary_sources(secondary_sources),
         }
     )
+    if propertyforsale_url:
+        current["propertyforsale_blocked_url"] = propertyforsale_url
+    else:
+        current.pop("propertyforsale_blocked_url", None)
+    if propertyforsale_reason:
+        current["propertyforsale_blocked_reason"] = propertyforsale_reason
+    else:
+        current.pop("propertyforsale_blocked_reason", None)
+    projects[slug] = current
+
+
+def update_registry_for_resale_unavailable(
+    registry_payload: dict,
+    slug: str,
+    propertyforsale_url: str | None,
+    reason: str | None,
+) -> None:
+    projects = registry_payload["projects"]
+    current = dict(projects.get(slug, {}))
+    secondary_sources = list(current.get("secondary_sources", []))
+    backup_csv = SRX_BACKUP_DIR / f"{slug}_transactions.csv"
+    if current.get("source_kind") == "srx_csv" and backup_csv.exists():
+        secondary_sources.insert(
+            0,
+            {
+                "source_kind": "srx_csv",
+                "source_label": current.get("source_label", "SRX last-transacted-prices"),
+                "source_url": current.get("source_url"),
+                "source_csv": f"srx/{slug}_transactions.csv",
+                "record_count": current.get("record_count"),
+            },
+        )
+
+    current.update(
+        {
+            "slug": slug,
+            "source_kind": "resale_unavailable",
+            "source_label": "No resale rows in local propertyforsale/URA cache",
+            "source_url": propertyforsale_url,
+            "source_csv": None,
+            "record_count": 0,
+            "secondary_sources": dedupe_secondary_sources(secondary_sources),
+        }
+    )
+    if propertyforsale_url:
+        current["propertyforsale_blocked_url"] = propertyforsale_url
+    else:
+        current.pop("propertyforsale_blocked_url", None)
+    if reason:
+        current["propertyforsale_blocked_reason"] = reason
+    else:
+        current.pop("propertyforsale_blocked_reason", None)
     projects[slug] = current
 
 
@@ -423,50 +561,151 @@ def year_range(rows: list[dict]) -> str:
     return f"{years[0]}-{years[-1]}"
 
 
-def refresh_from_markdown(project: dict, registry_payload: dict) -> tuple[int, str | None]:
+def parse_ura_contract_month(value: str) -> str:
+    digits = re.sub(r"[^\d]", "", value)
+    if len(digits) != 4:
+        raise ValueError(f"Unsupported URA contract month: {value!r}")
+    month = int(digits[:2])
+    year = 2000 + int(digits[2:])
+    return f"{MONTH_NUM_TO_ABBR[month]}{year}"
+
+
+def parse_ura_resale_rows(slug: str, ura_index: dict[str, dict]) -> list[dict]:
+    project = ura_index.get(slug)
+    if not project:
+        return []
+
+    rows: list[dict] = []
+    for tx in project.get("transactions", []):
+        if str(tx.get("typeOfSale")) != URA_RESALE_TYPE_CODE:
+            continue
+        area_text = str(tx.get("area", "")).strip()
+        price_text = str(tx.get("price", "")).strip()
+        contract_date = str(tx.get("contractDate", "")).strip()
+        if not area_text or not price_text or not contract_date:
+            continue
+        try:
+            sqft = max(1, round(float(area_text) * SQM_TO_SQFT))
+            price = int(price_text)
+            psf = max(1, round(price / sqft))
+            units = max(1, int(str(tx.get("noOfUnits", "1")).strip() or "1"))
+            row = {
+                "date": parse_ura_contract_month(contract_date),
+                "sqft": sqft,
+                "psf": psf,
+                "price": price,
+            }
+            rows.extend([row.copy() for _ in range(units)])
+        except (KeyError, ValueError):
+            continue
+
+    return sort_rows(rows)
+
+
+def load_project_rows(
+    project: dict,
+    sale_types: frozenset[str],
+    offline: bool,
+) -> tuple[list[dict], str | None]:
     slug = project["slug"]
-    markdown_path = LEGACY_MARKDOWN_DIR / project["markdown_id"]
-    if not markdown_path.exists():
-        raise FileNotFoundError(f"legacy markdown not found: {markdown_path}")
-    backup_path = backup_existing_propertyforsale_csv(slug)
-    rows = parse_markdown_rows(markdown_path.read_text(encoding="utf-8", errors="replace"))
-    write_csv(DATA_DIR / f"{slug}_transactions.csv", rows)
-    update_registry_for_primary_propertyforsale(
-        registry_payload=registry_payload,
-        slug=slug,
-        propertyforsale_url=None,
-        record_count=len(rows),
-    )
-    return len(rows), backup_path.name if backup_path else None
+    if "markdown_id" in project:
+        if sale_types == DEFAULT_SALE_TYPES:
+            cached_rows = load_legacy_propertyforsale_resale_rows(slug)
+            if cached_rows is not None:
+                return cached_rows, None
+        markdown_path = LEGACY_MARKDOWN_DIR / project["markdown_id"]
+        if not markdown_path.exists():
+            raise FileNotFoundError(f"legacy markdown not found: {markdown_path}")
+        return parse_markdown_rows(
+            markdown_path.read_text(encoding="utf-8", errors="replace"),
+            sale_types,
+        ), None
+
+    url = build_url(project["page_slug"])
+    html_cache = HTML_CACHE_DIR / f"{slug}.html"
+    if html_cache.exists():
+        return parse_html_table_rows(
+            normalize_html(html_cache.read_text(encoding="utf-8", errors="replace")),
+            sale_types,
+        ), url
+    if offline:
+        raise FileNotFoundError(f"local propertyforsale HTML cache not found: {html_cache}")
+    raw_html = fetch_html(url)
+    html_cache.write_text(raw_html, encoding="utf-8")
+    return parse_html_table_rows(normalize_html(raw_html), sale_types), url
 
 
-def refresh_from_html(project: dict, registry_payload: dict) -> tuple[int, str | None]:
+def remove_primary_csv(slug: str) -> None:
+    primary_csv = DATA_DIR / f"{slug}_transactions.csv"
+    if primary_csv.exists():
+        primary_csv.unlink()
+
+
+def refresh_project(
+    project: dict,
+    registry_payload: dict,
+    sale_scope: str,
+    offline: bool,
+    ura_index: dict[str, dict],
+) -> tuple[str, int | None, str | None]:
     slug = project["slug"]
     current_registry_entry = registry_payload["projects"].get(slug, {})
-    backup_path = backup_existing_srx_csv(slug, current_registry_entry)
-    url = build_url(project["page_slug"])
-    raw_html = fetch_html(url)
-    html_cache = HTML_CACHE_DIR / f"{slug}.html"
-    html_cache.write_text(raw_html, encoding="utf-8")
-    rows = parse_html_table_rows(normalize_html(raw_html))
-    write_csv(DATA_DIR / f"{slug}_transactions.csv", rows)
-    update_registry_for_primary_propertyforsale(
-        registry_payload,
+    backup_existing_propertyforsale_csv(slug, current_registry_entry)
+    backup_existing_srx_csv(slug, current_registry_entry)
+
+    sale_types = selected_sale_types(sale_scope)
+    propertyforsale_url = None
+    propertyforsale_reason = None
+
+    try:
+        rows, propertyforsale_url = load_project_rows(project, sale_types, offline)
+        write_csv(DATA_DIR / f"{slug}_transactions.csv", rows)
+        update_registry_for_primary_propertyforsale(
+            registry_payload=registry_payload,
+            slug=slug,
+            propertyforsale_url=propertyforsale_url,
+            record_count=len(rows),
+            source_label=propertyforsale_label_for_scope(sale_scope),
+        )
+        if "page_slug" in project and not offline:
+            time.sleep(1)
+        return "propertyforsale", len(rows), propertyforsale_url
+    except (PropertyForSaleCaptchaError, PropertyForSaleNoMatchingRowsError, FileNotFoundError) as exc:
+        propertyforsale_reason = str(exc)
+        if sale_scope != "resale":
+            raise
+
+    ura_rows = parse_ura_resale_rows(slug, ura_index)
+    if ura_rows:
+        write_csv(DATA_DIR / f"{slug}_transactions.csv", ura_rows)
+        update_registry_for_primary_ura(
+            registry_payload=registry_payload,
+            slug=slug,
+            record_count=len(ura_rows),
+            propertyforsale_url=propertyforsale_url,
+            propertyforsale_reason=propertyforsale_reason,
+        )
+        return "ura", len(ura_rows), propertyforsale_url
+
+    remove_primary_csv(slug)
+    update_registry_for_resale_unavailable(
+        registry_payload=registry_payload,
         slug=slug,
-        propertyforsale_url=url,
-        record_count=len(rows),
+        propertyforsale_url=propertyforsale_url,
+        reason=propertyforsale_reason,
     )
-    time.sleep(1)
-    return len(rows), backup_path.name if backup_path else None
+    return "unavailable", None, propertyforsale_url
 
 
 def main() -> int:
+    args = parse_args()
     registry_payload = load_registry()
+    ura_index = json.loads(URA_INDEX_PATH.read_text(encoding="utf-8")) if URA_INDEX_PATH.exists() else {}
     SRX_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    PROPERTYFORSALE_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    PROPERTYFORSALE_PRIMARY_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     HTML_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-    selected = selected_projects()
+    selected = selected_projects(args.projects)
     if not selected:
         print("no matching projects selected")
         return 1
@@ -475,37 +714,37 @@ def main() -> int:
     for index, project in enumerate(selected, start=1):
         slug = project["slug"]
         try:
-            if "markdown_id" in project:
+            source_type, count, propertyforsale_url = refresh_project(
+                project=project,
+                registry_payload=registry_payload,
+                sale_scope=args.sale_scope,
+                offline=args.offline,
+                ura_index=ura_index,
+            )
+            if source_type == "unavailable":
                 print(
-                    f"[{index}/{len(selected)}] {slug}: rebuild from local cache "
-                    f"{project['markdown_id']}"
+                    f"[{index}/{len(selected)}] {slug}: no default resale rows "
+                    "in local propertyforsale/URA cache; removed from default CSV set"
                 )
-                count, backup_name = refresh_from_markdown(project, registry_payload)
+                continue
+
+            rows = read_csv_rows(DATA_DIR / f"{slug}_transactions.csv")
+            year_label = year_range(rows)
+            if source_type == "propertyforsale":
                 print(
-                    f"  wrote {slug}_transactions.csv ({count} all-sale rows, "
-                    f"{year_range(parse_markdown_rows((LEGACY_MARKDOWN_DIR / project['markdown_id']).read_text(encoding='utf-8', errors='replace')))})"
-                    + (f"; resale backup -> {backup_name}" if backup_name else "")
+                    f"[{index}/{len(selected)}] {slug}: wrote {slug}_transactions.csv "
+                    f"({count} {args.sale_scope} rows, {year_label})"
+                    + (
+                        f" from {propertyforsale_url}"
+                        if propertyforsale_url
+                        else " from local propertyforsale resale cache"
+                    )
                 )
             else:
-                url = build_url(project["page_slug"])
-                print(f"[{index}/{len(selected)}] {slug}: fetching {url}")
-                count, backup_name = refresh_from_html(project, registry_payload)
-                rows = list(csv.DictReader((DATA_DIR / f"{slug}_transactions.csv").open(encoding="utf-8")))
-                years = sorted({int(row["date"][-4:]) for row in rows})
-                year_label = str(years[0]) if len(years) == 1 else f"{years[0]}-{years[-1]}"
                 print(
-                    f"  wrote {slug}_transactions.csv ({count} all-sale rows, {year_label})"
-                    + (f"; SRX backup -> {backup_name}" if backup_name else "")
+                    f"[{index}/{len(selected)}] {slug}: wrote {slug}_transactions.csv "
+                    f"({count} resale rows, {year_label}) from local URA fallback"
                 )
-        except PropertyForSaleCaptchaError as exc:
-            url = build_url(project["page_slug"])
-            update_registry_for_srx_fallback(
-                registry_payload=registry_payload,
-                slug=slug,
-                propertyforsale_url=url,
-                reason=str(exc),
-            )
-            print(f"  keeping existing SRX primary ({exc})")
         except Exception as exc:
             failures.append((slug, str(exc)))
             print(f"  ERROR {slug}: {exc}")

@@ -5,8 +5,10 @@ Build a single JSON payload for the dashboard from local crawled data files.
 Sources:
 - data/*_transactions.csv
 - data/appreciation_analysis.json
-- data/poc_layout/*_transactions_layout_poc.csv
-- data/poc_layout/layout_reference_poc.csv
+- data/layout_mapping/*_transaction_layout_map.csv (preferred)
+- data/layout_mapping/layout_reference_catalog.csv (preferred)
+- data/poc_layout/*_transactions_layout_poc.csv (legacy fallback)
+- data/poc_layout/layout_reference_poc.csv (legacy fallback)
 """
 
 from __future__ import annotations
@@ -14,20 +16,22 @@ from __future__ import annotations
 import csv
 import json
 import statistics
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
 from analyze import PROJECT_INFO
 
 
-BASE_DIR = Path("/Users/zhihao.ai/projects/property")
+BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-POC_DIR = DATA_DIR / "poc_layout"
+LEGACY_LAYOUT_DIR = DATA_DIR / "poc_layout"
+FORMAL_LAYOUT_DIR = DATA_DIR / "layout_mapping"
 OUTPUT_PATH = DATA_DIR / "dashboard_data.json"
 OUTPUT_JS_PATH = DATA_DIR / "dashboard_data.js"
 ANALYSIS_PATH = DATA_DIR / "appreciation_analysis.json"
-REFERENCE_PATH = POC_DIR / "layout_reference_poc.csv"
+LEGACY_REFERENCE_PATH = LEGACY_LAYOUT_DIR / "layout_reference_poc.csv"
+FORMAL_REFERENCE_PATH = FORMAL_LAYOUT_DIR / "layout_reference_catalog.csv"
 REGISTRY_PATH = DATA_DIR / "srx_project_registry.json"
 URA_SUMMARY_PATH = DATA_DIR / "ura" / "projects_summary.json"
 URA_INDEX_PATH = DATA_DIR / "ura" / "projects_index.json"
@@ -286,8 +290,6 @@ def normalize_source_entries(primary_source: dict, secondary_sources: list[dict]
         if source_kind == "srx_csv" and source_csv and "/" not in source_csv:
             source_csv = f"srx/{source_csv}"
         source_label = item.get("source_label")
-        if source_kind == "propertyforsale_csv" and source_label == "propertyforsale.com.sg resale CSV":
-            source_label = "propertyforsale.com.sg all-sales CSV"
         source_url = str(item.get("source_url", ""))
         key = (source_kind, source_csv, source_url)
         if key in seen:
@@ -315,14 +317,62 @@ def has_secondary_source_kind(summary: dict, source_kind: str) -> bool:
     return any(source.get("source_kind") == source_kind for source in summary.get("secondary_sources", []))
 
 
-def load_layout_references() -> dict[str, list[dict]]:
-    references: dict[str, list[dict]] = {}
-    with REFERENCE_PATH.open(newline="", encoding="utf-8") as handle:
+def detect_layout_mapping_source() -> str:
+    if FORMAL_REFERENCE_PATH.exists():
+        return "formal"
+    if LEGACY_REFERENCE_PATH.exists():
+        return "legacy_poc"
+    return "missing"
+
+
+def parse_layout_options(value: str) -> list[str]:
+    options: list[str] = []
+    for part in (value or "").split("|"):
+        cleaned = part.strip()
+        if not cleaned:
+            continue
+        options.append(cleaned.split(" ", 1)[0].strip())
+    return options
+
+
+def build_legacy_layout_catalogs() -> dict[str, list[dict]]:
+    grouped: dict[str, dict[int, list[dict]]] = defaultdict(lambda: defaultdict(list))
+    with LEGACY_REFERENCE_PATH.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            row["reference_area_sqft"] = int(row["reference_area_sqft"])
-            references.setdefault(row["project_slug"], []).append(row)
-    return references
+            grouped[row["project_slug"]][int(row["reference_area_sqft"])].append(row)
+
+    catalogs: dict[str, list[dict]] = {}
+    for project_slug, area_map in grouped.items():
+        project_catalog: list[dict] = []
+        for area_sqft in sorted(area_map):
+            refs = area_map[area_sqft]
+            unique_layouts = sorted({ref["normalized_type"] for ref in refs if ref.get("normalized_type")})
+            project_catalog.append(
+                {
+                    "project_slug": project_slug,
+                    "reference_area_sqft": area_sqft,
+                    "catalog_status": "resolved" if len(unique_layouts) == 1 else "conflicting",
+                    "resolved_layout": unique_layouts[0] if len(unique_layouts) == 1 else "",
+                    "layout_options": " | ".join(unique_layouts),
+                }
+            )
+        catalogs[project_slug] = project_catalog
+    return catalogs
+
+
+def load_layout_catalogs() -> dict[str, list[dict]]:
+    if FORMAL_REFERENCE_PATH.exists():
+        catalogs: dict[str, list[dict]] = {}
+        with FORMAL_REFERENCE_PATH.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                row["reference_area_sqft"] = int(row["reference_area_sqft"])
+                catalogs.setdefault(row["project_slug"], []).append(row)
+        return catalogs
+    if LEGACY_REFERENCE_PATH.exists():
+        return build_legacy_layout_catalogs()
+    return {}
 
 
 def bucket_from_normalized_type(normalized_type: str) -> str:
@@ -337,24 +387,27 @@ def bucket_from_normalized_type(normalized_type: str) -> str:
     return "large"
 
 
-def infer_focus_bucket(poc_row: dict, references: list[dict]) -> tuple[str, str]:
-    status = poc_row["layout_status"]
-    sqft = int(poc_row["sqft"])
+def infer_focus_bucket(mapping_row: dict, catalog_rows: list[dict]) -> tuple[str, str]:
+    status = mapping_row["mapping_status"]
+    sqft = int(mapping_row["sqft"])
 
-    if status == "matched":
-        return bucket_from_normalized_type(poc_row["normalized_type"]), "direct_match"
+    if status == "matched" and mapping_row.get("resolved_layout"):
+        return bucket_from_normalized_type(mapping_row["resolved_layout"]), "direct_match"
 
     if status == "ambiguous":
-        candidate_types = [part.strip() for part in poc_row["normalized_type"].split("|")]
+        candidate_types = parse_layout_options(mapping_row.get("layout_options", ""))
         buckets = {bucket_from_normalized_type(layout_type) for layout_type in candidate_types if layout_type}
         if len(buckets) == 1:
             return next(iter(buckets)), "ambiguous_same_bucket"
         return "pending", "ambiguous_multi_bucket"
 
     ref_candidates = []
-    for ref in references:
+    for ref in catalog_rows:
         gap = abs(int(ref["reference_area_sqft"]) - sqft)
-        ref_candidates.append((gap, bucket_from_normalized_type(ref["normalized_type"])))
+        layout_options = [ref.get("resolved_layout")] if ref.get("resolved_layout") else parse_layout_options(ref.get("layout_options", ""))
+        buckets = {bucket_from_normalized_type(layout_type) for layout_type in layout_options if layout_type}
+        if len(buckets) == 1:
+            ref_candidates.append((gap, next(iter(buckets))))
     ref_candidates.sort(key=lambda item: item[0])
 
     if ref_candidates:
@@ -378,15 +431,49 @@ def infer_area_proxy_bucket(sqft: int) -> str | None:
     return None
 
 
-def build_focus_project(slug: str, references_by_project: dict[str, list[dict]]) -> dict:
-    csv_path = POC_DIR / f"{slug}_transactions_layout_poc.csv"
-    references = references_by_project.get(slug, [])
+def load_focus_mapping_rows(slug: str, catalog_rows: list[dict]) -> list[dict]:
+    formal_csv_path = FORMAL_LAYOUT_DIR / f"{slug}_transaction_layout_map.csv"
+    legacy_csv_path = LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv"
     rows: list[dict] = []
 
-    with csv_path.open(newline="", encoding="utf-8") as handle:
+    if formal_csv_path.exists():
+        with formal_csv_path.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                bucket, bucket_reason = infer_focus_bucket(row, catalog_rows)
+                rows.append(
+                    {
+                        "date": row["date"],
+                        "date_label": format_monthyear(row["date"]),
+                        "year": parse_monthyear(row["date"])[0],
+                        "month": parse_monthyear(row["date"])[1],
+                        "sqft": int(row["sqft"]),
+                        "psf": int(row["psf"]),
+                        "price": int(row["price"]),
+                        "mapping_status": row["mapping_status"],
+                        "resolved_layout": row["resolved_layout"],
+                        "layout_options": row["layout_options"] or row["resolved_layout"],
+                        "focus_bucket": bucket,
+                        "focus_bucket_label": FOCUS_LABEL[bucket],
+                        "bucket_reason": bucket_reason,
+                        "mapping_confidence": row["mapping_confidence"],
+                        "evidence_urls": row["evidence_urls"],
+                        "evidence_notes": row["evidence_notes"],
+                    }
+                )
+        rows.sort(key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]), reverse=True)
+        return rows
+
+    with legacy_csv_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            bucket, bucket_reason = infer_focus_bucket(row, references)
+            compat_row = {
+                "mapping_status": row["layout_status"],
+                "resolved_layout": row["normalized_type"] if row["layout_status"] == "matched" else "",
+                "layout_options": row["normalized_type"],
+                "sqft": row["sqft"],
+            }
+            bucket, bucket_reason = infer_focus_bucket(compat_row, catalog_rows)
             rows.append(
                 {
                     "date": row["date"],
@@ -396,8 +483,9 @@ def build_focus_project(slug: str, references_by_project: dict[str, list[dict]])
                     "sqft": int(row["sqft"]),
                     "psf": int(row["psf"]),
                     "price": int(row["price"]),
-                    "layout_status": row["layout_status"],
-                    "normalized_type": row["normalized_type"],
+                    "mapping_status": row["layout_status"],
+                    "resolved_layout": row["normalized_type"] if row["layout_status"] == "matched" else "",
+                    "layout_options": row["normalized_type"],
                     "focus_bucket": bucket,
                     "focus_bucket_label": FOCUS_LABEL[bucket],
                     "bucket_reason": bucket_reason,
@@ -406,8 +494,12 @@ def build_focus_project(slug: str, references_by_project: dict[str, list[dict]])
                     "evidence_notes": row["evidence_notes"],
                 }
             )
-
     rows.sort(key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]), reverse=True)
+    return rows
+
+
+def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) -> dict:
+    rows = load_focus_mapping_rows(slug, catalog_by_project.get(slug, []))
 
     summary = []
     recent_by_bucket: dict[str, list[dict]] = {}
@@ -436,8 +528,9 @@ def build_focus_project(slug: str, references_by_project: dict[str, list[dict]])
                     "sqft": row["sqft"],
                     "price": row["price"],
                     "psf": row["psf"],
-                    "layout_status": row["layout_status"],
-                    "normalized_type": row["normalized_type"],
+                    "mapping_status": row["mapping_status"],
+                    "resolved_layout": row["resolved_layout"],
+                    "layout_options": row["layout_options"],
                     "bucket_reason": row["bucket_reason"],
                 }
                 for row in recent_rows
@@ -449,7 +542,7 @@ def build_focus_project(slug: str, references_by_project: dict[str, list[dict]])
         lambda row: row["focus_bucket"],
     )
 
-    mapped_rows = [row for row in rows if row["layout_status"] == "matched"]
+    mapped_rows = [row for row in rows if row["mapping_status"] == "matched"]
     focus_rows = [row for row in rows if row["focus_bucket"] in {"2b1b", "2b2b", "3b2b"}]
 
     return {
@@ -474,9 +567,7 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
     info = {**PROJECT_INFO.get(slug, {}), **registry_info}
     source_csv = f"{slug}_transactions.csv"
     source_kind = registry_info.get("source_kind", "propertyforsale_csv")
-    source_label = registry_info.get("source_label", "propertyforsale.com.sg all-sales CSV")
-    if source_kind == "propertyforsale_csv" and source_label == "propertyforsale.com.sg resale CSV":
-        source_label = "propertyforsale.com.sg all-sales CSV"
+    source_label = registry_info.get("source_label", "propertyforsale.com.sg resale CSV")
     source_url = registry_info.get("source_url")
     secondary_sources = registry_info.get("secondary_sources", [])
     if not isinstance(secondary_sources, list):
@@ -495,11 +586,8 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
     overall_years = sorted(overall.keys())
     latest_overall_year = overall_years[-1] if overall_years else None
     latest_overall = overall.get(latest_overall_year, {}) if latest_overall_year else {}
-    overall_pk_included = (
-        source_kind == "propertyforsale_csv"
-        and len(overall_years) >= 2
-        and analysis.get("overall_cagr") is not None
-    )
+    overall_pk_included = len(overall_years) >= 2 and analysis.get("overall_cagr") is not None
+    public_window_pk_included = source_kind == "propertyforsale_csv" and overall_pk_included
     only_23br = analysis.get("only_23br", {})
     latest_focus_year = max(only_23br.keys()) if only_23br else None
     latest_focus = only_23br.get(latest_focus_year, {}) if latest_focus_year else {}
@@ -536,6 +624,7 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         "overall_annual": overall,
         "overall_year_range": year_range_label(overall_years),
         "overall_pk_included": overall_pk_included,
+        "public_window_pk_included": public_window_pk_included,
         "focus_cagr": analysis.get("only_23br_cagr"),
         "focus_year_count": len(only_23br),
         "focus_latest_year": latest_focus_year,
@@ -554,7 +643,11 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         "area_proxy_pk_included": area_proxy_pk_included,
         "area_proxy_scope": "2b1b 600-699 sqft · 2b2b 700-849 sqft · 3b2b 850-1199 sqft",
         "has_detailed_csv": (DATA_DIR / "detailed" / f"{slug}_transactions_detailed.csv").exists(),
-        "has_layout_poc": (POC_DIR / f"{slug}_transactions_layout_poc.csv").exists(),
+        "has_layout_mapping": (
+            (FORMAL_LAYOUT_DIR / f"{slug}_transaction_layout_map.csv").exists()
+            or (LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv").exists()
+        ),
+        "has_layout_poc": (LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv").exists(),
     }
 
 
@@ -624,7 +717,7 @@ def build_ura_browser_projects(project_summaries: list[dict]) -> list[dict]:
 
 def build_payload() -> dict:
     analysis = load_json(ANALYSIS_PATH)
-    references_by_project = load_layout_references()
+    layout_catalogs = load_layout_catalogs()
     transaction_paths = sorted(DATA_DIR.glob("*_transactions.csv"))
 
     project_summaries = []
@@ -722,7 +815,7 @@ def build_payload() -> dict:
     )
 
     focus_projects = {
-        slug: build_focus_project(slug, references_by_project)
+        slug: build_focus_project(slug, layout_catalogs)
         for slug in ("lakeville", "lakegrande")
     }
     ura_browser_projects = build_ura_browser_projects(project_summaries)
@@ -746,6 +839,9 @@ def build_payload() -> dict:
     primary_propertyforsale_count = sum(
         1 for project in project_summaries if project["source_kind"] == "propertyforsale_csv"
     )
+    primary_ura_resale_count = sum(
+        1 for project in project_summaries if project["source_kind"] == "ura_resale_csv"
+    )
     primary_srx_count = sum(
         1 for project in project_summaries if project["source_kind"] == "srx_csv"
     )
@@ -761,12 +857,15 @@ def build_payload() -> dict:
             "total_records": total_records,
             "detailed_project_count": detailed_count,
             "pk_project_count": len(comparison_projects),
+            "propertyforsale_project_count": primary_propertyforsale_count,
+            "ura_resale_project_count": primary_ura_resale_count,
             "ura_project_count": primary_propertyforsale_count,
             "srx_project_count": primary_srx_count,
             "srx_backup_project_count": secondary_srx_count,
             "overall_comparison_project_count": len(overall_comparison_projects),
             "area_proxy_comparison_project_count": len(area_proxy_comparison_projects),
             "layout_comparison_project_count": len(layout_comparison_projects),
+            "layout_mapping_source": detect_layout_mapping_source(),
             "ura_browser_project_count": len(ura_browser_projects),
             "ura_matched_project_count": ura_matched_count,
             "focus_projects": list(focus_projects),
@@ -792,8 +891,9 @@ def main() -> None:
     print(
         f"dashboard data written to {OUTPUT_PATH} and {OUTPUT_JS_PATH} "
         f"({payload['meta']['project_count']} real CSV projects, "
-        f"{payload['meta']['overall_comparison_project_count']} propertyforsale overall PK projects, "
-        f"{payload['meta']['srx_project_count']} SRX fallback projects, "
+        f"{payload['meta']['overall_comparison_project_count']} propertyforsale resale PK projects, "
+        f"{payload['meta']['ura_resale_project_count']} URA resale fallback projects, "
+        f"{payload['meta']['srx_project_count']} legacy SRX primary projects, "
         f"{payload['meta']['area_proxy_comparison_project_count']} area-proxy PK projects, "
         f"{payload['meta']['layout_comparison_project_count']} typed-layout PK projects, "
         f"{payload['meta']['ura_browser_project_count']} URA browser projects, "

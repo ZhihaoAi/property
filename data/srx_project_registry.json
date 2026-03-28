@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-18T15:19:46",
+  "generated_at": "2026-03-28T18:16:28",
   "projects": {
     "the_skywoods": {
       "slug": "the_skywoods",
@@ -10,10 +10,10 @@
       "units": 420,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/the-skywoods/sales-transactions",
       "source_csv": "the_skywoods_transactions.csv",
-      "record_count": 143,
+      "record_count": 140,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -32,11 +32,11 @@
       "tenure": "99yr",
       "units": 386,
       "property_type": "Condominium",
-      "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_url": "https://www.propertyforsale.com.sg/the-botany-at-dairy-farm/sales-transactions",
-      "source_csv": "the_botany_at_dairy_farm_transactions.csv",
-      "record_count": 381,
+      "source_kind": "resale_unavailable",
+      "source_label": "No resale rows in local propertyforsale/URA cache",
+      "source_url": null,
+      "source_csv": null,
+      "record_count": 0,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -45,7 +45,8 @@
           "source_csv": "srx/the_botany_at_dairy_farm_transactions.csv",
           "record_count": 138
         }
-      ]
+      ],
+      "propertyforsale_blocked_reason": "no matching sale rows parsed from propertyforsale HTML"
     },
     "sol_acres": {
       "slug": "sol_acres",
@@ -56,10 +57,10 @@
       "units": 1327,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/sol-acres/sales-transactions",
       "source_csv": "sol_acres_transactions.csv",
-      "record_count": 1000,
+      "record_count": 540,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -79,10 +80,10 @@
       "units": 483,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/eco-sanctuary/sales-transactions",
       "source_csv": "eco_sanctuary_transactions.csv",
-      "record_count": 203,
+      "record_count": 182,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -102,7 +103,7 @@
       "units": 496,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/foresque-residences/sales-transactions",
       "source_csv": "foresque_residences_transactions.csv",
       "record_count": 181,
@@ -125,10 +126,10 @@
       "units": 578,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/gem-residences/sales-transactions",
       "source_csv": "gem_residences_transactions.csv",
-      "record_count": 471,
+      "record_count": 50,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -148,10 +149,10 @@
       "units": 528,
       "property_type": "Apartment",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/the-hillier/sales-transactions",
       "source_csv": "the_hillier_transactions.csv",
-      "record_count": 235,
+      "record_count": 226,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -171,10 +172,10 @@
       "units": 729,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/the-tre-ver/sales-transactions",
       "source_csv": "the_tre_ver_transactions.csv",
-      "record_count": 1000,
+      "record_count": 111,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -194,10 +195,10 @@
       "units": 512,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/kingsford-hillview-peak/sales-transactions",
       "source_csv": "hillview_peak_transactions.csv",
-      "record_count": 212,
+      "record_count": 194,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -217,7 +218,7 @@
       "units": 429,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/tree-house/sales-transactions",
       "source_csv": "tree_house_transactions.csv",
       "record_count": 189,
@@ -240,7 +241,7 @@
       "units": 416,
       "property_type": "Condominium",
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
+      "source_label": "propertyforsale.com.sg resale CSV",
       "source_url": "https://www.propertyforsale.com.sg/hillsta/sales-transactions",
       "source_csv": "hillsta_transactions.csv",
       "record_count": 205,
@@ -262,13 +263,20 @@
       "tenure": "99yr",
       "units": 546,
       "property_type": "Apartment",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/hillion-residences-31222/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "hillion_residences_transactions.csv",
-      "record_count": 54,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/hillion-residences/sales-transactions",
+      "record_count": 147,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/hillion-residences-31222/last-transacted-prices",
+          "source_csv": "srx/hillion_residences_transactions.csv",
+          "record_count": 54
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "midwood": {
@@ -279,13 +287,20 @@
       "tenure": "99yr",
       "units": 564,
       "property_type": "Condominium",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/midwood-87102/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "midwood_transactions.csv",
       "record_count": 76,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/midwood/sales-transactions",
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/midwood-87102/last-transacted-prices",
+          "source_csv": "srx/midwood_transactions.csv",
+          "record_count": 76
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "eight_riversuites": {
@@ -296,13 +311,20 @@
       "tenure": "99yr",
       "units": 862,
       "property_type": "Condominium",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/eight-riversuites-23851/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "eight_riversuites_transactions.csv",
-      "record_count": 105,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/eight-riversuites/sales-transactions",
+      "record_count": 293,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/eight-riversuites-23851/last-transacted-prices",
+          "source_csv": "srx/eight_riversuites_transactions.csv",
+          "record_count": 105
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "the_tennery": {
@@ -313,11 +335,11 @@
       "tenure": "99yr",
       "units": 338,
       "property_type": "Apartment",
-      "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_url": "https://www.propertyforsale.com.sg/the-tennery/sales-transactions",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "the_tennery_transactions.csv",
-      "record_count": 184,
+      "record_count": 135,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -326,7 +348,8 @@
           "source_csv": "srx/the_tennery_transactions.csv",
           "record_count": 52
         }
-      ]
+      ],
+      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "dairy_farm_residences": {
       "slug": "dairy_farm_residences",
@@ -336,13 +359,20 @@
       "tenure": "99yr",
       "units": 460,
       "property_type": "Apartment",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/dairy-farm-residences-87591/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "dairy_farm_residences_transactions.csv",
-      "record_count": 53,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/dairy-farm-residences/sales-transactions",
+      "record_count": 4,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/dairy-farm-residences-87591/last-transacted-prices",
+          "source_csv": "srx/dairy_farm_residences_transactions.csv",
+          "record_count": 53
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "le_quest": {
@@ -353,13 +383,20 @@
       "tenure": "99yr",
       "units": 516,
       "property_type": "Apartment",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/le-quest-79662/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "le_quest_transactions.csv",
-      "record_count": 64,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/le-quest/sales-transactions",
+      "record_count": 112,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/le-quest-79662/last-transacted-prices",
+          "source_csv": "srx/le_quest_transactions.csv",
+          "record_count": 64
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "daintree_residence": {
@@ -370,13 +407,20 @@
       "tenure": "99yr",
       "units": 327,
       "property_type": "Condominium",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/daintree-residence-83182/last-transacted-prices",
+      "source_kind": "ura_resale_csv",
+      "source_label": "URA PMI resale CSV",
+      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
       "source_csv": "daintree_residence_transactions.csv",
-      "record_count": 48,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/daintree-residence/sales-transactions",
+      "record_count": 54,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/daintree-residence-83182/last-transacted-prices",
+          "source_csv": "srx/daintree_residence_transactions.csv",
+          "record_count": 48
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "the_myst": {
@@ -387,13 +431,20 @@
       "tenure": "99yr",
       "units": 408,
       "property_type": "Condominium",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/the-myst-107441/last-transacted-prices",
-      "source_csv": "the_myst_transactions.csv",
-      "record_count": 169,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/the-myst/sales-transactions",
+      "source_kind": "resale_unavailable",
+      "source_label": "No resale rows in local propertyforsale/URA cache",
+      "source_url": null,
+      "source_csv": null,
+      "record_count": 0,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-myst-107441/last-transacted-prices",
+          "source_csv": "srx/the_myst_transactions.csv",
+          "record_count": 169
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "the_sen": {
@@ -404,13 +455,20 @@
       "tenure": "99yr",
       "units": null,
       "property_type": "Condominium",
-      "source_kind": "srx_csv",
-      "source_label": "SRX last-transacted-prices",
-      "source_url": "https://www.srx.com.sg/condo/the-sen-287681/last-transacted-prices",
-      "source_csv": "the_sen_transactions.csv",
-      "record_count": 97,
-      "secondary_sources": [],
-      "propertyforsale_blocked_url": "https://www.propertyforsale.com.sg/the-sen/sales-transactions",
+      "source_kind": "resale_unavailable",
+      "source_label": "No resale rows in local propertyforsale/URA cache",
+      "source_url": null,
+      "source_csv": null,
+      "record_count": 0,
+      "secondary_sources": [
+        {
+          "source_kind": "srx_csv",
+          "source_label": "SRX last-transacted-prices",
+          "source_url": "https://www.srx.com.sg/condo/the-sen-287681/last-transacted-prices",
+          "source_csv": "srx/the_sen_transactions.csv",
+          "record_count": 97
+        }
+      ],
       "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
     },
     "alexis": {
@@ -418,240 +476,270 @@
       "record_count": 107,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "alexis_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "alexis_transactions.csv",
+      "source_url": null
     },
     "artra": {
       "slug": "artra",
-      "record_count": 467,
+      "record_count": 36,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "artra_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "artra_transactions.csv",
+      "source_url": null
     },
     "avenue_south_residence": {
       "slug": "avenue_south_residence",
-      "record_count": 1000,
+      "record_count": 87,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "avenue_south_residence_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "avenue_south_residence_transactions.csv",
+      "source_url": null
     },
     "caspian": {
       "slug": "caspian",
       "record_count": 226,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "caspian_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "caspian_transactions.csv",
+      "source_url": null
     },
     "clavon": {
       "slug": "clavon",
-      "record_count": 657,
+      "record_count": 15,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "clavon_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "clavon_transactions.csv",
+      "source_url": null
     },
     "clement_canopy": {
       "slug": "clement_canopy",
-      "record_count": 650,
+      "record_count": 136,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "clement_canopy_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "clement_canopy_transactions.csv",
+      "source_url": null
     },
     "commonwealth_towers": {
       "slug": "commonwealth_towers",
-      "record_count": 590,
+      "record_count": 302,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "commonwealth_towers_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "commonwealth_towers_transactions.csv",
+      "source_url": null
     },
     "harbour_view_gardens": {
       "slug": "harbour_view_gardens",
-      "record_count": 65,
+      "record_count": 8,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "harbour_view_gardens_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "harbour_view_gardens_transactions.csv",
+      "source_url": null
     },
     "hundred_trees": {
       "slug": "hundred_trees",
       "record_count": 118,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "hundred_trees_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "hundred_trees_transactions.csv",
+      "source_url": null
     },
     "j_gateway": {
       "slug": "j_gateway",
-      "record_count": 236,
+      "record_count": 229,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "j_gateway_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "j_gateway_transactions.csv",
+      "source_url": null
     },
     "kent_ridge_hill": {
       "slug": "kent_ridge_hill",
-      "record_count": 627,
+      "record_count": 33,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "kent_ridge_hill_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "kent_ridge_hill_transactions.csv",
+      "source_url": null
     },
     "lakefront": {
       "slug": "lakefront",
       "record_count": 211,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "lakefront_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "lakefront_transactions.csv",
+      "source_url": null
     },
     "lakegrande": {
       "slug": "lakegrande",
-      "record_count": 306,
+      "record_count": 159,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "lakegrande_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "lakegrande_transactions.csv",
+      "source_url": null
     },
     "lakeville": {
       "slug": "lakeville",
-      "record_count": 195,
+      "record_count": 186,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "lakeville_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "lakeville_transactions.csv",
+      "source_url": null
     },
     "margaret_ville": {
       "slug": "margaret_ville",
-      "record_count": 384,
+      "record_count": 71,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "margaret_ville_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "margaret_ville_transactions.csv",
+      "source_url": null
     },
     "normanton_park": {
       "slug": "normanton_park",
-      "record_count": 1000,
+      "record_count": 7,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "normanton_park_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "normanton_park_transactions.csv",
+      "source_url": null
     },
     "parc_clematis": {
       "slug": "parc_clematis",
-      "record_count": 1000,
+      "record_count": 86,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "parc_clematis_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "parc_clematis_transactions.csv",
+      "source_url": null
     },
     "parc_riviera": {
       "slug": "parc_riviera",
-      "record_count": 876,
+      "record_count": 337,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "parc_riviera_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "parc_riviera_transactions.csv",
+      "source_url": null
     },
     "queens_peak": {
       "slug": "queens_peak",
-      "record_count": 664,
+      "record_count": 181,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "queens_peak_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "queens_peak_transactions.csv",
+      "source_url": null
     },
     "seahill": {
       "slug": "seahill",
-      "record_count": 171,
+      "record_count": 166,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "seahill_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "seahill_transactions.csv",
+      "source_url": null
     },
     "skysuites_anson": {
       "slug": "skysuites_anson",
       "record_count": 235,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "skysuites_anson_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "skysuites_anson_transactions.csv",
+      "source_url": null
     },
     "spottiswoode_suites": {
       "slug": "spottiswoode_suites",
-      "record_count": 97,
+      "record_count": 60,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "spottiswoode_suites_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "spottiswoode_suites_transactions.csv",
+      "source_url": null
     },
     "stirling_residences": {
       "slug": "stirling_residences",
-      "record_count": 1000,
+      "record_count": 293,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "stirling_residences_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "stirling_residences_transactions.csv",
+      "source_url": null
     },
     "the_trilinq": {
       "slug": "the_trilinq",
-      "record_count": 503,
+      "record_count": 279,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "the_trilinq_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "the_trilinq_transactions.csv",
+      "source_url": null
     },
     "the_vision": {
       "slug": "the_vision",
       "record_count": 128,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "the_vision_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "the_vision_transactions.csv",
+      "source_url": null
     },
     "twin_vew": {
       "slug": "twin_vew",
-      "record_count": 659,
+      "record_count": 95,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "twin_vew_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "twin_vew_transactions.csv",
+      "source_url": null
     },
     "village_pasir_panjang": {
       "slug": "village_pasir_panjang",
       "record_count": 37,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "village_pasir_panjang_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "village_pasir_panjang_transactions.csv",
+      "source_url": null
     },
     "viva_vista": {
       "slug": "viva_vista",
-      "record_count": 65,
+      "record_count": 52,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "viva_vista_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "viva_vista_transactions.csv",
+      "source_url": null
     },
     "whistler_grand": {
       "slug": "whistler_grand",
-      "record_count": 927,
+      "record_count": 158,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "whistler_grand_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "whistler_grand_transactions.csv",
+      "source_url": null
     },
     "whitehaven": {
       "slug": "whitehaven",
-      "record_count": 39,
+      "record_count": 34,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
-      "source_label": "propertyforsale.com.sg all-sales CSV",
-      "source_csv": "whitehaven_transactions.csv"
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_csv": "whitehaven_transactions.csv",
+      "source_url": null
     }
   }
 }
