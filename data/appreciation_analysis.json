@@ -324,12 +324,39 @@
         }
       }
     },
-    "overall_cagr": 1.33,
+    "overall_cagr": 1.35,
+    "overall_period": {
+      "start": "Feb2017",
+      "end": "Jan2026",
+      "month_span": 107
+    },
     "by_type_cagr": {
-      "1BR": 0.94,
-      "2BR": 1.78,
-      "3BR": 3.27,
-      "4BR+": 7.22
+      "1BR": 0.95,
+      "2BR": 1.76,
+      "3BR": 3.13,
+      "4BR+": 7.55
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Feb2017",
+        "end": "Jan2026",
+        "month_span": 107
+      },
+      "2BR": {
+        "start": "May2017",
+        "end": "Jun2025",
+        "month_span": 97
+      },
+      "3BR": {
+        "start": "Jun2017",
+        "end": "Oct2025",
+        "month_span": 100
+      },
+      "4BR+": {
+        "start": "May2019",
+        "end": "Mar2023",
+        "month_span": 46
+      }
     },
     "only_23br": {
       "2017": {
@@ -405,7 +432,12 @@
         "count": 3
       }
     },
-    "only_23br_cagr": 0.97,
+    "only_23br_cagr": 0.92,
+    "only_23br_period": {
+      "start": "May2017",
+      "end": "Oct2025",
+      "month_span": 101
+    },
     "info": {
       "top_year": 2014,
       "tenure": "Freehold",
@@ -487,11 +519,33 @@
         }
       }
     },
-    "overall_cagr": 0.89,
+    "overall_cagr": 0.53,
+    "overall_period": {
+      "start": "Apr2024",
+      "end": "Dec2025",
+      "month_span": 20
+    },
     "by_type_cagr": {
-      "2BR": 0.21,
-      "3BR": 2.18,
-      "4BR+": -2.53
+      "2BR": 0.16,
+      "3BR": 1.53,
+      "4BR+": -1.79
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Apr2024",
+        "end": "Aug2025",
+        "month_span": 16
+      },
+      "3BR": {
+        "start": "Apr2024",
+        "end": "Sep2025",
+        "month_span": 17
+      },
+      "4BR+": {
+        "start": "Jul2024",
+        "end": "Dec2025",
+        "month_span": 17
+      }
     },
     "only_23br": {
       "2024": {
@@ -511,7 +565,12 @@
         "count": 12
       }
     },
-    "only_23br_cagr": 1.19,
+    "only_23br_cagr": 0.84,
+    "only_23br_period": {
+      "start": "Apr2024",
+      "end": "Sep2025",
+      "month_span": 17
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -643,12 +702,39 @@
         }
       }
     },
-    "overall_cagr": -2.68,
+    "overall_cagr": -3.56,
+    "overall_period": {
+      "start": "Jul2024",
+      "end": "Jan2026",
+      "month_span": 18
+    },
     "by_type_cagr": {
-      "1BR": -3.11,
-      "2BR": -4.0,
-      "3BR": -2.22,
-      "4BR+": 3.63
+      "1BR": -4.92,
+      "2BR": -5.3,
+      "3BR": -3.12,
+      "4BR+": 3.35
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Oct2024",
+        "end": "Jan2026",
+        "month_span": 15
+      },
+      "2BR": {
+        "start": "Jul2024",
+        "end": "Jan2026",
+        "month_span": 18
+      },
+      "3BR": {
+        "start": "Aug2024",
+        "end": "Jan2026",
+        "month_span": 17
+      },
+      "4BR+": {
+        "start": "Aug2024",
+        "end": "Sep2025",
+        "month_span": 13
+      }
     },
     "only_23br": {
       "2024": {
@@ -676,7 +762,12 @@
         "count": 4
       }
     },
-    "only_23br_cagr": -3.47,
+    "only_23br_cagr": -4.61,
+    "only_23br_period": {
+      "start": "Jul2024",
+      "end": "Jan2026",
+      "month_span": 18
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -966,11 +1057,33 @@
         }
       }
     },
-    "overall_cagr": 4.96,
+    "overall_cagr": 4.48,
+    "overall_period": {
+      "start": "Feb2017",
+      "end": "Dec2025",
+      "month_span": 106
+    },
     "by_type_cagr": {
-      "1BR": 2.42,
-      "3BR": 4.87,
-      "4BR+": 5.33
+      "1BR": 2.48,
+      "3BR": 4.63,
+      "4BR+": 4.82
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jun2017",
+        "end": "Apr2024",
+        "month_span": 82
+      },
+      "3BR": {
+        "start": "Feb2017",
+        "end": "Jul2025",
+        "month_span": 101
+      },
+      "4BR+": {
+        "start": "Feb2017",
+        "end": "Dec2025",
+        "month_span": 106
+      }
     },
     "only_23br": {
       "2017": {
@@ -1046,7 +1159,12 @@
         "count": 9
       }
     },
-    "only_23br_cagr": 4.87,
+    "only_23br_cagr": 4.63,
+    "only_23br_period": {
+      "start": "Feb2017",
+      "end": "Jul2025",
+      "month_span": 101
+    },
     "info": {
       "top_year": 2008,
       "tenure": "99yr",
@@ -1138,11 +1256,34 @@
         }
       }
     },
-    "overall_cagr": 7.92,
-    "by_type_cagr": {
-      "2BR": 2.55,
-      "3BR": 2.36,
-      "4BR+": 8.23
+    "overall_cagr": null,
+    "overall_period": {
+      "start": "Oct2025",
+      "end": "Feb2026",
+      "month_span": 4
+    },
+    "by_type_cagr": {},
+    "by_type_period": {
+      "1BR": {
+        "start": "Dec2025",
+        "end": "Dec2025",
+        "month_span": 0
+      },
+      "2BR": {
+        "start": "Nov2025",
+        "end": "Feb2026",
+        "month_span": 3
+      },
+      "3BR": {
+        "start": "Oct2025",
+        "end": "Feb2026",
+        "month_span": 4
+      },
+      "4BR+": {
+        "start": "Nov2025",
+        "end": "Feb2026",
+        "month_span": 3
+      }
     },
     "only_23br": {
       "2025": {
@@ -1162,7 +1303,12 @@
         "count": 4
       }
     },
-    "only_23br_cagr": 7.35,
+    "only_23br_cagr": null,
+    "only_23br_period": {
+      "start": "Oct2025",
+      "end": "Feb2026",
+      "month_span": 4
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -1364,11 +1510,33 @@
         }
       }
     },
-    "overall_cagr": 3.52,
+    "overall_cagr": 3.77,
+    "overall_period": {
+      "start": "Jun2021",
+      "end": "Feb2026",
+      "month_span": 56
+    },
     "by_type_cagr": {
-      "2BR": 2.41,
-      "3BR": 5.16,
-      "4BR+": 7.74
+      "2BR": 2.58,
+      "3BR": 5.64,
+      "4BR+": 7.27
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Jun2021",
+        "end": "Feb2026",
+        "month_span": 56
+      },
+      "3BR": {
+        "start": "Jun2021",
+        "end": "Jan2026",
+        "month_span": 55
+      },
+      "4BR+": {
+        "start": "Jun2021",
+        "end": "Sep2025",
+        "month_span": 51
+      }
     },
     "only_23br": {
       "2021": {
@@ -1420,7 +1588,12 @@
         "count": 3
       }
     },
-    "only_23br_cagr": 3.48,
+    "only_23br_cagr": 3.73,
+    "only_23br_period": {
+      "start": "Jun2021",
+      "end": "Feb2026",
+      "month_span": 56
+    },
     "info": {
       "top_year": 2019,
       "tenure": "99yr",
@@ -1728,12 +1901,39 @@
         }
       }
     },
-    "overall_cagr": 3.98,
+    "overall_cagr": 4.08,
+    "overall_period": {
+      "start": "Apr2019",
+      "end": "Feb2026",
+      "month_span": 82
+    },
     "by_type_cagr": {
-      "1BR": 0.98,
-      "2BR": 3.66,
-      "3BR": 5.8,
-      "4BR+": 7.49
+      "1BR": 1.01,
+      "2BR": 3.85,
+      "3BR": 6.03,
+      "4BR+": 6.89
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2019",
+        "end": "Feb2026",
+        "month_span": 82
+      },
+      "2BR": {
+        "start": "May2019",
+        "end": "Jan2026",
+        "month_span": 80
+      },
+      "3BR": {
+        "start": "May2019",
+        "end": "Feb2026",
+        "month_span": 81
+      },
+      "4BR+": {
+        "start": "Aug2021",
+        "end": "Nov2024",
+        "month_span": 39
+      }
     },
     "only_23br": {
       "2019": {
@@ -1801,7 +2001,12 @@
         "count": 3
       }
     },
-    "only_23br_cagr": 4.35,
+    "only_23br_cagr": 4.51,
+    "only_23br_period": {
+      "start": "May2019",
+      "end": "Feb2026",
+      "month_span": 81
+    },
     "info": {
       "top_year": 2017,
       "tenure": "99yr",
@@ -1812,69 +2017,69 @@
     "overall": {
       "2024": {
         "median_psf": 2077,
-        "q1": 2050.0,
-        "q3": 2104.0,
+        "q1": 2049.0,
+        "q3": 2103.0,
         "min": 1934,
         "max": 2199,
         "count": 23
       },
       "2025": {
-        "median_psf": 2050,
-        "q1": 2000.5,
-        "q3": 2076.5,
+        "median_psf": 2049,
+        "q1": 2000.0,
+        "q3": 2077.0,
         "min": 1908,
-        "max": 2189,
+        "max": 2187,
         "count": 27
       },
       "2026": {
-        "median_psf": 2055.5,
-        "q1": 2005.5,
-        "q3": 2088.75,
-        "min": 1944,
+        "median_psf": 2025,
+        "q1": 1956.0,
+        "q3": 2083.0,
+        "min": 1942,
         "max": 2100,
-        "count": 4
+        "count": 5
       }
     },
     "by_type": {
       "2BR": {
         "2024": {
           "median_psf": 2077,
-          "q1": 2058.0,
-          "q3": 2097.0,
+          "q1": 2057.0,
+          "q3": 2096.0,
           "min": 1934,
-          "max": 2168,
+          "max": 2167,
           "count": 17
         },
         "2025": {
-          "median_psf": 2023,
-          "q1": 1999.0,
-          "q3": 2065.0,
+          "median_psf": 2021,
+          "q1": 1998.0,
+          "q3": 2064.0,
           "min": 1908,
-          "max": 2126,
+          "max": 2124,
           "count": 19
         },
         "2026": {
-          "median_psf": 2055.5,
-          "q1": 2005.5,
-          "q3": 2088.75,
-          "min": 1944,
+          "median_psf": 2025,
+          "q1": 1956.0,
+          "q3": 2083.0,
+          "min": 1942,
           "max": 2100,
-          "count": 4
+          "count": 5
         }
       },
       "3BR": {
         "2024": {
-          "median_psf": 2087.0,
+          "median_psf": 2086.5,
           "q1": 2022.75,
-          "q3": 2149.0,
-          "min": 1948,
+          "q3": 2148.75,
+          "min": 1947,
           "max": 2199,
           "count": 6
         },
         "2025": {
-          "median_psf": 2070.5,
-          "q1": 2016.75,
-          "q3": 2090.5,
+          "median_psf": 2070.0,
+          "q1": 2016.5,
+          "q3": 2089.0,
           "min": 1997,
           "max": 2120,
           "count": 6
@@ -1882,47 +2087,74 @@
       },
       "4BR+": {
         "2025": {
-          "median_psf": 2146.0,
-          "q1": 2124.5,
-          "q3": 2167.5,
-          "min": 2103,
-          "max": 2189,
+          "median_psf": 2144.5,
+          "q1": 2123.25,
+          "q3": 2165.75,
+          "min": 2102,
+          "max": 2187,
           "count": 2
         }
       }
     },
-    "overall_cagr": -0.52,
+    "overall_cagr": -1.16,
+    "overall_period": {
+      "start": "Jan2024",
+      "end": "Mar2026",
+      "month_span": 26
+    },
     "by_type_cagr": {
-      "2BR": -0.52,
-      "3BR": -0.79
+      "2BR": -1.16,
+      "3BR": -0.43
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Jan2024",
+        "end": "Mar2026",
+        "month_span": 26
+      },
+      "3BR": {
+        "start": "Feb2024",
+        "end": "Dec2025",
+        "month_span": 22
+      },
+      "4BR+": {
+        "start": "Aug2025",
+        "end": "Sep2025",
+        "month_span": 1
+      }
     },
     "only_23br": {
       "2024": {
         "median_psf": 2077,
-        "q1": 2050.0,
-        "q3": 2104.0,
+        "q1": 2049.0,
+        "q3": 2103.0,
         "min": 1934,
         "max": 2199,
         "count": 23
       },
       "2025": {
-        "median_psf": 2024,
+        "median_psf": 2022,
         "q1": 2000.0,
-        "q3": 2071.0,
+        "q3": 2072.0,
         "min": 1908,
-        "max": 2126,
+        "max": 2124,
         "count": 25
       },
       "2026": {
-        "median_psf": 2055.5,
-        "q1": 2005.5,
-        "q3": 2088.75,
-        "min": 1944,
+        "median_psf": 2025,
+        "q1": 1956.0,
+        "q3": 2083.0,
+        "min": 1942,
         "max": 2100,
-        "count": 4
+        "count": 5
       }
     },
-    "only_23br_cagr": -0.52,
+    "only_23br_cagr": -1.16,
+    "only_23br_period": {
+      "start": "Jan2024",
+      "end": "Mar2026",
+      "month_span": 26
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -1932,49 +2164,71 @@
   "dairy_farm_residences": {
     "overall": {
       "2025": {
-        "median_psf": 1731.5,
-        "q1": 1720.25,
-        "q3": 1765.75,
-        "min": 1688,
-        "max": 1867,
-        "count": 4
+        "median_psf": 1730.0,
+        "q1": 1717.0,
+        "q3": 1815.75,
+        "min": 1687,
+        "max": 1866,
+        "count": 6
       }
     },
     "by_type": {
       "2BR": {
         "2025": {
-          "median_psf": 1732,
-          "q1": 1731.5,
-          "q3": 1799.5,
-          "min": 1731,
-          "max": 1867,
-          "count": 3
+          "median_psf": 1731,
+          "q1": 1729.0,
+          "q3": 1844.0,
+          "min": 1713,
+          "max": 1866,
+          "count": 5
         }
       },
       "3BR": {
         "2025": {
-          "median_psf": 1688,
-          "q1": 1688.0,
-          "q3": 1688.0,
-          "min": 1688,
-          "max": 1688,
+          "median_psf": 1687,
+          "q1": 1687.0,
+          "q3": 1687.0,
+          "min": 1687,
+          "max": 1687,
           "count": 1
         }
       }
     },
     "overall_cagr": null,
+    "overall_period": {
+      "start": "Dec2025",
+      "end": "Dec2025",
+      "month_span": 0
+    },
     "by_type_cagr": {},
+    "by_type_period": {
+      "2BR": {
+        "start": "Dec2025",
+        "end": "Dec2025",
+        "month_span": 0
+      },
+      "3BR": {
+        "start": "Dec2025",
+        "end": "Dec2025",
+        "month_span": 0
+      }
+    },
     "only_23br": {
       "2025": {
-        "median_psf": 1731.5,
-        "q1": 1720.25,
-        "q3": 1765.75,
-        "min": 1688,
-        "max": 1867,
-        "count": 4
+        "median_psf": 1730.0,
+        "q1": 1717.0,
+        "q3": 1815.75,
+        "min": 1687,
+        "max": 1866,
+        "count": 6
       }
     },
     "only_23br_cagr": null,
+    "only_23br_period": {
+      "start": "Dec2025",
+      "end": "Dec2025",
+      "month_span": 0
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -2306,12 +2560,39 @@
         }
       }
     },
-    "overall_cagr": 3.33,
+    "overall_cagr": 3.5,
+    "overall_period": {
+      "start": "Jul2017",
+      "end": "Feb2026",
+      "month_span": 103
+    },
     "by_type_cagr": {
-      "1BR": 2.84,
-      "2BR": 3.23,
-      "3BR": 4.81,
-      "4BR+": 3.64
+      "1BR": 3.2,
+      "2BR": 3.13,
+      "3BR": 4.57,
+      "4BR+": 3.68
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Oct2020",
+        "end": "Feb2026",
+        "month_span": 64
+      },
+      "2BR": {
+        "start": "Aug2017",
+        "end": "Nov2025",
+        "month_span": 99
+      },
+      "3BR": {
+        "start": "Jul2017",
+        "end": "Dec2025",
+        "month_span": 101
+      },
+      "4BR+": {
+        "start": "Sep2017",
+        "end": "Aug2025",
+        "month_span": 95
+      }
     },
     "only_23br": {
       "2017": {
@@ -2387,7 +2668,12 @@
         "count": 11
       }
     },
-    "only_23br_cagr": 3.89,
+    "only_23br_cagr": 3.7,
+    "only_23br_period": {
+      "start": "Jul2017",
+      "end": "Dec2025",
+      "month_span": 101
+    },
     "info": {
       "top_year": 2016,
       "tenure": "99yr",
@@ -2396,33 +2682,65 @@
   },
   "eight_riversuites": {
     "overall": {
+      "2017": {
+        "median_psf": 1591.5,
+        "q1": 1451.25,
+        "q3": 1629.75,
+        "min": 709,
+        "max": 1744,
+        "count": 26
+      },
+      "2018": {
+        "median_psf": 1512,
+        "q1": 1408.0,
+        "q3": 1651.0,
+        "min": 1213,
+        "max": 1722,
+        "count": 49
+      },
+      "2019": {
+        "median_psf": 1419.0,
+        "q1": 1330.0,
+        "q3": 1510.5,
+        "min": 1011,
+        "max": 1667,
+        "count": 40
+      },
+      "2020": {
+        "median_psf": 1472.5,
+        "q1": 1370.5,
+        "q3": 1621.5,
+        "min": 1228,
+        "max": 1722,
+        "count": 34
+      },
       "2021": {
-        "median_psf": 1481,
-        "q1": 1390.0,
-        "q3": 1557.0,
-        "min": 706,
-        "max": 1769,
-        "count": 77
+        "median_psf": 1480,
+        "q1": 1382.0,
+        "q3": 1559.0,
+        "min": 705,
+        "max": 1767,
+        "count": 91
       },
       "2022": {
-        "median_psf": 1579.0,
+        "median_psf": 1578.5,
         "q1": 1500.0,
         "q3": 1643.0,
-        "min": 966,
-        "max": 1837,
+        "min": 965,
+        "max": 1835,
         "count": 62
       },
       "2023": {
-        "median_psf": 1737.0,
-        "q1": 1651.5,
-        "q3": 1814.0,
+        "median_psf": 1740,
+        "q1": 1644.0,
+        "q3": 1812.0,
         "min": 1369,
         "max": 1956,
-        "count": 38
+        "count": 37
       },
       "2024": {
-        "median_psf": 1814,
-        "q1": 1726.0,
+        "median_psf": 1815,
+        "q1": 1727.0,
         "q3": 1876.0,
         "min": 929,
         "max": 1997,
@@ -2430,273 +2748,465 @@
       },
       "2025": {
         "median_psf": 1876,
-        "q1": 1751.0,
+        "q1": 1750.0,
         "q3": 1929.0,
         "min": 929,
-        "max": 2014,
+        "max": 2015,
         "count": 57
       },
       "2026": {
-        "median_psf": 1842.0,
-        "q1": 1821.25,
-        "q3": 1874.75,
-        "min": 1738,
-        "max": 1939,
-        "count": 6
+        "median_psf": 1819,
+        "q1": 1682.5,
+        "q3": 1866.5,
+        "min": 1603,
+        "max": 1937,
+        "count": 11
       }
     },
     "by_type": {
       "1BR": {
+        "2017": {
+          "median_psf": 1626,
+          "q1": 1602.0,
+          "q3": 1642.0,
+          "min": 1518,
+          "max": 1744,
+          "count": 17
+        },
+        "2018": {
+          "median_psf": 1672,
+          "q1": 1636.5,
+          "q3": 1696.5,
+          "min": 1586,
+          "max": 1722,
+          "count": 19
+        },
+        "2019": {
+          "median_psf": 1608,
+          "q1": 1563.0,
+          "q3": 1640.0,
+          "min": 1540,
+          "max": 1667,
+          "count": 5
+        },
+        "2020": {
+          "median_psf": 1646.5,
+          "q1": 1636.25,
+          "q3": 1675.5,
+          "min": 1620,
+          "max": 1722,
+          "count": 8
+        },
         "2021": {
-          "median_psf": 1695.0,
-          "q1": 1634.25,
-          "q3": 1714.75,
-          "min": 1571,
-          "max": 1769,
-          "count": 12
+          "median_psf": 1642.0,
+          "q1": 1619.0,
+          "q3": 1701.75,
+          "min": 1570,
+          "max": 1767,
+          "count": 16
         },
         "2022": {
-          "median_psf": 1706.0,
-          "q1": 1655.0,
-          "q3": 1774.25,
-          "min": 1651,
-          "max": 1837,
+          "median_psf": 1705.0,
+          "q1": 1654.0,
+          "q3": 1772.5,
+          "min": 1649,
+          "max": 1835,
           "count": 6
         },
         "2023": {
-          "median_psf": 1819.5,
-          "q1": 1814.0,
-          "q3": 1837.5,
+          "median_psf": 1818.0,
+          "q1": 1812.0,
+          "q3": 1835.5,
           "min": 1540,
-          "max": 1916,
+          "max": 1914,
           "count": 8
         },
         "2024": {
-          "median_psf": 1890.0,
-          "q1": 1880.5,
-          "q3": 1919.75,
-          "min": 1848,
-          "max": 1937,
+          "median_psf": 1888.0,
+          "q1": 1878.5,
+          "q3": 1918.5,
+          "min": 1846,
+          "max": 1935,
           "count": 6
         },
         "2025": {
-          "median_psf": 1919.5,
-          "q1": 1905.0,
-          "q3": 1943.0,
-          "min": 1868,
-          "max": 1966,
+          "median_psf": 1917.5,
+          "q1": 1903.0,
+          "q3": 1941.0,
+          "min": 1867,
+          "max": 1964,
           "count": 12
         },
         "2026": {
-          "median_psf": 1939,
-          "q1": 1939.0,
-          "q3": 1939.0,
-          "min": 1939,
-          "max": 1939,
-          "count": 1
+          "median_psf": 1866.5,
+          "q1": 1831.25,
+          "q3": 1901.75,
+          "min": 1796,
+          "max": 1937,
+          "count": 2
         }
       },
       "2BR": {
+        "2017": {
+          "median_psf": 1479.0,
+          "q1": 1429.0,
+          "q3": 1531.75,
+          "min": 1429,
+          "max": 1540,
+          "count": 4
+        },
+        "2018": {
+          "median_psf": 1486.0,
+          "q1": 1472.0,
+          "q3": 1509.0,
+          "min": 1386,
+          "max": 1566,
+          "count": 18
+        },
+        "2019": {
+          "median_psf": 1484.5,
+          "q1": 1433.0,
+          "q3": 1525.25,
+          "min": 1032,
+          "max": 1615,
+          "count": 16
+        },
+        "2020": {
+          "median_psf": 1474,
+          "q1": 1392.5,
+          "q3": 1503.5,
+          "min": 1228,
+          "max": 1643,
+          "count": 15
+        },
         "2021": {
           "median_psf": 1500,
-          "q1": 1477.0,
-          "q3": 1549.5,
-          "min": 1229,
+          "q1": 1476.5,
+          "q3": 1556.5,
+          "min": 1228,
           "max": 1629,
-          "count": 27
+          "count": 31
         },
         "2022": {
-          "median_psf": 1611,
+          "median_psf": 1610,
           "q1": 1529.0,
-          "q3": 1645.5,
+          "q3": 1645.0,
           "min": 1429,
-          "max": 1714,
+          "max": 1715,
           "count": 31
         },
         "2023": {
-          "median_psf": 1742.5,
+          "median_psf": 1771,
           "q1": 1686.0,
           "q3": 1786.0,
           "min": 1369,
           "max": 1956,
-          "count": 18
+          "count": 17
         },
         "2024": {
-          "median_psf": 1822.0,
+          "median_psf": 1822.5,
           "q1": 1759.25,
-          "q3": 1858.5,
-          "min": 1406,
-          "max": 1968,
+          "q3": 1858.0,
+          "min": 1405,
+          "max": 1969,
           "count": 22
         },
         "2025": {
           "median_psf": 1913.0,
-          "q1": 1796.25,
-          "q3": 1946.5,
+          "q1": 1795.25,
+          "q3": 1946.75,
           "min": 1540,
-          "max": 2014,
+          "max": 2015,
           "count": 20
         },
         "2026": {
-          "median_psf": 1859,
-          "q1": 1859.0,
-          "q3": 1859.0,
-          "min": 1859,
-          "max": 1859,
-          "count": 1
+          "median_psf": 1732.5,
+          "q1": 1669.75,
+          "q3": 1795.25,
+          "min": 1607,
+          "max": 1858,
+          "count": 2
         }
       },
       "3BR": {
+        "2017": {
+          "median_psf": 1388,
+          "q1": 1388.0,
+          "q3": 1388.0,
+          "min": 1388,
+          "max": 1388,
+          "count": 1
+        },
+        "2018": {
+          "median_psf": 1333.0,
+          "q1": 1297.0,
+          "q3": 1381.25,
+          "min": 1213,
+          "max": 1531,
+          "count": 12
+        },
+        "2019": {
+          "median_psf": 1340.0,
+          "q1": 1291.75,
+          "q3": 1377.5,
+          "min": 1222,
+          "max": 1499,
+          "count": 16
+        },
+        "2020": {
+          "median_psf": 1388,
+          "q1": 1368.0,
+          "q3": 1430.0,
+          "min": 1264,
+          "max": 1500,
+          "count": 9
+        },
         "2021": {
-          "median_psf": 1421.0,
-          "q1": 1360.25,
-          "q3": 1485.5,
+          "median_psf": 1419.5,
+          "q1": 1359.0,
+          "q3": 1480.0,
           "min": 1255,
-          "max": 1570,
-          "count": 26
+          "max": 1569,
+          "count": 30
         },
         "2022": {
-          "median_psf": 1520,
-          "q1": 1453.0,
+          "median_psf": 1521,
+          "q1": 1452.0,
           "q3": 1577.0,
-          "min": 1309,
-          "max": 1626,
+          "min": 1308,
+          "max": 1625,
           "count": 17
         },
         "2023": {
-          "median_psf": 1603,
+          "median_psf": 1601,
           "q1": 1563.0,
-          "q3": 1677.0,
+          "q3": 1676.0,
           "min": 1446,
           "max": 1796,
           "count": 9
         },
         "2024": {
-          "median_psf": 1784.0,
-          "q1": 1673.75,
-          "q3": 1853.75,
-          "min": 1366,
-          "max": 1905,
+          "median_psf": 1783.5,
+          "q1": 1673.0,
+          "q3": 1853.5,
+          "min": 1365,
+          "max": 1904,
           "count": 20
         },
         "2025": {
-          "median_psf": 1799,
-          "q1": 1701.5,
-          "q3": 1878.0,
-          "min": 1582,
-          "max": 1959,
+          "median_psf": 1798,
+          "q1": 1701.0,
+          "q3": 1877.5,
+          "min": 1581,
+          "max": 1960,
           "count": 19
         },
         "2026": {
-          "median_psf": 1822.5,
-          "q1": 1799.5,
-          "q3": 1838.75,
-          "min": 1738,
-          "max": 1880,
-          "count": 4
+          "median_psf": 1823,
+          "q1": 1819.0,
+          "q3": 1875.0,
+          "min": 1737,
+          "max": 1879,
+          "count": 5
         }
       },
       "4BR+": {
+        "2017": {
+          "median_psf": 715.0,
+          "q1": 713.5,
+          "q3": 722.25,
+          "min": 709,
+          "max": 744,
+          "count": 4
+        },
+        "2019": {
+          "median_psf": 1079,
+          "q1": 1045.0,
+          "q3": 1096.5,
+          "min": 1011,
+          "max": 1114,
+          "count": 3
+        },
+        "2020": {
+          "median_psf": 1319.0,
+          "q1": 1317.0,
+          "q3": 1321.0,
+          "min": 1315,
+          "max": 1323,
+          "count": 2
+        },
         "2021": {
-          "median_psf": 1291.5,
-          "q1": 885.75,
-          "q3": 1396.0,
-          "min": 706,
-          "max": 1431,
-          "count": 12
+          "median_psf": 1228.0,
+          "q1": 864.5,
+          "q3": 1382.75,
+          "min": 705,
+          "max": 1430,
+          "count": 14
         },
         "2022": {
-          "median_psf": 1401.0,
+          "median_psf": 1400.5,
           "q1": 990.25,
-          "q3": 1556.0,
-          "min": 966,
+          "q3": 1555.25,
+          "min": 965,
           "max": 1681,
           "count": 8
         },
         "2023": {
-          "median_psf": 1733,
-          "q1": 1689.0,
-          "q3": 1763.0,
-          "min": 1645,
-          "max": 1793,
+          "median_psf": 1732,
+          "q1": 1688.0,
+          "q3": 1762.0,
+          "min": 1644,
+          "max": 1792,
           "count": 3
         },
         "2024": {
-          "median_psf": 1525,
-          "q1": 1070.0,
-          "q3": 1740.0,
+          "median_psf": 1524,
+          "q1": 1069.0,
+          "q3": 1739.0,
           "min": 929,
           "max": 1997,
           "count": 5
         },
         "2025": {
-          "median_psf": 1524.5,
-          "q1": 1094.25,
-          "q3": 1571.5,
+          "median_psf": 1524.0,
+          "q1": 1093.25,
+          "q3": 1570.75,
           "min": 929,
-          "max": 1969,
+          "max": 1968,
           "count": 6
+        },
+        "2026": {
+          "median_psf": 1615.5,
+          "q1": 1609.25,
+          "q3": 1621.75,
+          "min": 1603,
+          "max": 1628,
+          "count": 2
         }
       }
     },
-    "overall_cagr": 4.46,
+    "overall_cagr": 1.55,
+    "overall_period": {
+      "start": "Jul2017",
+      "end": "Mar2026",
+      "month_span": 104
+    },
     "by_type_cagr": {
-      "1BR": 2.73,
-      "2BR": 4.38,
-      "3BR": 5.1,
-      "4BR+": 4.23
+      "1BR": 1.6,
+      "2BR": 1.88,
+      "3BR": 3.26,
+      "4BR+": 9.96
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jul2017",
+        "end": "Mar2026",
+        "month_span": 104
+      },
+      "2BR": {
+        "start": "Aug2017",
+        "end": "Feb2026",
+        "month_span": 102
+      },
+      "3BR": {
+        "start": "Sep2017",
+        "end": "Mar2026",
+        "month_span": 102
+      },
+      "4BR+": {
+        "start": "Aug2017",
+        "end": "Mar2026",
+        "month_span": 103
+      }
     },
     "only_23br": {
+      "2017": {
+        "median_psf": 1429,
+        "q1": 1429.0,
+        "q3": 1529.0,
+        "min": 1388,
+        "max": 1540,
+        "count": 5
+      },
+      "2018": {
+        "median_psf": 1464.5,
+        "q1": 1361.75,
+        "q3": 1486.0,
+        "min": 1213,
+        "max": 1566,
+        "count": 30
+      },
+      "2019": {
+        "median_psf": 1398.5,
+        "q1": 1333.5,
+        "q3": 1486.75,
+        "min": 1032,
+        "max": 1615,
+        "count": 32
+      },
+      "2020": {
+        "median_psf": 1438.0,
+        "q1": 1364.75,
+        "q3": 1500.0,
+        "min": 1228,
+        "max": 1643,
+        "count": 24
+      },
       "2021": {
-        "median_psf": 1481,
-        "q1": 1404.0,
+        "median_psf": 1480,
+        "q1": 1398.0,
         "q3": 1543.0,
-        "min": 1229,
+        "min": 1228,
         "max": 1629,
-        "count": 53
+        "count": 61
       },
       "2022": {
-        "median_psf": 1574.0,
+        "median_psf": 1574.5,
         "q1": 1500.0,
-        "q3": 1633.75,
-        "min": 1309,
-        "max": 1714,
+        "q3": 1633.5,
+        "min": 1308,
+        "max": 1715,
         "count": 48
       },
       "2023": {
-        "median_psf": 1707,
-        "q1": 1614.5,
+        "median_psf": 1696.5,
+        "q1": 1607.0,
         "q3": 1786.0,
         "min": 1369,
         "max": 1956,
-        "count": 27
+        "count": 26
       },
       "2024": {
-        "median_psf": 1806.5,
-        "q1": 1728.25,
-        "q3": 1858.5,
-        "min": 1366,
-        "max": 1968,
+        "median_psf": 1805.0,
+        "q1": 1729.0,
+        "q3": 1858.0,
+        "min": 1365,
+        "max": 1969,
         "count": 42
       },
       "2025": {
-        "median_psf": 1860,
-        "q1": 1768.5,
+        "median_psf": 1858,
+        "q1": 1768.0,
         "q3": 1926.0,
         "min": 1540,
-        "max": 2014,
+        "max": 2015,
         "count": 39
       },
       "2026": {
-        "median_psf": 1825,
-        "q1": 1820.0,
-        "q3": 1859.0,
-        "min": 1738,
-        "max": 1880,
-        "count": 5
+        "median_psf": 1823,
+        "q1": 1778.0,
+        "q3": 1866.5,
+        "min": 1607,
+        "max": 1879,
+        "count": 7
       }
     },
-    "only_23br_cagr": 4.27,
+    "only_23br_cagr": 2.88,
+    "only_23br_period": {
+      "start": "Aug2017",
+      "end": "Mar2026",
+      "month_span": 103
+    },
     "info": {
       "top_year": 2016,
       "tenure": "99yr",
@@ -3084,12 +3594,39 @@
         }
       }
     },
-    "overall_cagr": 4.47,
+    "overall_cagr": 4.56,
+    "overall_period": {
+      "start": "Mar2017",
+      "end": "Jan2026",
+      "month_span": 106
+    },
     "by_type_cagr": {
-      "1BR": 2.8,
-      "2BR": 4.3,
-      "3BR": 5.26,
-      "4BR+": 5.47
+      "1BR": 2.68,
+      "2BR": 4.47,
+      "3BR": 4.99,
+      "4BR+": 5.3
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2017",
+        "end": "Aug2025",
+        "month_span": 100
+      },
+      "2BR": {
+        "start": "May2017",
+        "end": "Jan2026",
+        "month_span": 104
+      },
+      "3BR": {
+        "start": "Mar2017",
+        "end": "Aug2025",
+        "month_span": 101
+      },
+      "4BR+": {
+        "start": "Aug2017",
+        "end": "Nov2025",
+        "month_span": 99
+      }
     },
     "only_23br": {
       "2017": {
@@ -3173,7 +3710,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 4.48,
+    "only_23br_cagr": 4.57,
+    "only_23br_period": {
+      "start": "Mar2017",
+      "end": "Jan2026",
+      "month_span": 106
+    },
     "info": {
       "top_year": 2014,
       "tenure": "99yr",
@@ -3297,12 +3839,38 @@
         }
       }
     },
-    "overall_cagr": 0.91,
+    "overall_cagr": 1.1,
+    "overall_period": {
+      "start": "Jul2024",
+      "end": "Mar2026",
+      "month_span": 20
+    },
     "by_type_cagr": {
-      "1BR": 0.13,
-      "2BR": -0.51,
-      "3BR": 1.1,
-      "4BR+": 6.41
+      "1BR": 0.16,
+      "2BR": -0.44,
+      "4BR+": 7.75
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jul2024",
+        "end": "Feb2026",
+        "month_span": 19
+      },
+      "2BR": {
+        "start": "Aug2024",
+        "end": "Oct2025",
+        "month_span": 14
+      },
+      "3BR": {
+        "start": "Apr2025",
+        "end": "Jan2026",
+        "month_span": 9
+      },
+      "4BR+": {
+        "start": "Jul2024",
+        "end": "Mar2026",
+        "month_span": 20
+      }
     },
     "only_23br": {
       "2024": {
@@ -3330,7 +3898,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 3.11,
+    "only_23br_cagr": 4.42,
+    "only_23br_period": {
+      "start": "Aug2024",
+      "end": "Jan2026",
+      "month_span": 17
+    },
     "info": {
       "top_year": 2019,
       "tenure": "99yr",
@@ -3393,8 +3966,20 @@
       }
     },
     "overall_cagr": -0.03,
+    "overall_period": {
+      "start": "Jul2023",
+      "end": "Mar2025",
+      "month_span": 20
+    },
     "by_type_cagr": {
       "2BR": -0.03
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Jul2023",
+        "end": "Mar2025",
+        "month_span": 20
+      }
     },
     "only_23br": {
       "2023": {
@@ -3423,6 +4008,11 @@
       }
     },
     "only_23br_cagr": -0.03,
+    "only_23br_period": {
+      "start": "Jul2023",
+      "end": "Mar2025",
+      "month_span": 20
+    },
     "info": {
       "top_year": 2021,
       "tenure": "99yr",
@@ -3431,18 +4021,34 @@
   },
   "hillion_residences": {
     "overall": {
+      "2019": {
+        "median_psf": 1485.0,
+        "q1": 1413.25,
+        "q3": 1553.25,
+        "min": 1379,
+        "max": 1836,
+        "count": 10
+      },
+      "2020": {
+        "median_psf": 1463,
+        "q1": 1421.5,
+        "q3": 1531.5,
+        "min": 1032,
+        "max": 1583,
+        "count": 11
+      },
       "2021": {
-        "median_psf": 1534,
-        "q1": 1493.0,
-        "q3": 1555.0,
-        "min": 1468,
-        "max": 1596,
-        "count": 21
+        "median_psf": 1520.0,
+        "q1": 1490.0,
+        "q3": 1546.25,
+        "min": 1127,
+        "max": 1595,
+        "count": 26
       },
       "2022": {
-        "median_psf": 1614.5,
-        "q1": 1556.5,
-        "q3": 1662.0,
+        "median_psf": 1613.5,
+        "q1": 1556.75,
+        "q3": 1660.0,
         "min": 1202,
         "max": 1760,
         "count": 38
@@ -3452,29 +4058,29 @@
         "q1": 1684.0,
         "q3": 1771.0,
         "min": 1490,
-        "max": 1901,
+        "max": 1900,
         "count": 29
       },
       "2024": {
-        "median_psf": 1747,
-        "q1": 1718.5,
-        "q3": 1782.0,
-        "min": 1487,
-        "max": 1901,
+        "median_psf": 1748,
+        "q1": 1719.0,
+        "q3": 1780.0,
+        "min": 1486,
+        "max": 1900,
         "count": 27
       },
       "2025": {
         "median_psf": 1819.5,
         "q1": 1771.0,
-        "q3": 1862.0,
+        "q3": 1861.75,
         "min": 1691,
-        "max": 1954,
+        "max": 1953,
         "count": 26
       },
       "2026": {
-        "median_psf": 1753.0,
-        "q1": 1735.25,
-        "q3": 1758.75,
+        "median_psf": 1754.0,
+        "q1": 1736.25,
+        "q3": 1759.0,
         "min": 1581,
         "max": 1793,
         "count": 6
@@ -3482,94 +4088,126 @@
     },
     "by_type": {
       "1BR": {
+        "2019": {
+          "median_psf": 1642,
+          "q1": 1598.5,
+          "q3": 1739.0,
+          "min": 1555,
+          "max": 1836,
+          "count": 3
+        },
+        "2020": {
+          "median_psf": 1564.0,
+          "q1": 1541.25,
+          "q3": 1578.5,
+          "min": 1512,
+          "max": 1583,
+          "count": 4
+        },
         "2021": {
-          "median_psf": 1540,
-          "q1": 1513.5,
-          "q3": 1560.0,
-          "min": 1473,
-          "max": 1593,
-          "count": 15
+          "median_psf": 1530,
+          "q1": 1499.5,
+          "q3": 1548.0,
+          "min": 1349,
+          "max": 1594,
+          "count": 19
         },
         "2022": {
           "median_psf": 1574,
-          "q1": 1540.0,
-          "q3": 1624.0,
+          "q1": 1541.0,
+          "q3": 1625.0,
           "min": 1202,
           "max": 1760,
           "count": 25
         },
         "2023": {
-          "median_psf": 1705,
+          "median_psf": 1706,
           "q1": 1674.0,
-          "q3": 1726.0,
+          "q3": 1727.0,
           "min": 1490,
           "max": 1844,
           "count": 21
         },
         "2024": {
-          "median_psf": 1729.0,
-          "q1": 1692.25,
-          "q3": 1748.5,
-          "min": 1487,
+          "median_psf": 1729.5,
+          "q1": 1693.25,
+          "q3": 1749.5,
+          "min": 1486,
           "max": 1853,
           "count": 18
         },
         "2025": {
           "median_psf": 1771,
-          "q1": 1730.0,
-          "q3": 1798.5,
+          "q1": 1731.0,
+          "q3": 1799.5,
           "min": 1691,
           "max": 1855,
           "count": 15
         },
         "2026": {
-          "median_psf": 1753.0,
-          "q1": 1735.25,
-          "q3": 1758.75,
+          "median_psf": 1754.0,
+          "q1": 1736.25,
+          "q3": 1759.0,
           "min": 1581,
           "max": 1793,
           "count": 6
         }
       },
       "2BR": {
+        "2019": {
+          "median_psf": 1432,
+          "q1": 1401.5,
+          "q3": 1485.0,
+          "min": 1379,
+          "max": 1548,
+          "count": 7
+        },
+        "2020": {
+          "median_psf": 1456,
+          "q1": 1435.0,
+          "q3": 1463.0,
+          "min": 1379,
+          "max": 1478,
+          "count": 5
+        },
         "2021": {
-          "median_psf": 1507.0,
-          "q1": 1489.5,
-          "q3": 1528.0,
-          "min": 1479,
-          "max": 1549,
+          "median_psf": 1506.0,
+          "q1": 1488.5,
+          "q3": 1527.0,
+          "min": 1478,
+          "max": 1548,
           "count": 4
         },
         "2022": {
-          "median_psf": 1623.5,
-          "q1": 1620.0,
-          "q3": 1658.5,
-          "min": 1518,
-          "max": 1725,
+          "median_psf": 1621.5,
+          "q1": 1618.0,
+          "q3": 1656.5,
+          "min": 1517,
+          "max": 1724,
           "count": 10
         },
         "2023": {
-          "median_psf": 1782.0,
-          "q1": 1748.0,
-          "q3": 1820.5,
-          "min": 1704,
-          "max": 1901,
+          "median_psf": 1780.0,
+          "q1": 1746.75,
+          "q3": 1818.5,
+          "min": 1703,
+          "max": 1900,
           "count": 6
         },
         "2024": {
-          "median_psf": 1803,
-          "q1": 1782.0,
-          "q3": 1848.5,
-          "min": 1754,
-          "max": 1873,
+          "median_psf": 1801,
+          "q1": 1780.0,
+          "q3": 1847.0,
+          "min": 1752,
+          "max": 1872,
           "count": 7
         },
         "2025": {
-          "median_psf": 1873,
-          "q1": 1852.0,
-          "q3": 1908.0,
-          "min": 1831,
-          "max": 1930,
+          "median_psf": 1872,
+          "q1": 1851.0,
+          "q3": 1907.0,
+          "min": 1829,
+          "max": 1928,
           "count": 9
         }
       },
@@ -3583,19 +4221,19 @@
           "count": 1
         },
         "2022": {
-          "median_psf": 1671.0,
-          "q1": 1668.5,
-          "q3": 1673.5,
-          "min": 1666,
+          "median_psf": 1671.5,
+          "q1": 1669.25,
+          "q3": 1673.75,
+          "min": 1667,
           "max": 1676,
           "count": 2
         },
         "2023": {
-          "median_psf": 1795,
-          "q1": 1795.0,
-          "q3": 1795.0,
-          "min": 1795,
-          "max": 1795,
+          "median_psf": 1796,
+          "q1": 1796.0,
+          "q3": 1796.0,
+          "min": 1796,
+          "max": 1796,
           "count": 1
         },
         "2024": {
@@ -3616,98 +4254,154 @@
         }
       },
       "4BR+": {
+        "2020": {
+          "median_psf": 1220.0,
+          "q1": 1126.0,
+          "q3": 1314.0,
+          "min": 1032,
+          "max": 1408,
+          "count": 2
+        },
         "2021": {
-          "median_psf": 1596,
-          "q1": 1596.0,
-          "q3": 1596.0,
-          "min": 1596,
-          "max": 1596,
-          "count": 1
+          "median_psf": 1361.0,
+          "q1": 1244.0,
+          "q3": 1478.0,
+          "min": 1127,
+          "max": 1595,
+          "count": 2
         },
         "2022": {
-          "median_psf": 1674,
-          "q1": 1674.0,
-          "q3": 1674.0,
-          "min": 1674,
-          "max": 1674,
+          "median_psf": 1673,
+          "q1": 1673.0,
+          "q3": 1673.0,
+          "min": 1673,
+          "max": 1673,
           "count": 1
         },
         "2023": {
-          "median_psf": 1844,
-          "q1": 1844.0,
-          "q3": 1844.0,
-          "min": 1844,
-          "max": 1844,
+          "median_psf": 1843,
+          "q1": 1843.0,
+          "q3": 1843.0,
+          "min": 1843,
+          "max": 1843,
           "count": 1
         },
         "2024": {
-          "median_psf": 1901,
-          "q1": 1901.0,
-          "q3": 1901.0,
-          "min": 1901,
-          "max": 1901,
+          "median_psf": 1900,
+          "q1": 1900.0,
+          "q3": 1900.0,
+          "min": 1900,
+          "max": 1900,
           "count": 1
         },
         "2025": {
-          "median_psf": 1954,
-          "q1": 1954.0,
-          "q3": 1954.0,
-          "min": 1954,
-          "max": 1954,
+          "median_psf": 1953,
+          "q1": 1953.0,
+          "q3": 1953.0,
+          "min": 1953,
+          "max": 1953,
           "count": 1
         }
       }
     },
-    "overall_cagr": 2.7,
+    "overall_cagr": 2.38,
+    "overall_period": {
+      "start": "Jan2019",
+      "end": "Feb2026",
+      "month_span": 85
+    },
     "by_type_cagr": {
-      "1BR": 2.62,
-      "2BR": 5.59,
-      "3BR": 6.15,
-      "4BR+": 5.19
+      "1BR": 0.94,
+      "2BR": 4.1,
+      "3BR": 7.24,
+      "4BR+": 9.22
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jan2019",
+        "end": "Feb2026",
+        "month_span": 85
+      },
+      "2BR": {
+        "start": "Apr2019",
+        "end": "Dec2025",
+        "month_span": 80
+      },
+      "3BR": {
+        "start": "Dec2021",
+        "end": "May2025",
+        "month_span": 41
+      },
+      "4BR+": {
+        "start": "Apr2020",
+        "end": "Aug2025",
+        "month_span": 64
+      }
     },
     "only_23br": {
+      "2019": {
+        "median_psf": 1432,
+        "q1": 1401.5,
+        "q3": 1485.0,
+        "min": 1379,
+        "max": 1548,
+        "count": 7
+      },
+      "2020": {
+        "median_psf": 1456,
+        "q1": 1435.0,
+        "q3": 1463.0,
+        "min": 1379,
+        "max": 1478,
+        "count": 5
+      },
       "2021": {
-        "median_psf": 1493,
-        "q1": 1479.0,
-        "q3": 1521.0,
+        "median_psf": 1492,
+        "q1": 1478.0,
+        "q3": 1520.0,
         "min": 1468,
-        "max": 1549,
+        "max": 1548,
         "count": 5
       },
       "2022": {
-        "median_psf": 1637.5,
-        "q1": 1620.0,
-        "q3": 1663.0,
-        "min": 1518,
-        "max": 1725,
+        "median_psf": 1635.5,
+        "q1": 1618.0,
+        "q3": 1661.75,
+        "min": 1517,
+        "max": 1724,
         "count": 12
       },
       "2023": {
-        "median_psf": 1789,
-        "q1": 1757.0,
-        "q3": 1813.0,
-        "min": 1704,
-        "max": 1901,
+        "median_psf": 1787,
+        "q1": 1755.5,
+        "q3": 1812.5,
+        "min": 1703,
+        "max": 1900,
         "count": 7
       },
       "2024": {
-        "median_psf": 1796.0,
-        "q1": 1769.75,
-        "q3": 1839.75,
+        "median_psf": 1794.0,
+        "q1": 1767.75,
+        "q3": 1838.0,
         "min": 1711,
-        "max": 1873,
+        "max": 1872,
         "count": 8
       },
       "2025": {
-        "median_psf": 1868.5,
-        "q1": 1853.0,
-        "q3": 1899.25,
-        "min": 1831,
-        "max": 1930,
+        "median_psf": 1868.0,
+        "q1": 1852.0,
+        "q3": 1898.25,
+        "min": 1829,
+        "max": 1928,
         "count": 10
       }
     },
-    "only_23br_cagr": 5.77,
+    "only_23br_cagr": 4.07,
+    "only_23br_period": {
+      "start": "Apr2019",
+      "end": "Dec2025",
+      "month_span": 80
+    },
     "info": {
       "top_year": 2017,
       "tenure": "99yr",
@@ -4119,12 +4813,39 @@
         }
       }
     },
-    "overall_cagr": 2.89,
+    "overall_cagr": 2.86,
+    "overall_period": {
+      "start": "Feb2017",
+      "end": "Mar2026",
+      "month_span": 109
+    },
     "by_type_cagr": {
-      "1BR": 2.74,
-      "2BR": 2.85,
-      "3BR": 3.94,
-      "4BR+": -0.14
+      "1BR": 2.82,
+      "2BR": 2.63,
+      "3BR": 4.31,
+      "4BR+": -0.15
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2017",
+        "end": "Jan2026",
+        "month_span": 105
+      },
+      "2BR": {
+        "start": "Feb2017",
+        "end": "Oct2025",
+        "month_span": 104
+      },
+      "3BR": {
+        "start": "Dec2017",
+        "end": "Mar2026",
+        "month_span": 99
+      },
+      "4BR+": {
+        "start": "Jun2017",
+        "end": "Jan2026",
+        "month_span": 103
+      }
     },
     "only_23br": {
       "2017": {
@@ -4208,7 +4929,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 2.61,
+    "only_23br_cagr": 2.59,
+    "only_23br_period": {
+      "start": "Feb2017",
+      "end": "Mar2026",
+      "month_span": 109
+    },
     "info": {
       "top_year": 2016,
       "tenure": "99yr",
@@ -4492,12 +5218,39 @@
         }
       }
     },
-    "overall_cagr": 2.86,
+    "overall_cagr": 2.94,
+    "overall_period": {
+      "start": "Apr2020",
+      "end": "Feb2026",
+      "month_span": 70
+    },
     "by_type_cagr": {
-      "1BR": 2.34,
-      "2BR": 2.85,
-      "3BR": 3.71,
-      "4BR+": 1.15
+      "1BR": 2.41,
+      "2BR": 3.17,
+      "3BR": 3.65,
+      "4BR+": 1.25
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2020",
+        "end": "Feb2026",
+        "month_span": 70
+      },
+      "2BR": {
+        "start": "Sep2020",
+        "end": "Feb2026",
+        "month_span": 65
+      },
+      "3BR": {
+        "start": "Jan2021",
+        "end": "Feb2026",
+        "month_span": 61
+      },
+      "4BR+": {
+        "start": "Aug2020",
+        "end": "Mar2025",
+        "month_span": 55
+      }
     },
     "only_23br": {
       "2020": {
@@ -4557,7 +5310,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 2.92,
+    "only_23br_cagr": 3.24,
+    "only_23br_period": {
+      "start": "Sep2020",
+      "end": "Feb2026",
+      "month_span": 65
+    },
     "info": {
       "top_year": 2017,
       "tenure": "99yr",
@@ -4897,12 +5655,39 @@
         }
       }
     },
-    "overall_cagr": 5.57,
+    "overall_cagr": 5.18,
+    "overall_period": {
+      "start": "May2017",
+      "end": "Dec2025",
+      "month_span": 103
+    },
     "by_type_cagr": {
       "1BR": 3.19,
-      "2BR": 5.62,
-      "3BR": 5.86,
-      "4BR+": 5.6
+      "2BR": 5.69,
+      "3BR": 5.45,
+      "4BR+": 5.37
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Aug2017",
+        "end": "Aug2025",
+        "month_span": 96
+      },
+      "2BR": {
+        "start": "Nov2017",
+        "end": "Oct2025",
+        "month_span": 95
+      },
+      "3BR": {
+        "start": "May2017",
+        "end": "Dec2025",
+        "month_span": 103
+      },
+      "4BR+": {
+        "start": "Jul2017",
+        "end": "Nov2025",
+        "month_span": 100
+      }
     },
     "only_23br": {
       "2017": {
@@ -4978,7 +5763,12 @@
         "count": 5
       }
     },
-    "only_23br_cagr": 5.96,
+    "only_23br_cagr": 5.54,
+    "only_23br_period": {
+      "start": "May2017",
+      "end": "Dec2025",
+      "month_span": 103
+    },
     "info": {
       "top_year": 2013,
       "tenure": "Freehold",
@@ -5342,12 +6132,39 @@
         }
       }
     },
-    "overall_cagr": 3.12,
+    "overall_cagr": 3.37,
+    "overall_period": {
+      "start": "Oct2017",
+      "end": "Feb2026",
+      "month_span": 100
+    },
     "by_type_cagr": {
-      "1BR": 3.12,
+      "1BR": 3.37,
       "2BR": 2.11,
-      "3BR": 4.58,
-      "4BR+": 2.76
+      "3BR": 4.13,
+      "4BR+": 3.01
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Oct2017",
+        "end": "Feb2026",
+        "month_span": 100
+      },
+      "2BR": {
+        "start": "Dec2017",
+        "end": "Dec2025",
+        "month_span": 96
+      },
+      "3BR": {
+        "start": "Mar2018",
+        "end": "Dec2025",
+        "month_span": 93
+      },
+      "4BR+": {
+        "start": "Dec2017",
+        "end": "Apr2025",
+        "month_span": 88
+      }
     },
     "only_23br": {
       "2017": {
@@ -5424,6 +6241,11 @@
       }
     },
     "only_23br_cagr": 1.99,
+    "only_23br_period": {
+      "start": "Dec2017",
+      "end": "Dec2025",
+      "month_span": 96
+    },
     "info": {
       "top_year": 2017,
       "tenure": "99yr",
@@ -5497,10 +6319,29 @@
         }
       }
     },
-    "overall_cagr": 2.44,
-    "by_type_cagr": {
-      "1BR": 1.6,
-      "2BR": 5.12
+    "overall_cagr": null,
+    "overall_period": {
+      "start": "May2025",
+      "end": "Jan2026",
+      "month_span": 8
+    },
+    "by_type_cagr": {},
+    "by_type_period": {
+      "1BR": {
+        "start": "May2025",
+        "end": "Jan2026",
+        "month_span": 8
+      },
+      "2BR": {
+        "start": "May2025",
+        "end": "Jan2026",
+        "month_span": 8
+      },
+      "3BR": {
+        "start": "May2025",
+        "end": "Dec2025",
+        "month_span": 7
+      }
     },
     "only_23br": {
       "2025": {
@@ -5520,7 +6361,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 5.35,
+    "only_23br_cagr": null,
+    "only_23br_period": {
+      "start": "May2025",
+      "end": "Jan2026",
+      "month_span": 8
+    },
     "info": {
       "top_year": 2025,
       "tenure": "99yr",
@@ -5916,12 +6762,39 @@
         }
       }
     },
-    "overall_cagr": 3.7,
+    "overall_cagr": 3.77,
+    "overall_period": {
+      "start": "Mar2017",
+      "end": "Jan2026",
+      "month_span": 106
+    },
     "by_type_cagr": {
-      "1BR": 1.34,
-      "2BR": 3.99,
-      "3BR": 4.41,
-      "4BR+": 4.13
+      "1BR": 1.41,
+      "2BR": 3.95,
+      "3BR": 4.63,
+      "4BR+": 3.81
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jun2017",
+        "end": "Jan2025",
+        "month_span": 91
+      },
+      "2BR": {
+        "start": "Oct2017",
+        "end": "Nov2025",
+        "month_span": 97
+      },
+      "3BR": {
+        "start": "Jun2017",
+        "end": "Jan2026",
+        "month_span": 103
+      },
+      "4BR+": {
+        "start": "Mar2017",
+        "end": "Nov2025",
+        "month_span": 104
+      }
     },
     "only_23br": {
       "2017": {
@@ -6005,7 +6878,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 3.65,
+    "only_23br_cagr": 3.83,
+    "only_23br_period": {
+      "start": "Jun2017",
+      "end": "Jan2026",
+      "month_span": 103
+    },
     "info": {
       "top_year": 2010,
       "tenure": "99yr",
@@ -6273,12 +7151,39 @@
         }
       }
     },
-    "overall_cagr": 3.71,
+    "overall_cagr": 4.12,
+    "overall_period": {
+      "start": "Sep2020",
+      "end": "Feb2026",
+      "month_span": 65
+    },
     "by_type_cagr": {
-      "1BR": 2.67,
-      "2BR": 3.95,
-      "3BR": 3.95,
-      "4BR+": 1.79
+      "1BR": 3.05,
+      "2BR": 4.39,
+      "3BR": 4.45,
+      "4BR+": 2.01
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Nov2020",
+        "end": "Feb2026",
+        "month_span": 63
+      },
+      "2BR": {
+        "start": "Sep2020",
+        "end": "Feb2026",
+        "month_span": 65
+      },
+      "3BR": {
+        "start": "Sep2020",
+        "end": "Jan2026",
+        "month_span": 64
+      },
+      "4BR+": {
+        "start": "May2022",
+        "end": "Jan2025",
+        "month_span": 32
+      }
     },
     "only_23br": {
       "2020": {
@@ -6338,7 +7243,12 @@
         "count": 7
       }
     },
-    "only_23br_cagr": 3.71,
+    "only_23br_cagr": 4.12,
+    "only_23br_period": {
+      "start": "Sep2020",
+      "end": "Feb2026",
+      "month_span": 65
+    },
     "info": {
       "top_year": 2018,
       "tenure": "99yr",
@@ -6679,11 +7589,38 @@
       }
     },
     "overall_cagr": 2.4,
+    "overall_period": {
+      "start": "Feb2018",
+      "end": "Feb2026",
+      "month_span": 96
+    },
     "by_type_cagr": {
-      "1BR": 3.95,
-      "2BR": 2.59,
-      "3BR": 2.67,
-      "4BR+": 5.62
+      "1BR": 3.64,
+      "2BR": 2.62,
+      "3BR": 2.88,
+      "4BR+": 5.0
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jan2019",
+        "end": "Jun2024",
+        "month_span": 65
+      },
+      "2BR": {
+        "start": "Mar2018",
+        "end": "Feb2026",
+        "month_span": 95
+      },
+      "3BR": {
+        "start": "Aug2018",
+        "end": "Jan2026",
+        "month_span": 89
+      },
+      "4BR+": {
+        "start": "Feb2018",
+        "end": "Dec2025",
+        "month_span": 94
+      }
     },
     "only_23br": {
       "2018": {
@@ -6759,7 +7696,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 2.25,
+    "only_23br_cagr": 2.28,
+    "only_23br_period": {
+      "start": "Mar2018",
+      "end": "Feb2026",
+      "month_span": 95
+    },
     "info": {
       "top_year": 2018,
       "tenure": "99yr",
@@ -6769,185 +7711,185 @@
   "le_quest": {
     "overall": {
       "2021": {
-        "median_psf": 1538.5,
-        "q1": 1450.5,
-        "q3": 1556.0,
+        "median_psf": 1474.0,
+        "q1": 1410.75,
+        "q3": 1546.25,
         "min": 1358,
-        "max": 1558,
+        "max": 1559,
         "count": 6
       },
       "2022": {
-        "median_psf": 1515,
-        "q1": 1495.0,
-        "q3": 1588.5,
+        "median_psf": 1514,
+        "q1": 1494.0,
+        "q3": 1589.0,
         "min": 1447,
-        "max": 1624,
+        "max": 1625,
         "count": 15
       },
       "2023": {
-        "median_psf": 1621,
-        "q1": 1589.5,
-        "q3": 1647.0,
-        "min": 1489,
-        "max": 1751,
+        "median_psf": 1622,
+        "q1": 1588.5,
+        "q3": 1646.5,
+        "min": 1488,
+        "max": 1752,
         "count": 23
       },
       "2024": {
-        "median_psf": 1643,
-        "q1": 1606.0,
-        "q3": 1669.0,
-        "min": 1384,
+        "median_psf": 1642,
+        "q1": 1605.5,
+        "q3": 1668.5,
+        "min": 1385,
         "max": 1702,
         "count": 27
       },
       "2025": {
         "median_psf": 1633,
-        "q1": 1582.0,
-        "q3": 1656.0,
+        "q1": 1581.0,
+        "q3": 1655.0,
         "min": 1414,
         "max": 1736,
         "count": 37
       },
       "2026": {
-        "median_psf": 1657.0,
-        "q1": 1641.0,
-        "q3": 1669.0,
-        "min": 1608,
-        "max": 1690,
-        "count": 4
+        "median_psf": 1652,
+        "q1": 1607.0,
+        "q3": 1662.0,
+        "min": 1579,
+        "max": 1689,
+        "count": 5
       }
     },
     "by_type": {
       "1BR": {
         "2021": {
-          "median_psf": 1556.0,
-          "q1": 1547.25,
-          "q3": 1556.5,
-          "min": 1521,
-          "max": 1558,
-          "count": 4
+          "median_psf": 1555,
+          "q1": 1537.5,
+          "q3": 1557.0,
+          "min": 1520,
+          "max": 1559,
+          "count": 3
         },
         "2022": {
-          "median_psf": 1521.0,
-          "q1": 1502.0,
-          "q3": 1571.25,
+          "median_psf": 1520.0,
+          "q1": 1501.0,
+          "q3": 1571.75,
           "min": 1447,
-          "max": 1624,
+          "max": 1625,
           "count": 10
         },
         "2023": {
-          "median_psf": 1613,
+          "median_psf": 1614,
           "q1": 1574.0,
           "q3": 1614.5,
-          "min": 1535,
-          "max": 1616,
+          "min": 1534,
+          "max": 1615,
           "count": 3
         },
         "2024": {
-          "median_psf": 1662.0,
-          "q1": 1626.25,
-          "q3": 1668.5,
-          "min": 1556,
-          "max": 1694,
+          "median_psf": 1661.0,
+          "q1": 1625.25,
+          "q3": 1667.5,
+          "min": 1555,
+          "max": 1695,
           "count": 6
         },
         "2025": {
-          "median_psf": 1622,
-          "q1": 1576.0,
-          "q3": 1632.0,
-          "min": 1576,
+          "median_psf": 1621,
+          "q1": 1575.0,
+          "q3": 1631.0,
+          "min": 1575,
           "max": 1655,
           "count": 9
         },
         "2026": {
-          "median_psf": 1608,
-          "q1": 1608.0,
-          "q3": 1608.0,
-          "min": 1608,
-          "max": 1608,
-          "count": 1
+          "median_psf": 1593.0,
+          "q1": 1586.0,
+          "q3": 1600.0,
+          "min": 1579,
+          "max": 1607,
+          "count": 2
         }
       },
       "2BR": {
         "2022": {
           "median_psf": 1599,
-          "q1": 1554.0,
-          "q3": 1601.5,
-          "min": 1509,
-          "max": 1604,
+          "q1": 1553.5,
+          "q3": 1601.0,
+          "min": 1508,
+          "max": 1603,
           "count": 3
         },
         "2023": {
           "median_psf": 1622.0,
-          "q1": 1594.5,
+          "q1": 1594.25,
           "q3": 1639.5,
-          "min": 1489,
-          "max": 1751,
+          "min": 1488,
+          "max": 1752,
           "count": 10
         },
         "2024": {
-          "median_psf": 1663,
-          "q1": 1514.0,
-          "q3": 1671.0,
-          "min": 1384,
-          "max": 1690,
+          "median_psf": 1662,
+          "q1": 1513.0,
+          "q3": 1672.0,
+          "min": 1385,
+          "max": 1689,
           "count": 9
         },
         "2025": {
-          "median_psf": 1656.0,
-          "q1": 1513.25,
-          "q3": 1685.75,
+          "median_psf": 1655.5,
+          "q1": 1512.5,
+          "q3": 1684.75,
           "min": 1414,
-          "max": 1714,
+          "max": 1715,
           "count": 10
         },
         "2026": {
-          "median_psf": 1690,
-          "q1": 1690.0,
-          "q3": 1690.0,
-          "min": 1690,
-          "max": 1690,
+          "median_psf": 1689,
+          "q1": 1689.0,
+          "q3": 1689.0,
+          "min": 1689,
+          "max": 1689,
           "count": 1
         }
       },
       "3BR": {
         "2021": {
-          "median_psf": 1392.5,
-          "q1": 1375.25,
-          "q3": 1409.75,
+          "median_psf": 1405,
+          "q1": 1381.5,
+          "q3": 1416.5,
           "min": 1358,
-          "max": 1427,
-          "count": 2
+          "max": 1428,
+          "count": 3
         },
         "2022": {
-          "median_psf": 1487,
-          "q1": 1487.0,
-          "q3": 1487.0,
-          "min": 1487,
-          "max": 1487,
+          "median_psf": 1486,
+          "q1": 1486.0,
+          "q3": 1486.0,
+          "min": 1486,
+          "max": 1486,
           "count": 1
         },
         "2023": {
-          "median_psf": 1644,
-          "q1": 1590.0,
-          "q3": 1654.0,
+          "median_psf": 1643,
+          "q1": 1588.0,
+          "q3": 1653.0,
           "min": 1564,
-          "max": 1689,
+          "max": 1688,
           "count": 9
         },
         "2024": {
-          "median_psf": 1634.0,
-          "q1": 1610.5,
-          "q3": 1649.0,
-          "min": 1551,
+          "median_psf": 1633.0,
+          "q1": 1609.25,
+          "q3": 1648.5,
+          "min": 1550,
           "max": 1702,
           "count": 12
         },
         "2025": {
           "median_psf": 1633.0,
-          "q1": 1600.25,
-          "q3": 1655.25,
-          "min": 1442,
+          "q1": 1598.5,
+          "q3": 1654.25,
+          "min": 1441,
           "max": 1689,
           "count": 16
         },
@@ -6970,81 +7912,113 @@
           "count": 1
         },
         "2023": {
-          "median_psf": 1606,
-          "q1": 1606.0,
-          "q3": 1606.0,
-          "min": 1606,
-          "max": 1606,
+          "median_psf": 1605,
+          "q1": 1605.0,
+          "q3": 1605.0,
+          "min": 1605,
+          "max": 1605,
           "count": 1
         },
         "2025": {
-          "median_psf": 1725.0,
-          "q1": 1719.5,
-          "q3": 1730.5,
-          "min": 1714,
+          "median_psf": 1724.5,
+          "q1": 1718.75,
+          "q3": 1730.25,
+          "min": 1713,
           "max": 1736,
           "count": 2
         }
       }
     },
-    "overall_cagr": 1.5,
+    "overall_cagr": 2.35,
+    "overall_period": {
+      "start": "Mar2021",
+      "end": "Feb2026",
+      "month_span": 59
+    },
     "by_type_cagr": {
-      "1BR": 0.66,
-      "2BR": 1.39,
-      "3BR": 3.54,
-      "4BR+": 5.77
+      "1BR": 0.51,
+      "2BR": 1.54,
+      "3BR": 3.41,
+      "4BR+": 5.92
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2021",
+        "end": "Jan2026",
+        "month_span": 57
+      },
+      "2BR": {
+        "start": "Jul2022",
+        "end": "Feb2026",
+        "month_span": 43
+      },
+      "3BR": {
+        "start": "Mar2021",
+        "end": "Feb2026",
+        "month_span": 59
+      },
+      "4BR+": {
+        "start": "Aug2022",
+        "end": "Jul2025",
+        "month_span": 35
+      }
     },
     "only_23br": {
       "2021": {
-        "median_psf": 1392.5,
-        "q1": 1375.25,
-        "q3": 1409.75,
+        "median_psf": 1405,
+        "q1": 1381.5,
+        "q3": 1416.5,
         "min": 1358,
-        "max": 1427,
-        "count": 2
+        "max": 1428,
+        "count": 3
       },
       "2022": {
-        "median_psf": 1554.0,
-        "q1": 1503.5,
-        "q3": 1600.25,
-        "min": 1487,
-        "max": 1604,
+        "median_psf": 1553.5,
+        "q1": 1502.5,
+        "q3": 1600.0,
+        "min": 1486,
+        "max": 1603,
         "count": 4
       },
       "2023": {
         "median_psf": 1629,
-        "q1": 1589.5,
-        "q3": 1651.5,
-        "min": 1489,
-        "max": 1751,
+        "q1": 1588.5,
+        "q3": 1650.5,
+        "min": 1488,
+        "max": 1752,
         "count": 19
       },
       "2024": {
-        "median_psf": 1635,
-        "q1": 1603.0,
+        "median_psf": 1633,
+        "q1": 1601.0,
         "q3": 1669.0,
-        "min": 1384,
+        "min": 1385,
         "max": 1702,
         "count": 21
       },
       "2025": {
-        "median_psf": 1634.0,
-        "q1": 1588.25,
-        "q3": 1657.5,
+        "median_psf": 1633.0,
+        "q1": 1588.0,
+        "q3": 1657.25,
         "min": 1414,
-        "max": 1714,
+        "max": 1715,
         "count": 26
       },
       "2026": {
         "median_psf": 1662,
         "q1": 1657.0,
-        "q3": 1676.0,
+        "q3": 1675.5,
         "min": 1652,
-        "max": 1690,
+        "max": 1689,
         "count": 3
       }
     },
-    "only_23br_cagr": 3.6,
+    "only_23br_cagr": 3.48,
+    "only_23br_period": {
+      "start": "Mar2021",
+      "end": "Feb2026",
+      "month_span": 59
+    },
     "info": {
       "top_year": 2020,
       "tenure": "99yr",
@@ -7216,11 +8190,38 @@
         }
       }
     },
-    "overall_cagr": 1.21,
+    "overall_cagr": 1.46,
+    "overall_period": {
+      "start": "Sep2022",
+      "end": "Jan2026",
+      "month_span": 40
+    },
     "by_type_cagr": {
-      "1BR": -1.09,
-      "2BR": 0.22,
-      "3BR": 4.17
+      "1BR": -1.19,
+      "2BR": 0.27,
+      "3BR": 3.94
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2023",
+        "end": "Jan2026",
+        "month_span": 33
+      },
+      "2BR": {
+        "start": "Sep2022",
+        "end": "Jan2026",
+        "month_span": 40
+      },
+      "3BR": {
+        "start": "Oct2022",
+        "end": "Dec2025",
+        "month_span": 38
+      },
+      "4BR+": {
+        "start": "Oct2025",
+        "end": "Oct2025",
+        "month_span": 0
+      }
     },
     "only_23br": {
       "2022": {
@@ -7264,7 +8265,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 0.39,
+    "only_23br_cagr": 0.46,
+    "only_23br_period": {
+      "start": "Sep2022",
+      "end": "Jan2026",
+      "month_span": 40
+    },
     "info": {
       "top_year": 2021,
       "tenure": "99yr",
@@ -7274,61 +8280,61 @@
   "midwood": {
     "overall": {
       "2024": {
-        "median_psf": 1942,
-        "q1": 1909.0,
+        "median_psf": 1941,
+        "q1": 1908.0,
         "q3": 1987.0,
-        "min": 1653,
+        "min": 1651,
         "max": 2000,
         "count": 17
       },
       "2025": {
         "median_psf": 1922,
-        "q1": 1889.0,
+        "q1": 1888.0,
         "q3": 2000.0,
-        "min": 1756,
-        "max": 2205,
+        "min": 1754,
+        "max": 2204,
         "count": 53
       },
       "2026": {
-        "median_psf": 1862.0,
-        "q1": 1814.5,
-        "q3": 1910.25,
-        "min": 1667,
-        "max": 1953,
-        "count": 6
+        "median_psf": 1861.5,
+        "q1": 1828.75,
+        "q3": 1894.75,
+        "min": 1665,
+        "max": 1952,
+        "count": 8
       }
     },
     "by_type": {
       "1BR": {
         "2024": {
-          "median_psf": 1777,
-          "q1": 1715.0,
-          "q3": 1913.0,
-          "min": 1653,
-          "max": 1940,
+          "median_psf": 1775,
+          "q1": 1713.0,
+          "q3": 1912.0,
+          "min": 1651,
+          "max": 1938,
           "count": 5
         },
         "2025": {
-          "median_psf": 1818.0,
-          "q1": 1792.75,
-          "q3": 1854.75,
-          "min": 1756,
-          "max": 1913,
+          "median_psf": 1816.0,
+          "q1": 1790.75,
+          "q3": 1852.75,
+          "min": 1754,
+          "max": 1912,
           "count": 16
         },
         "2026": {
-          "median_psf": 1736.5,
-          "q1": 1701.75,
-          "q3": 1771.25,
-          "min": 1667,
-          "max": 1806,
-          "count": 2
+          "median_psf": 1804,
+          "q1": 1734.5,
+          "q3": 1820.5,
+          "min": 1665,
+          "max": 1837,
+          "count": 3
         }
       },
       "2BR": {
         "2024": {
           "median_psf": 1981,
-          "q1": 1946.0,
+          "q1": 1945.0,
           "q3": 1988.0,
           "min": 1916,
           "max": 2000,
@@ -7338,42 +8344,42 @@
           "median_psf": 1987,
           "q1": 1943.0,
           "q3": 2017.0,
-          "min": 1890,
-          "max": 2205,
+          "min": 1889,
+          "max": 2204,
           "count": 25
         },
         "2026": {
-          "median_psf": 1884,
-          "q1": 1862.0,
-          "q3": 1918.5,
+          "median_psf": 1885.0,
+          "q1": 1872.25,
+          "q3": 1903.25,
           "min": 1840,
-          "max": 1953,
-          "count": 3
+          "max": 1952,
+          "count": 4
         }
       },
       "3BR": {
         "2024": {
-          "median_psf": 1909,
-          "q1": 1906.5,
-          "q3": 1951.0,
-          "min": 1904,
-          "max": 1993,
+          "median_psf": 1908,
+          "q1": 1905.0,
+          "q3": 1950.0,
+          "min": 1902,
+          "max": 1992,
           "count": 3
         },
         "2025": {
-          "median_psf": 1919.0,
-          "q1": 1904.0,
-          "q3": 1930.25,
-          "min": 1889,
+          "median_psf": 1918.0,
+          "q1": 1903.0,
+          "q3": 1929.25,
+          "min": 1888,
           "max": 2046,
           "count": 10
         },
         "2026": {
-          "median_psf": 1919,
-          "q1": 1919.0,
-          "q3": 1919.0,
-          "min": 1919,
-          "max": 1919,
+          "median_psf": 1918,
+          "q1": 1918.0,
+          "q3": 1918.0,
+          "min": 1918,
+          "max": 1918,
           "count": 1
         }
       },
@@ -7388,39 +8394,71 @@
         }
       }
     },
-    "overall_cagr": -2.08,
+    "overall_cagr": -2.16,
+    "overall_period": {
+      "start": "Apr2024",
+      "end": "Mar2026",
+      "month_span": 23
+    },
     "by_type_cagr": {
-      "1BR": -1.15,
-      "2BR": -2.48,
-      "3BR": 0.26
+      "1BR": 1.03,
+      "2BR": -2.56,
+      "3BR": 0.3
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Aug2024",
+        "end": "Mar2026",
+        "month_span": 19
+      },
+      "2BR": {
+        "start": "Apr2024",
+        "end": "Mar2026",
+        "month_span": 23
+      },
+      "3BR": {
+        "start": "Apr2024",
+        "end": "Jan2026",
+        "month_span": 21
+      },
+      "4BR+": {
+        "start": "Feb2025",
+        "end": "Jun2025",
+        "month_span": 4
+      }
     },
     "only_23br": {
       "2024": {
-        "median_psf": 1969.0,
-        "q1": 1935.5,
-        "q3": 1989.25,
-        "min": 1904,
+        "median_psf": 1969.5,
+        "q1": 1934.75,
+        "q3": 1989.0,
+        "min": 1902,
         "max": 2000,
         "count": 12
       },
       "2025": {
-        "median_psf": 1961,
-        "q1": 1919.0,
-        "q3": 2014.0,
-        "min": 1889,
-        "max": 2205,
+        "median_psf": 1960,
+        "q1": 1918.0,
+        "q3": 2013.0,
+        "min": 1888,
+        "max": 2204,
         "count": 35
       },
       "2026": {
-        "median_psf": 1901.5,
-        "q1": 1873.0,
-        "q3": 1927.5,
+        "median_psf": 1887,
+        "q1": 1883.0,
+        "q3": 1918.0,
         "min": 1840,
-        "max": 1953,
-        "count": 4
+        "max": 1952,
+        "count": 5
       }
     },
-    "only_23br_cagr": -1.73,
+    "only_23br_cagr": -2.21,
+    "only_23br_period": {
+      "start": "Apr2024",
+      "end": "Mar2026",
+      "month_span": 23
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -7486,9 +8524,29 @@
         }
       }
     },
-    "overall_cagr": -1.56,
-    "by_type_cagr": {
-      "3BR": -1.38
+    "overall_cagr": null,
+    "overall_period": {
+      "start": "Dec2025",
+      "end": "Feb2026",
+      "month_span": 2
+    },
+    "by_type_cagr": {},
+    "by_type_period": {
+      "1BR": {
+        "start": "Feb2026",
+        "end": "Feb2026",
+        "month_span": 0
+      },
+      "2BR": {
+        "start": "Jan2026",
+        "end": "Feb2026",
+        "month_span": 1
+      },
+      "3BR": {
+        "start": "Dec2025",
+        "end": "Feb2026",
+        "month_span": 2
+      }
     },
     "only_23br": {
       "2025": {
@@ -7508,7 +8566,12 @@
         "count": 5
       }
     },
-    "only_23br_cagr": -1.38,
+    "only_23br_cagr": null,
+    "only_23br_period": {
+      "start": "Dec2025",
+      "end": "Feb2026",
+      "month_span": 2
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -7609,11 +8672,35 @@
       }
     },
     "overall_cagr": 4.26,
+    "overall_period": {
+      "start": "Feb2025",
+      "end": "Feb2026",
+      "month_span": 12
+    },
     "by_type_cagr": {
-      "1BR": 3.61,
-      "2BR": 4.21,
-      "3BR": 3.03,
-      "4BR+": 4.71
+      "3BR": 3.03
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Mar2025",
+        "end": "Jan2026",
+        "month_span": 10
+      },
+      "2BR": {
+        "start": "Mar2025",
+        "end": "Feb2026",
+        "month_span": 11
+      },
+      "3BR": {
+        "start": "Feb2025",
+        "end": "Feb2026",
+        "month_span": 12
+      },
+      "4BR+": {
+        "start": "Mar2025",
+        "end": "Jan2026",
+        "month_span": 10
+      }
     },
     "only_23br": {
       "2025": {
@@ -7634,6 +8721,11 @@
       }
     },
     "only_23br_cagr": 2.06,
+    "only_23br_period": {
+      "start": "Feb2025",
+      "end": "Feb2026",
+      "month_span": 12
+    },
     "info": {
       "top_year": 2023,
       "tenure": "99yr",
@@ -7893,12 +8985,39 @@
         }
       }
     },
-    "overall_cagr": 4.6,
+    "overall_cagr": 5.11,
+    "overall_period": {
+      "start": "Sep2020",
+      "end": "Feb2026",
+      "month_span": 65
+    },
     "by_type_cagr": {
-      "1BR": 2.22,
-      "2BR": 2.93,
-      "3BR": 5.26,
-      "4BR+": 4.47
+      "1BR": 2.5,
+      "2BR": 3.3,
+      "3BR": 5.84,
+      "4BR+": 3.91
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Sep2020",
+        "end": "Jan2026",
+        "month_span": 64
+      },
+      "2BR": {
+        "start": "Sep2020",
+        "end": "Jan2026",
+        "month_span": 64
+      },
+      "3BR": {
+        "start": "Sep2020",
+        "end": "Feb2026",
+        "month_span": 65
+      },
+      "4BR+": {
+        "start": "Feb2022",
+        "end": "Jul2025",
+        "month_span": 41
+      }
     },
     "only_23br": {
       "2020": {
@@ -7958,7 +9077,12 @@
         "count": 6
       }
     },
-    "only_23br_cagr": 5.0,
+    "only_23br_cagr": 5.55,
+    "only_23br_period": {
+      "start": "Sep2020",
+      "end": "Feb2026",
+      "month_span": 65
+    },
     "info": {
       "top_year": 2020,
       "tenure": "99yr",
@@ -8194,12 +9318,39 @@
         }
       }
     },
-    "overall_cagr": 2.82,
+    "overall_cagr": 3.32,
+    "overall_period": {
+      "start": "Nov2021",
+      "end": "Feb2026",
+      "month_span": 51
+    },
     "by_type_cagr": {
-      "1BR": 1.55,
-      "2BR": 3.57,
-      "3BR": 2.28,
+      "1BR": 1.86,
+      "2BR": 4.3,
+      "3BR": 2.68,
       "4BR+": 4.28
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Nov2021",
+        "end": "Jan2026",
+        "month_span": 50
+      },
+      "2BR": {
+        "start": "Nov2021",
+        "end": "Jan2026",
+        "month_span": 50
+      },
+      "3BR": {
+        "start": "Aug2022",
+        "end": "Jan2026",
+        "month_span": 41
+      },
+      "4BR+": {
+        "start": "Feb2022",
+        "end": "Feb2026",
+        "month_span": 48
+      }
     },
     "only_23br": {
       "2021": {
@@ -8251,7 +9402,12 @@
         "count": 4
       }
     },
-    "only_23br_cagr": 4.4,
+    "only_23br_cagr": 5.3,
+    "only_23br_period": {
+      "start": "Nov2021",
+      "end": "Jan2026",
+      "month_span": 50
+    },
     "info": {
       "top_year": 2020,
       "tenure": "99yr",
@@ -8623,12 +9779,39 @@
         }
       }
     },
-    "overall_cagr": 2.1,
+    "overall_cagr": 2.25,
+    "overall_period": {
+      "start": "Sep2017",
+      "end": "Feb2026",
+      "month_span": 101
+    },
     "by_type_cagr": {
-      "1BR": 0.67,
-      "2BR": 1.74,
-      "3BR": 2.16,
-      "4BR+": 4.72
+      "1BR": 0.72,
+      "2BR": 1.71,
+      "3BR": 2.35,
+      "4BR+": 5.57
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Sep2017",
+        "end": "Feb2026",
+        "month_span": 101
+      },
+      "2BR": {
+        "start": "Oct2017",
+        "end": "Dec2025",
+        "month_span": 98
+      },
+      "3BR": {
+        "start": "Nov2017",
+        "end": "Feb2026",
+        "month_span": 99
+      },
+      "4BR+": {
+        "start": "Oct2018",
+        "end": "Jan2023",
+        "month_span": 51
+      }
     },
     "only_23br": {
       "2017": {
@@ -8712,7 +9895,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 2.87,
+    "only_23br_cagr": 3.11,
+    "only_23br_period": {
+      "start": "Oct2017",
+      "end": "Feb2026",
+      "month_span": 100
+    },
     "info": {
       "top_year": 2011,
       "tenure": "99yr",
@@ -9004,11 +10192,38 @@
         }
       }
     },
-    "overall_cagr": 0.69,
+    "overall_cagr": 0.7,
+    "overall_period": {
+      "start": "Mar2017",
+      "end": "Jan2026",
+      "month_span": 106
+    },
     "by_type_cagr": {
-      "1BR": -0.83,
+      "1BR": -0.77,
       "2BR": 0.06,
-      "3BR": 0.34
+      "3BR": 0.35
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2017",
+        "end": "Dec2025",
+        "month_span": 104
+      },
+      "2BR": {
+        "start": "Jul2017",
+        "end": "Nov2025",
+        "month_span": 100
+      },
+      "3BR": {
+        "start": "Mar2017",
+        "end": "Jan2026",
+        "month_span": 106
+      },
+      "4BR+": {
+        "start": "Aug2017",
+        "end": "Aug2017",
+        "month_span": 0
+      }
     },
     "only_23br": {
       "2017": {
@@ -9092,7 +10307,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 1.17,
+    "only_23br_cagr": 1.19,
+    "only_23br_period": {
+      "start": "Mar2017",
+      "end": "Jan2026",
+      "month_span": 106
+    },
     "info": {
       "top_year": 2015,
       "tenure": "99yr",
@@ -9344,12 +10564,39 @@
         }
       }
     },
-    "overall_cagr": 7.31,
+    "overall_cagr": 8.4,
+    "overall_period": {
+      "start": "Dec2020",
+      "end": "Mar2026",
+      "month_span": 63
+    },
     "by_type_cagr": {
-      "1BR": 6.37,
-      "2BR": 7.72,
-      "3BR": 7.3,
-      "4BR+": 4.55
+      "1BR": 6.26,
+      "2BR": 9.17,
+      "3BR": 7.05,
+      "4BR+": 3.39
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jan2021",
+        "end": "Feb2026",
+        "month_span": 61
+      },
+      "2BR": {
+        "start": "Dec2020",
+        "end": "Jan2026",
+        "month_span": 61
+      },
+      "3BR": {
+        "start": "Jan2021",
+        "end": "Mar2026",
+        "month_span": 62
+      },
+      "4BR+": {
+        "start": "Apr2023",
+        "end": "Dec2025",
+        "month_span": 32
+      }
     },
     "only_23br": {
       "2020": {
@@ -9409,7 +10656,12 @@
         "count": 5
       }
     },
-    "only_23br_cagr": 7.33,
+    "only_23br_cagr": 8.42,
+    "only_23br_period": {
+      "start": "Dec2020",
+      "end": "Mar2026",
+      "month_span": 63
+    },
     "info": {
       "top_year": 2018,
       "tenure": "99yr",
@@ -9645,11 +10897,38 @@
         }
       }
     },
-    "overall_cagr": 0.44,
+    "overall_cagr": 0.45,
+    "overall_period": {
+      "start": "Apr2018",
+      "end": "Feb2026",
+      "month_span": 94
+    },
     "by_type_cagr": {
-      "1BR": 0.44,
-      "2BR": 0.63,
-      "3BR": 15.12
+      "1BR": 0.45,
+      "2BR": 0.62,
+      "3BR": 16.07
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Apr2018",
+        "end": "Feb2026",
+        "month_span": 94
+      },
+      "2BR": {
+        "start": "Apr2018",
+        "end": "May2024",
+        "month_span": 73
+      },
+      "3BR": {
+        "start": "Jul2021",
+        "end": "May2024",
+        "month_span": 34
+      },
+      "4BR+": {
+        "start": "Sep2021",
+        "end": "Sep2021",
+        "month_span": 0
+      }
     },
     "only_23br": {
       "2018": {
@@ -9693,7 +10972,12 @@
         "count": 3
       }
     },
-    "only_23br_cagr": 1.75,
+    "only_23br_cagr": 1.73,
+    "only_23br_period": {
+      "start": "Apr2018",
+      "end": "May2024",
+      "month_span": 73
+    },
     "info": {
       "top_year": 2017,
       "tenure": "Freehold",
@@ -9865,12 +11149,39 @@
         }
       }
     },
-    "overall_cagr": 0.94,
+    "overall_cagr": 0.97,
+    "overall_period": {
+      "start": "Mar2023",
+      "end": "Feb2026",
+      "month_span": 35
+    },
     "by_type_cagr": {
-      "1BR": -0.49,
-      "2BR": 0.34,
-      "3BR": 5.17,
-      "4BR+": 2.19
+      "1BR": -0.51,
+      "2BR": 0.35,
+      "3BR": 5.48,
+      "4BR+": 2.1
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Mar2023",
+        "end": "Feb2026",
+        "month_span": 35
+      },
+      "2BR": {
+        "start": "Mar2023",
+        "end": "Feb2026",
+        "month_span": 35
+      },
+      "3BR": {
+        "start": "Apr2023",
+        "end": "Feb2026",
+        "month_span": 34
+      },
+      "4BR+": {
+        "start": "Jun2023",
+        "end": "Jul2025",
+        "month_span": 25
+      }
     },
     "only_23br": {
       "2023": {
@@ -9906,7 +11217,12 @@
         "count": 8
       }
     },
-    "only_23br_cagr": 2.66,
+    "only_23br_cagr": 2.74,
+    "only_23br_period": {
+      "start": "Mar2023",
+      "end": "Feb2026",
+      "month_span": 35
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -10162,10 +11478,27 @@
         }
       }
     },
-    "overall_cagr": 1.45,
+    "overall_cagr": 1.53,
+    "overall_period": {
+      "start": "Aug2017",
+      "end": "Feb2026",
+      "month_span": 102
+    },
     "by_type_cagr": {
-      "1BR": 1.45,
-      "2BR": 1.48
+      "1BR": 1.56,
+      "2BR": 1.57
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Sep2017",
+        "end": "Jan2026",
+        "month_span": 100
+      },
+      "2BR": {
+        "start": "Aug2017",
+        "end": "Feb2026",
+        "month_span": 102
+      }
     },
     "only_23br": {
       "2017": {
@@ -10249,11 +11582,373 @@
         "count": 4
       }
     },
-    "only_23br_cagr": 1.48,
+    "only_23br_cagr": 1.57,
+    "only_23br_period": {
+      "start": "Aug2017",
+      "end": "Feb2026",
+      "month_span": 102
+    },
     "info": {
       "top_year": 2016,
       "tenure": "99yr",
       "units": 528
+    }
+  },
+  "the_lakeshore": {
+    "overall": {
+      "2017": {
+        "median_psf": 1034.5,
+        "q1": 1001.0,
+        "q3": 1055.0,
+        "min": 858,
+        "max": 1120,
+        "count": 32
+      },
+      "2018": {
+        "median_psf": 1074.5,
+        "q1": 1047.0,
+        "q3": 1097.75,
+        "min": 986,
+        "max": 1159,
+        "count": 44
+      },
+      "2019": {
+        "median_psf": 1071,
+        "q1": 1053.5,
+        "q3": 1080.0,
+        "min": 929,
+        "max": 1138,
+        "count": 19
+      },
+      "2020": {
+        "median_psf": 1015.0,
+        "q1": 965.0,
+        "q3": 1042.25,
+        "min": 896,
+        "max": 1129,
+        "count": 32
+      },
+      "2021": {
+        "median_psf": 1071.0,
+        "q1": 1034.25,
+        "q3": 1119.0,
+        "min": 803,
+        "max": 1219,
+        "count": 44
+      },
+      "2022": {
+        "median_psf": 1191.5,
+        "q1": 1161.0,
+        "q3": 1231.25,
+        "min": 1062,
+        "max": 1278,
+        "count": 28
+      },
+      "2023": {
+        "median_psf": 1351,
+        "q1": 1332.0,
+        "q3": 1381.0,
+        "min": 1130,
+        "max": 1488,
+        "count": 25
+      },
+      "2024": {
+        "median_psf": 1440.5,
+        "q1": 1399.5,
+        "q3": 1481.0,
+        "min": 1236,
+        "max": 1602,
+        "count": 30
+      },
+      "2025": {
+        "median_psf": 1490,
+        "q1": 1469.0,
+        "q3": 1542.0,
+        "min": 1266,
+        "max": 1646,
+        "count": 29
+      },
+      "2026": {
+        "median_psf": 1498,
+        "q1": 1473.0,
+        "q3": 1535.0,
+        "min": 1338,
+        "max": 1644,
+        "count": 11
+      }
+    },
+    "by_type": {
+      "3BR": {
+        "2017": {
+          "median_psf": 1039,
+          "q1": 1010.0,
+          "q3": 1055.0,
+          "min": 929,
+          "max": 1120,
+          "count": 29
+        },
+        "2018": {
+          "median_psf": 1075.5,
+          "q1": 1056.5,
+          "q3": 1099.25,
+          "min": 997,
+          "max": 1159,
+          "count": 42
+        },
+        "2019": {
+          "median_psf": 1072,
+          "q1": 1055.0,
+          "q3": 1081.0,
+          "min": 1013,
+          "max": 1138,
+          "count": 17
+        },
+        "2020": {
+          "median_psf": 1018,
+          "q1": 972.0,
+          "q3": 1046.0,
+          "min": 929,
+          "max": 1129,
+          "count": 29
+        },
+        "2021": {
+          "median_psf": 1080.5,
+          "q1": 1041.75,
+          "q3": 1119.5,
+          "min": 964,
+          "max": 1219,
+          "count": 40
+        },
+        "2022": {
+          "median_psf": 1195,
+          "q1": 1162.0,
+          "q3": 1232.5,
+          "min": 1097,
+          "max": 1278,
+          "count": 27
+        },
+        "2023": {
+          "median_psf": 1351,
+          "q1": 1332.0,
+          "q3": 1381.0,
+          "min": 1130,
+          "max": 1488,
+          "count": 25
+        },
+        "2024": {
+          "median_psf": 1443.0,
+          "q1": 1413.0,
+          "q3": 1486.25,
+          "min": 1372,
+          "max": 1602,
+          "count": 28
+        },
+        "2025": {
+          "median_psf": 1507.0,
+          "q1": 1473.25,
+          "q3": 1545.0,
+          "min": 1404,
+          "max": 1646,
+          "count": 26
+        },
+        "2026": {
+          "median_psf": 1509.5,
+          "q1": 1474.5,
+          "q3": 1536.0,
+          "min": 1458,
+          "max": 1644,
+          "count": 10
+        }
+      },
+      "4BR+": {
+        "2017": {
+          "median_psf": 929,
+          "q1": 893.5,
+          "q3": 967.5,
+          "min": 858,
+          "max": 1006,
+          "count": 3
+        },
+        "2018": {
+          "median_psf": 995.0,
+          "q1": 990.5,
+          "q3": 999.5,
+          "min": 986,
+          "max": 1004,
+          "count": 2
+        },
+        "2019": {
+          "median_psf": 951.0,
+          "q1": 940.0,
+          "q3": 962.0,
+          "min": 929,
+          "max": 973,
+          "count": 2
+        },
+        "2020": {
+          "median_psf": 929,
+          "q1": 912.5,
+          "q3": 973.0,
+          "min": 896,
+          "max": 1017,
+          "count": 3
+        },
+        "2021": {
+          "median_psf": 958.5,
+          "q1": 912.5,
+          "q3": 975.5,
+          "min": 803,
+          "max": 998,
+          "count": 4
+        },
+        "2022": {
+          "median_psf": 1062,
+          "q1": 1062.0,
+          "q3": 1062.0,
+          "min": 1062,
+          "max": 1062,
+          "count": 1
+        },
+        "2024": {
+          "median_psf": 1239.5,
+          "q1": 1237.75,
+          "q3": 1241.25,
+          "min": 1236,
+          "max": 1243,
+          "count": 2
+        },
+        "2025": {
+          "median_psf": 1400,
+          "q1": 1333.0,
+          "q3": 1434.0,
+          "min": 1266,
+          "max": 1468,
+          "count": 3
+        },
+        "2026": {
+          "median_psf": 1338,
+          "q1": 1338.0,
+          "q3": 1338.0,
+          "min": 1338,
+          "max": 1338,
+          "count": 1
+        }
+      }
+    },
+    "overall_cagr": 4.2,
+    "overall_period": {
+      "start": "Mar2017",
+      "end": "Mar2026",
+      "month_span": 108
+    },
+    "by_type_cagr": {
+      "3BR": 4.24,
+      "4BR+": 4.3
+    },
+    "by_type_period": {
+      "3BR": {
+        "start": "Mar2017",
+        "end": "Mar2026",
+        "month_span": 108
+      },
+      "4BR+": {
+        "start": "Jun2017",
+        "end": "Feb2026",
+        "month_span": 104
+      }
+    },
+    "only_23br": {
+      "2017": {
+        "median_psf": 1039,
+        "q1": 1010.0,
+        "q3": 1055.0,
+        "min": 929,
+        "max": 1120,
+        "count": 29
+      },
+      "2018": {
+        "median_psf": 1075.5,
+        "q1": 1056.5,
+        "q3": 1099.25,
+        "min": 997,
+        "max": 1159,
+        "count": 42
+      },
+      "2019": {
+        "median_psf": 1072,
+        "q1": 1055.0,
+        "q3": 1081.0,
+        "min": 1013,
+        "max": 1138,
+        "count": 17
+      },
+      "2020": {
+        "median_psf": 1018,
+        "q1": 972.0,
+        "q3": 1046.0,
+        "min": 929,
+        "max": 1129,
+        "count": 29
+      },
+      "2021": {
+        "median_psf": 1080.5,
+        "q1": 1041.75,
+        "q3": 1119.5,
+        "min": 964,
+        "max": 1219,
+        "count": 40
+      },
+      "2022": {
+        "median_psf": 1195,
+        "q1": 1162.0,
+        "q3": 1232.5,
+        "min": 1097,
+        "max": 1278,
+        "count": 27
+      },
+      "2023": {
+        "median_psf": 1351,
+        "q1": 1332.0,
+        "q3": 1381.0,
+        "min": 1130,
+        "max": 1488,
+        "count": 25
+      },
+      "2024": {
+        "median_psf": 1443.0,
+        "q1": 1413.0,
+        "q3": 1486.25,
+        "min": 1372,
+        "max": 1602,
+        "count": 28
+      },
+      "2025": {
+        "median_psf": 1507.0,
+        "q1": 1473.25,
+        "q3": 1545.0,
+        "min": 1404,
+        "max": 1646,
+        "count": 26
+      },
+      "2026": {
+        "median_psf": 1509.5,
+        "q1": 1474.5,
+        "q3": 1536.0,
+        "min": 1458,
+        "max": 1644,
+        "count": 10
+      }
+    },
+    "only_23br_cagr": 4.24,
+    "only_23br_period": {
+      "start": "Mar2017",
+      "end": "Mar2026",
+      "month_span": 108
+    },
+    "info": {
+      "top_year": 2007,
+      "tenure": "99yr",
+      "units": 848
     }
   },
   "the_skywoods": {
@@ -10549,12 +12244,39 @@
         }
       }
     },
-    "overall_cagr": 3.37,
+    "overall_cagr": 3.77,
+    "overall_period": {
+      "start": "Dec2018",
+      "end": "Feb2026",
+      "month_span": 86
+    },
     "by_type_cagr": {
-      "1BR": 2.56,
-      "2BR": 3.39,
-      "3BR": 4.81,
-      "4BR+": 4.42
+      "1BR": 2.19,
+      "2BR": 3.43,
+      "3BR": 5.12,
+      "4BR+": 4.3
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Feb2021",
+        "end": "Aug2024",
+        "month_span": 42
+      },
+      "2BR": {
+        "start": "Dec2018",
+        "end": "Nov2025",
+        "month_span": 83
+      },
+      "3BR": {
+        "start": "Jul2019",
+        "end": "Feb2026",
+        "month_span": 79
+      },
+      "4BR+": {
+        "start": "Aug2019",
+        "end": "Oct2025",
+        "month_span": 74
+      }
     },
     "only_23br": {
       "2018": {
@@ -10630,7 +12352,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 3.37,
+    "only_23br_cagr": 3.77,
+    "only_23br_period": {
+      "start": "Dec2018",
+      "end": "Feb2026",
+      "month_span": 86
+    },
     "info": {
       "top_year": 2016,
       "tenure": "99yr",
@@ -10639,26 +12366,58 @@
   },
   "the_tennery": {
     "overall": {
+      "2017": {
+        "median_psf": 1144.5,
+        "q1": 988.0,
+        "q3": 1185.0,
+        "min": 963,
+        "max": 1303,
+        "count": 14
+      },
+      "2018": {
+        "median_psf": 1171.5,
+        "q1": 1129.0,
+        "q3": 1199.25,
+        "min": 1022,
+        "max": 1235,
+        "count": 12
+      },
+      "2019": {
+        "median_psf": 1157,
+        "q1": 1087.0,
+        "q3": 1185.0,
+        "min": 1031,
+        "max": 1214,
+        "count": 5
+      },
+      "2020": {
+        "median_psf": 1062,
+        "q1": 1046.0,
+        "q3": 1088.0,
+        "min": 1029,
+        "max": 1181,
+        "count": 17
+      },
       "2021": {
-        "median_psf": 1148,
-        "q1": 1084.0,
-        "q3": 1172.5,
-        "min": 1008,
+        "median_psf": 1140,
+        "q1": 1077.5,
+        "q3": 1165.0,
+        "min": 1007,
         "max": 1287,
-        "count": 31
+        "count": 35
       },
       "2022": {
         "median_psf": 1230,
         "q1": 1189.0,
-        "q3": 1254.0,
-        "min": 1053,
-        "max": 1311,
+        "q3": 1255.0,
+        "min": 1052,
+        "max": 1312,
         "count": 29
       },
       "2023": {
         "median_psf": 1303,
-        "q1": 1261.0,
-        "q3": 1315.0,
+        "q1": 1260.5,
+        "q3": 1314.5,
         "min": 1172,
         "max": 1352,
         "count": 19
@@ -10667,114 +12426,178 @@
         "median_psf": 1336,
         "q1": 1325.5,
         "q3": 1348.0,
-        "min": 1266,
+        "min": 1265,
         "max": 1401,
         "count": 19
       },
       "2025": {
-        "median_psf": 1352.0,
-        "q1": 1327.0,
-        "q3": 1375.5,
+        "median_psf": 1351.0,
+        "q1": 1326.0,
+        "q3": 1376.25,
         "min": 1303,
         "max": 1391,
-        "count": 30
+        "count": 28
       },
       "2026": {
-        "median_psf": 1376,
-        "q1": 1368.0,
-        "q3": 1381.0,
+        "median_psf": 1377.5,
+        "q1": 1371.0,
+        "q3": 1383.25,
         "min": 1336,
         "max": 1417,
-        "count": 7
+        "count": 6
       }
     },
     "by_type": {
       "2BR": {
+        "2017": {
+          "median_psf": 1173,
+          "q1": 1149.0,
+          "q3": 1222.0,
+          "min": 1139,
+          "max": 1303,
+          "count": 9
+        },
+        "2018": {
+          "median_psf": 1189,
+          "q1": 1170.0,
+          "q3": 1206.0,
+          "min": 1149,
+          "max": 1235,
+          "count": 9
+        },
+        "2019": {
+          "median_psf": 1185,
+          "q1": 1171.0,
+          "q3": 1199.5,
+          "min": 1157,
+          "max": 1214,
+          "count": 3
+        },
+        "2020": {
+          "median_psf": 1088,
+          "q1": 1067.0,
+          "q3": 1109.5,
+          "min": 1043,
+          "max": 1181,
+          "count": 7
+        },
         "2021": {
-          "median_psf": 1161,
-          "q1": 1141.0,
-          "q3": 1189.0,
+          "median_psf": 1157.0,
+          "q1": 1133.25,
+          "q3": 1187.0,
           "min": 1075,
           "max": 1287,
-          "count": 23
+          "count": 26
         },
         "2022": {
           "median_psf": 1238,
-          "q1": 1202.0,
-          "q3": 1262.0,
+          "q1": 1201.0,
+          "q3": 1263.0,
           "min": 1166,
-          "max": 1311,
+          "max": 1312,
           "count": 25
         },
         "2023": {
-          "median_psf": 1311,
-          "q1": 1283.0,
+          "median_psf": 1312,
+          "q1": 1284.0,
           "q3": 1316.0,
           "min": 1269,
           "max": 1352,
           "count": 13
         },
         "2024": {
-          "median_psf": 1340,
-          "q1": 1332.0,
+          "median_psf": 1341,
+          "q1": 1333.0,
           "q3": 1352.0,
-          "min": 1288,
+          "min": 1289,
           "max": 1401,
           "count": 13
         },
         "2025": {
-          "median_psf": 1350,
-          "q1": 1319.0,
-          "q3": 1370.0,
+          "median_psf": 1344,
+          "q1": 1316.0,
+          "q3": 1373.5,
           "min": 1303,
-          "max": 1391,
-          "count": 25
+          "max": 1390,
+          "count": 23
         },
         "2026": {
-          "median_psf": 1376,
-          "q1": 1368.0,
-          "q3": 1381.0,
+          "median_psf": 1377.5,
+          "q1": 1371.0,
+          "q3": 1383.25,
           "min": 1336,
           "max": 1417,
-          "count": 7
+          "count": 6
         }
       },
       "3BR": {
+        "2017": {
+          "median_psf": 981,
+          "q1": 974.0,
+          "q3": 985.0,
+          "min": 963,
+          "max": 997,
+          "count": 5
+        },
+        "2018": {
+          "median_psf": 1058,
+          "q1": 1040.0,
+          "q3": 1063.5,
+          "min": 1022,
+          "max": 1069,
+          "count": 3
+        },
+        "2019": {
+          "median_psf": 1059.0,
+          "q1": 1045.0,
+          "q3": 1073.0,
+          "min": 1031,
+          "max": 1087,
+          "count": 2
+        },
+        "2020": {
+          "median_psf": 1050.0,
+          "q1": 1045.25,
+          "q3": 1071.0,
+          "min": 1029,
+          "max": 1089,
+          "count": 10
+        },
         "2021": {
-          "median_psf": 1073.0,
-          "q1": 1064.0,
-          "q3": 1080.0,
-          "min": 1008,
-          "max": 1092,
-          "count": 8
+          "median_psf": 1074,
+          "q1": 1065.0,
+          "q3": 1079.0,
+          "min": 1007,
+          "max": 1091,
+          "count": 9
         },
         "2022": {
-          "median_psf": 1125.0,
-          "q1": 1104.75,
+          "median_psf": 1124.5,
+          "q1": 1103.75,
           "q3": 1136.25,
-          "min": 1053,
+          "min": 1052,
           "max": 1161,
           "count": 4
         },
         "2023": {
-          "median_psf": 1221.5,
-          "q1": 1192.5,
-          "q3": 1247.5,
+          "median_psf": 1221.0,
+          "q1": 1191.75,
+          "q3": 1246.5,
           "min": 1172,
           "max": 1318,
           "count": 6
         },
         "2024": {
-          "median_psf": 1327.5,
-          "q1": 1309.25,
-          "q3": 1342.0,
-          "min": 1266,
-          "max": 1357,
+          "median_psf": 1326.5,
+          "q1": 1309.0,
+          "q3": 1341.0,
+          "min": 1265,
+          "max": 1356,
           "count": 6
         },
         "2025": {
           "median_psf": 1374,
-          "q1": 1353.0,
+          "q1": 1352.0,
           "q3": 1376.0,
           "min": 1347,
           "max": 1391,
@@ -10782,32 +12605,81 @@
         }
       }
     },
-    "overall_cagr": 3.69,
+    "overall_cagr": 2.08,
+    "overall_period": {
+      "start": "Feb2017",
+      "end": "Feb2026",
+      "month_span": 108
+    },
     "by_type_cagr": {
-      "2BR": 3.46,
-      "3BR": 6.38
+      "2BR": 1.8,
+      "3BR": 4.13
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Feb2017",
+        "end": "Feb2026",
+        "month_span": 108
+      },
+      "3BR": {
+        "start": "May2017",
+        "end": "Sep2025",
+        "month_span": 100
+      }
     },
     "only_23br": {
+      "2017": {
+        "median_psf": 1144.5,
+        "q1": 988.0,
+        "q3": 1185.0,
+        "min": 963,
+        "max": 1303,
+        "count": 14
+      },
+      "2018": {
+        "median_psf": 1171.5,
+        "q1": 1129.0,
+        "q3": 1199.25,
+        "min": 1022,
+        "max": 1235,
+        "count": 12
+      },
+      "2019": {
+        "median_psf": 1157,
+        "q1": 1087.0,
+        "q3": 1185.0,
+        "min": 1031,
+        "max": 1214,
+        "count": 5
+      },
+      "2020": {
+        "median_psf": 1062,
+        "q1": 1046.0,
+        "q3": 1088.0,
+        "min": 1029,
+        "max": 1181,
+        "count": 17
+      },
       "2021": {
-        "median_psf": 1148,
-        "q1": 1084.0,
-        "q3": 1172.5,
-        "min": 1008,
+        "median_psf": 1140,
+        "q1": 1077.5,
+        "q3": 1165.0,
+        "min": 1007,
         "max": 1287,
-        "count": 31
+        "count": 35
       },
       "2022": {
         "median_psf": 1230,
         "q1": 1189.0,
-        "q3": 1254.0,
-        "min": 1053,
-        "max": 1311,
+        "q3": 1255.0,
+        "min": 1052,
+        "max": 1312,
         "count": 29
       },
       "2023": {
         "median_psf": 1303,
-        "q1": 1261.0,
-        "q3": 1315.0,
+        "q1": 1260.5,
+        "q3": 1314.5,
         "min": 1172,
         "max": 1352,
         "count": 19
@@ -10816,28 +12688,33 @@
         "median_psf": 1336,
         "q1": 1325.5,
         "q3": 1348.0,
-        "min": 1266,
+        "min": 1265,
         "max": 1401,
         "count": 19
       },
       "2025": {
-        "median_psf": 1352.0,
-        "q1": 1327.0,
-        "q3": 1375.5,
+        "median_psf": 1351.0,
+        "q1": 1326.0,
+        "q3": 1376.25,
         "min": 1303,
         "max": 1391,
-        "count": 30
+        "count": 28
       },
       "2026": {
-        "median_psf": 1376,
-        "q1": 1368.0,
-        "q3": 1381.0,
+        "median_psf": 1377.5,
+        "q1": 1371.0,
+        "q3": 1383.25,
         "min": 1336,
         "max": 1417,
-        "count": 7
+        "count": 6
       }
     },
-    "only_23br_cagr": 3.69,
+    "only_23br_cagr": 2.08,
+    "only_23br_period": {
+      "start": "Feb2017",
+      "end": "Feb2026",
+      "month_span": 108
+    },
     "info": {
       "top_year": 2014,
       "tenure": "99yr",
@@ -10953,12 +12830,38 @@
         }
       }
     },
-    "overall_cagr": 0.49,
+    "overall_cagr": 0.59,
+    "overall_period": {
+      "start": "Jul2024",
+      "end": "Mar2026",
+      "month_span": 20
+    },
     "by_type_cagr": {
-      "1BR": -0.76,
-      "2BR": 0.36,
-      "3BR": 2.36,
-      "4BR+": 4.09
+      "1BR": -0.61,
+      "2BR": 0.44,
+      "3BR": 1.76
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Sep2024",
+        "end": "Dec2025",
+        "month_span": 15
+      },
+      "2BR": {
+        "start": "Jul2024",
+        "end": "Mar2026",
+        "month_span": 20
+      },
+      "3BR": {
+        "start": "Aug2024",
+        "end": "Dec2025",
+        "month_span": 16
+      },
+      "4BR+": {
+        "start": "Nov2024",
+        "end": "Apr2025",
+        "month_span": 5
+      }
     },
     "only_23br": {
       "2024": {
@@ -10986,7 +12889,12 @@
         "count": 4
       }
     },
-    "only_23br_cagr": 0.29,
+    "only_23br_cagr": 0.35,
+    "only_23br_period": {
+      "start": "Jul2024",
+      "end": "Mar2026",
+      "month_span": 20
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -11334,12 +13242,39 @@
         }
       }
     },
-    "overall_cagr": 4.53,
+    "overall_cagr": 4.67,
+    "overall_period": {
+      "start": "May2018",
+      "end": "Feb2026",
+      "month_span": 93
+    },
     "by_type_cagr": {
       "1BR": 5.29,
-      "2BR": 0.93,
-      "3BR": 4.47,
-      "4BR+": 4.36
+      "2BR": 0.96,
+      "3BR": 4.62,
+      "4BR+": 4.51
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Dec2020",
+        "end": "Dec2025",
+        "month_span": 60
+      },
+      "2BR": {
+        "start": "May2018",
+        "end": "Feb2026",
+        "month_span": 93
+      },
+      "3BR": {
+        "start": "May2018",
+        "end": "Feb2026",
+        "month_span": 93
+      },
+      "4BR+": {
+        "start": "May2018",
+        "end": "Feb2026",
+        "month_span": 93
+      }
     },
     "only_23br": {
       "2018": {
@@ -11415,7 +13350,12 @@
         "count": 5
       }
     },
-    "only_23br_cagr": 4.39,
+    "only_23br_cagr": 4.53,
+    "only_23br_period": {
+      "start": "May2018",
+      "end": "Feb2026",
+      "month_span": 93
+    },
     "info": {
       "top_year": 2017,
       "tenure": "99yr",
@@ -11705,11 +13645,33 @@
         }
       }
     },
-    "overall_cagr": 3.3,
+    "overall_cagr": 3.39,
+    "overall_period": {
+      "start": "Apr2017",
+      "end": "Jan2026",
+      "month_span": 105
+    },
     "by_type_cagr": {
-      "2BR": 3.8,
-      "3BR": 2.99,
-      "4BR+": 3.49
+      "2BR": 3.62,
+      "3BR": 3.07,
+      "4BR+": 3.28
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Jul2017",
+        "end": "Nov2024",
+        "month_span": 88
+      },
+      "3BR": {
+        "start": "Apr2017",
+        "end": "Jan2026",
+        "month_span": 105
+      },
+      "4BR+": {
+        "start": "Apr2017",
+        "end": "Oct2025",
+        "month_span": 102
+      }
     },
     "only_23br": {
       "2017": {
@@ -11793,7 +13755,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 2.84,
+    "only_23br_cagr": 2.92,
+    "only_23br_period": {
+      "start": "Apr2017",
+      "end": "Jan2026",
+      "month_span": 105
+    },
     "info": {
       "top_year": 2015,
       "tenure": "99yr",
@@ -12099,11 +14066,33 @@
         }
       }
     },
-    "overall_cagr": 5.43,
+    "overall_cagr": 4.95,
+    "overall_period": {
+      "start": "Feb2017",
+      "end": "Nov2025",
+      "month_span": 105
+    },
     "by_type_cagr": {
-      "2BR": 4.98,
-      "3BR": 5.18,
-      "4BR+": 5.58
+      "2BR": 4.73,
+      "3BR": 4.77,
+      "4BR+": 5.14
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Apr2017",
+        "end": "Sep2025",
+        "month_span": 101
+      },
+      "3BR": {
+        "start": "Mar2017",
+        "end": "Nov2025",
+        "month_span": 104
+      },
+      "4BR+": {
+        "start": "Feb2017",
+        "end": "Oct2025",
+        "month_span": 104
+      }
     },
     "only_23br": {
       "2017": {
@@ -12179,7 +14168,12 @@
         "count": 9
       }
     },
-    "only_23br_cagr": 5.19,
+    "only_23br_cagr": 4.78,
+    "only_23br_period": {
+      "start": "Mar2017",
+      "end": "Nov2025",
+      "month_span": 104
+    },
     "info": {
       "top_year": 2013,
       "tenure": "99yr",
@@ -12391,12 +14385,39 @@
         }
       }
     },
-    "overall_cagr": 3.03,
+    "overall_cagr": 3.1,
+    "overall_period": {
+      "start": "Mar2022",
+      "end": "Feb2026",
+      "month_span": 47
+    },
     "by_type_cagr": {
-      "1BR": 0.71,
-      "2BR": 2.84,
-      "3BR": 4.19,
-      "4BR+": 5.81
+      "1BR": 0.79,
+      "2BR": 2.96,
+      "3BR": 4.38,
+      "4BR+": 4.63
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jul2022",
+        "end": "Feb2026",
+        "month_span": 43
+      },
+      "2BR": {
+        "start": "Mar2022",
+        "end": "Jan2026",
+        "month_span": 46
+      },
+      "3BR": {
+        "start": "Apr2022",
+        "end": "Feb2026",
+        "month_span": 46
+      },
+      "4BR+": {
+        "start": "Mar2022",
+        "end": "Dec2025",
+        "month_span": 45
+      }
     },
     "only_23br": {
       "2022": {
@@ -12440,7 +14461,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 3.51,
+    "only_23br_cagr": 3.59,
+    "only_23br_period": {
+      "start": "Mar2022",
+      "end": "Feb2026",
+      "month_span": 47
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -12658,11 +14684,33 @@
         }
       }
     },
-    "overall_cagr": 2.81,
+    "overall_cagr": 2.68,
+    "overall_period": {
+      "start": "May2018",
+      "end": "Sep2025",
+      "month_span": 88
+    },
     "by_type_cagr": {
-      "2BR": 3.38,
-      "3BR": 2.81,
-      "4BR+": 2.44
+      "2BR": 3.32,
+      "3BR": 2.68,
+      "4BR+": 2.3
+    },
+    "by_type_period": {
+      "2BR": {
+        "start": "Sep2019",
+        "end": "Oct2024",
+        "month_span": 61
+      },
+      "3BR": {
+        "start": "May2018",
+        "end": "Sep2025",
+        "month_span": 88
+      },
+      "4BR+": {
+        "start": "Sep2020",
+        "end": "Dec2024",
+        "month_span": 51
+      }
     },
     "only_23br": {
       "2018": {
@@ -12730,7 +14778,12 @@
         "count": 2
       }
     },
-    "only_23br_cagr": 2.81,
+    "only_23br_cagr": 2.68,
+    "only_23br_period": {
+      "start": "May2018",
+      "end": "Sep2025",
+      "month_span": 88
+    },
     "info": {
       "top_year": 2016,
       "tenure": "Freehold",
@@ -12898,10 +14951,27 @@
         }
       }
     },
-    "overall_cagr": 1.43,
+    "overall_cagr": 1.29,
+    "overall_period": {
+      "start": "Mar2019",
+      "end": "Nov2025",
+      "month_span": 80
+    },
     "by_type_cagr": {
-      "1BR": 2.04,
-      "2BR": 4.38
+      "1BR": 1.84,
+      "2BR": 4.54
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Mar2019",
+        "end": "Nov2025",
+        "month_span": 80
+      },
+      "2BR": {
+        "start": "Dec2020",
+        "end": "Oct2025",
+        "month_span": 58
+      }
     },
     "only_23br": {
       "2020": {
@@ -12945,7 +15015,12 @@
         "count": 4
       }
     },
-    "only_23br_cagr": 4.38,
+    "only_23br_cagr": 4.54,
+    "only_23br_period": {
+      "start": "Dec2020",
+      "end": "Oct2025",
+      "month_span": 58
+    },
     "info": {
       "top_year": 2014,
       "tenure": "Freehold",
@@ -13117,12 +15192,39 @@
         }
       }
     },
-    "overall_cagr": 2.64,
+    "overall_cagr": 2.8,
+    "overall_period": {
+      "start": "Apr2023",
+      "end": "Feb2026",
+      "month_span": 34
+    },
     "by_type_cagr": {
-      "1BR": -0.15,
-      "2BR": 2.1,
-      "3BR": 1.84,
-      "4BR+": 1.93
+      "1BR": -0.16,
+      "2BR": 2.29,
+      "3BR": 2.07,
+      "4BR+": 1.54
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "May2023",
+        "end": "Jan2026",
+        "month_span": 32
+      },
+      "2BR": {
+        "start": "Apr2023",
+        "end": "Jan2026",
+        "month_span": 33
+      },
+      "3BR": {
+        "start": "Jun2023",
+        "end": "Feb2026",
+        "month_span": 32
+      },
+      "4BR+": {
+        "start": "May2023",
+        "end": "Nov2025",
+        "month_span": 30
+      }
     },
     "only_23br": {
       "2023": {
@@ -13158,7 +15260,12 @@
         "count": 5
       }
     },
-    "only_23br_cagr": 1.91,
+    "only_23br_cagr": 2.03,
+    "only_23br_period": {
+      "start": "Apr2023",
+      "end": "Feb2026",
+      "month_span": 34
+    },
     "info": {
       "top_year": 2022,
       "tenure": "99yr",
@@ -13426,12 +15533,39 @@
         }
       }
     },
-    "overall_cagr": 0.78,
+    "overall_cagr": 0.81,
+    "overall_period": {
+      "start": "Jul2017",
+      "end": "Feb2026",
+      "month_span": 103
+    },
     "by_type_cagr": {
-      "1BR": 1.89,
-      "2BR": 0.53,
-      "3BR": 2.44,
-      "4BR+": -6.17
+      "1BR": 1.69,
+      "2BR": 0.54,
+      "3BR": 2.54,
+      "4BR+": -5.78
+    },
+    "by_type_period": {
+      "1BR": {
+        "start": "Jan2018",
+        "end": "Nov2025",
+        "month_span": 94
+      },
+      "2BR": {
+        "start": "Jul2017",
+        "end": "May2024",
+        "month_span": 82
+      },
+      "3BR": {
+        "start": "Jun2018",
+        "end": "Feb2026",
+        "month_span": 92
+      },
+      "4BR+": {
+        "start": "Mar2019",
+        "end": "Aug2025",
+        "month_span": 77
+      }
     },
     "only_23br": {
       "2017": {
@@ -13507,7 +15641,12 @@
         "count": 1
       }
     },
-    "only_23br_cagr": 0.78,
+    "only_23br_cagr": 0.81,
+    "only_23br_period": {
+      "start": "Jul2017",
+      "end": "Feb2026",
+      "month_span": 103
+    },
     "info": {
       "top_year": 2017,
       "tenure": "Freehold",

@@ -6,6 +6,8 @@ Default behavior is `resale-only`:
 
 - Existing propertyforsale markdown caches are rebuilt into resale CSVs.
 - Existing propertyforsale HTML caches are reused when available.
+- Stale propertyforsale captcha/register HTML caches are automatically refetched
+  unless `--offline` is set.
 - When propertyforsale resale rows are unavailable, local URA resale rows are used
   as the default fallback.
 - Existing SRX CSVs are preserved under data/srx/ as secondary sources.
@@ -77,6 +79,11 @@ PRIMARY_URA_RESALE_URL = "https://eservice.ura.gov.sg/uraDataService/invokeUraDS
 URA_RESALE_TYPE_CODE = "3"
 SQM_TO_SQFT = 10.7639
 CAPTCHA_PATTERNS = ("recaptcha", "g-recaptcha", "captcha")
+REGISTER_PATTERNS = (
+    "sign up for free",
+    "propertyforsale member benefits",
+    "wishlist (0)",
+)
 
 PROJECTS = [
     {"slug": "seahill", "markdown_id": "15f61f1e-2cb7-40a4-b625-c728c954cbae.txt"},
@@ -129,10 +136,15 @@ PROJECTS = [
     {"slug": "daintree_residence", "page_slug": "daintree-residence"},
     {"slug": "the_myst", "page_slug": "the-myst"},
     {"slug": "the_sen", "page_slug": "the-sen"},
+    {"slug": "the_lakeshore", "page_slug": "the-lakeshore"},
 ]
 
 
 class PropertyForSaleCaptchaError(RuntimeError):
+    pass
+
+
+class PropertyForSaleBlockedError(RuntimeError):
     pass
 
 
@@ -210,6 +222,11 @@ def looks_like_captcha_block(page_html: str) -> bool:
     return any(pattern in lowered for pattern in CAPTCHA_PATTERNS)
 
 
+def looks_like_register_block(page_html: str) -> bool:
+    lowered = page_html.lower()
+    return any(pattern in lowered for pattern in REGISTER_PATTERNS)
+
+
 def parse_month_year(value: str) -> str:
     value = value.strip()
     for full, short in MONTH_MAP.items():
@@ -252,6 +269,8 @@ def parse_html_table_rows(page_html: str, sale_types: frozenset[str]) -> list[di
     if not table_match:
         if looks_like_captcha_block(page_html):
             raise PropertyForSaleCaptchaError("propertyforsale returned a reCAPTCHA page")
+        if looks_like_register_block(page_html):
+            raise PropertyForSaleBlockedError("propertyforsale redirected to registration page")
         raise ValueError("records_list table not found")
 
     rows: list[dict] = []
@@ -260,19 +279,28 @@ def parse_html_table_rows(page_html: str, sale_types: frozenset[str]) -> list[di
         if len(cell_chunks) < 11:
             continue
 
-        cells = []
+        cells_raw = []
         for chunk in cell_chunks:
             content = chunk.split(">", 1)[1] if ">" in chunk else chunk
             if "</td>" in content:
                 content = content.split("</td>", 1)[0]
-            cells.append(strip_tags(content))
+            cells_raw.append(strip_tags(content))
 
-        if len(cells) >= 12:
-            date_raw, _, _, _, _, _, _, sale_type, _, sqft_raw, psf_raw, price_raw = cells[:12]
-        elif len(cells) == 11:
-            date_raw, _, _, _, _, _, sale_type, _, sqft_raw, psf_raw, price_raw = cells[:11]
-        else:
+        cells = [c for c in cells_raw if c] if len(cells_raw) > 12 else cells_raw
+
+        sale_type_idx = None
+        for idx, val in enumerate(cells):
+            if val in VALID_SALE_TYPES:
+                sale_type_idx = idx
+                break
+        if sale_type_idx is None or sale_type_idx + 4 > len(cells):
             continue
+
+        date_raw = cells[0]
+        sale_type = cells[sale_type_idx]
+        sqft_raw = cells[sale_type_idx + 2]
+        psf_raw = cells[sale_type_idx + 3]
+        price_raw = cells[sale_type_idx + 4]
 
         if sale_type not in sale_types:
             continue
@@ -624,10 +652,12 @@ def load_project_rows(
     url = build_url(project["page_slug"])
     html_cache = HTML_CACHE_DIR / f"{slug}.html"
     if html_cache.exists():
-        return parse_html_table_rows(
-            normalize_html(html_cache.read_text(encoding="utf-8", errors="replace")),
-            sale_types,
-        ), url
+        cached_html = normalize_html(html_cache.read_text(encoding="utf-8", errors="replace"))
+        try:
+            return parse_html_table_rows(cached_html, sale_types), url
+        except (PropertyForSaleBlockedError, PropertyForSaleCaptchaError, PropertyForSaleNoMatchingRowsError, ValueError):
+            if offline:
+                raise
     if offline:
         raise FileNotFoundError(f"local propertyforsale HTML cache not found: {html_cache}")
     raw_html = fetch_html(url)
@@ -670,7 +700,7 @@ def refresh_project(
         if "page_slug" in project and not offline:
             time.sleep(1)
         return "propertyforsale", len(rows), propertyforsale_url
-    except (PropertyForSaleCaptchaError, PropertyForSaleNoMatchingRowsError, FileNotFoundError) as exc:
+    except (PropertyForSaleBlockedError, PropertyForSaleCaptchaError, PropertyForSaleNoMatchingRowsError, FileNotFoundError) as exc:
         propertyforsale_reason = str(exc)
         if sale_scope != "resale":
             raise

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T18:16:28",
+  "generated_at": "2026-04-15T15:08:19",
   "projects": {
     "the_skywoods": {
       "slug": "the_skywoods",
@@ -263,11 +263,11 @@
       "tenure": "99yr",
       "units": 546,
       "property_type": "Apartment",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/hillion-residences/sales-transactions",
       "source_csv": "hillion_residences_transactions.csv",
-      "record_count": 147,
+      "record_count": 173,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -276,8 +276,7 @@
           "source_csv": "srx/hillion_residences_transactions.csv",
           "record_count": 54
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "midwood": {
       "slug": "midwood",
@@ -287,11 +286,11 @@
       "tenure": "99yr",
       "units": 564,
       "property_type": "Condominium",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/midwood/sales-transactions",
       "source_csv": "midwood_transactions.csv",
-      "record_count": 76,
+      "record_count": 78,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -300,8 +299,7 @@
           "source_csv": "srx/midwood_transactions.csv",
           "record_count": 76
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "eight_riversuites": {
       "slug": "eight_riversuites",
@@ -311,11 +309,11 @@
       "tenure": "99yr",
       "units": 862,
       "property_type": "Condominium",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/eight-riversuites/sales-transactions",
       "source_csv": "eight_riversuites_transactions.csv",
-      "record_count": 293,
+      "record_count": 460,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -324,8 +322,7 @@
           "source_csv": "srx/eight_riversuites_transactions.csv",
           "record_count": 105
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "the_tennery": {
       "slug": "the_tennery",
@@ -335,11 +332,11 @@
       "tenure": "99yr",
       "units": 338,
       "property_type": "Apartment",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-tennery/sales-transactions",
       "source_csv": "the_tennery_transactions.csv",
-      "record_count": 135,
+      "record_count": 184,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -348,8 +345,7 @@
           "source_csv": "srx/the_tennery_transactions.csv",
           "record_count": 52
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "dairy_farm_residences": {
       "slug": "dairy_farm_residences",
@@ -359,11 +355,11 @@
       "tenure": "99yr",
       "units": 460,
       "property_type": "Apartment",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/dairy-farm-residences/sales-transactions",
       "source_csv": "dairy_farm_residences_transactions.csv",
-      "record_count": 4,
+      "record_count": 6,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -372,8 +368,7 @@
           "source_csv": "srx/dairy_farm_residences_transactions.csv",
           "record_count": 53
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "le_quest": {
       "slug": "le_quest",
@@ -383,11 +378,11 @@
       "tenure": "99yr",
       "units": 516,
       "property_type": "Apartment",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/le-quest/sales-transactions",
       "source_csv": "le_quest_transactions.csv",
-      "record_count": 112,
+      "record_count": 113,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -396,8 +391,7 @@
           "source_csv": "srx/le_quest_transactions.csv",
           "record_count": 64
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "daintree_residence": {
       "slug": "daintree_residence",
@@ -407,11 +401,11 @@
       "tenure": "99yr",
       "units": 327,
       "property_type": "Condominium",
-      "source_kind": "ura_resale_csv",
-      "source_label": "URA PMI resale CSV",
-      "source_url": "https://eservice.ura.gov.sg/uraDataService/invokeUraDS/v1?service=PMI_Resi_Transaction",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/daintree-residence/sales-transactions",
       "source_csv": "daintree_residence_transactions.csv",
-      "record_count": 54,
+      "record_count": 55,
       "secondary_sources": [
         {
           "source_kind": "srx_csv",
@@ -420,8 +414,7 @@
           "source_csv": "srx/daintree_residence_transactions.csv",
           "record_count": 48
         }
-      ],
-      "propertyforsale_blocked_reason": "propertyforsale returned a reCAPTCHA page"
+      ]
     },
     "the_myst": {
       "slug": "the_myst",
@@ -740,6 +733,15 @@
       "source_label": "propertyforsale.com.sg resale CSV",
       "source_csv": "whitehaven_transactions.csv",
       "source_url": null
+    },
+    "the_lakeshore": {
+      "slug": "the_lakeshore",
+      "source_kind": "propertyforsale_csv",
+      "source_label": "propertyforsale.com.sg resale CSV",
+      "source_url": "https://www.propertyforsale.com.sg/the-lakeshore/sales-transactions",
+      "source_csv": "the_lakeshore_transactions.csv",
+      "record_count": 294,
+      "secondary_sources": []
     }
   }
 }
