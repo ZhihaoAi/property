@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 Property appreciation analysis for multiple projects.
 Reads transaction CSVs, groups by unit type and year, computes median PSF, Q1/Q3/min/max for box plot, and CAGR.
@@ -14,6 +16,8 @@ MONTH_MAP = {
     "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
     "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12,
 }
+
+MIN_CAGR_MONTH_SPAN = 12
 
 # Project metadata: top_year, tenure, units (units may be None if unknown)
 BASE_PROJECT_INFO = {
@@ -47,6 +51,7 @@ BASE_PROJECT_INFO = {
     "whitehaven": {"top_year": 2017, "tenure": "Freehold", "units": 121},
     "caspian": {"top_year": 2008, "tenure": "99yr", "units": 712},
     "lakefront": {"top_year": 2010, "tenure": "99yr", "units": 629},
+    "the_lakeshore": {"top_year": 2007, "tenure": "99yr", "units": 848},
 }
 
 REGISTRY_PATH = Path(__file__).resolve().parent / "data" / "srx_project_registry.json"
@@ -72,12 +77,18 @@ def load_registry_info() -> dict:
 PROJECT_INFO = {**BASE_PROJECT_INFO, **load_registry_info()}
 
 
+def parse_monthyear(date_str: str) -> tuple[int, int]:
+    """Parse MonthYear (e.g. Feb2026) and return (year, month)."""
+    for month_abbr, month_num in MONTH_MAP.items():
+        if date_str.startswith(month_abbr):
+            return int(date_str[len(month_abbr):]), month_num
+    raise ValueError(f"Cannot parse date: {date_str}")
+
+
 def parse_year(date_str: str) -> str:
     """Parse MonthYear (e.g. Feb2026) and return year as string."""
-    for month in MONTH_MAP:
-        if date_str.startswith(month):
-            return date_str[len(month):]
-    raise ValueError(f"Cannot parse date: {date_str}")
+    year, _ = parse_monthyear(date_str)
+    return str(year)
 
 
 def get_unit_type(sqft: float) -> str:
@@ -97,12 +108,23 @@ def load_transactions(csv_path: Path) -> list[dict]:
     with open(csv_path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for r in reader:
-            year = parse_year(r["date"].strip())
+            date_value = r["date"].strip()
+            year, month = parse_monthyear(date_value)
             sqft = int(r["sqft"])
             psf = int(r["psf"])
             price = int(r["price"])
             unit_type = get_unit_type(sqft)
-            rows.append({"year": year, "sqft": sqft, "psf": psf, "price": price, "type": unit_type})
+            rows.append(
+                {
+                    "date": date_value,
+                    "year": str(year),
+                    "month": month,
+                    "sqft": sqft,
+                    "psf": psf,
+                    "price": price,
+                    "type": unit_type,
+                }
+            )
     return rows
 
 
@@ -170,6 +192,43 @@ def compute_cagr(annual_data: dict) -> float | None:
     return round(cagr * 100, 2)
 
 
+def compute_cagr_over_month_span(
+    annual_data: dict,
+    start_period: tuple[int, int] | None,
+    end_period: tuple[int, int] | None,
+) -> float | None:
+    """
+    Compute CAGR using annual median PSF endpoints, but annualize over the
+    exact month span between the earliest and latest available transactions.
+    """
+    if len(annual_data) < 2 or not start_period or not end_period:
+        return None
+    years = sorted(annual_data.keys())
+    start_year, end_year = years[0], years[-1]
+    start_psf = annual_data[start_year]["median_psf"]
+    end_psf = annual_data[end_year]["median_psf"]
+    if start_psf <= 0:
+        return None
+    month_span = (end_period[0] - start_period[0]) * 12 + (end_period[1] - start_period[1])
+    if month_span < MIN_CAGR_MONTH_SPAN:
+        return None
+    cagr = (end_psf / start_psf) ** (12 / month_span) - 1
+    return round(cagr * 100, 2)
+
+
+def period_for_transactions(
+    transactions: list[dict],
+) -> tuple[dict | None, dict | None, tuple[int, int] | None, tuple[int, int] | None, int | None]:
+    if not transactions:
+        return None, None, None, None, None
+    first_tx = min(transactions, key=lambda row: (int(row["year"]), row["month"], row["price"], row["sqft"]))
+    latest_tx = max(transactions, key=lambda row: (int(row["year"]), row["month"], row["price"], row["sqft"]))
+    start_period = (int(first_tx["year"]), first_tx["month"])
+    end_period = (int(latest_tx["year"]), latest_tx["month"])
+    month_span = (end_period[0] - start_period[0]) * 12 + (end_period[1] - start_period[1])
+    return first_tx, latest_tx, start_period, end_period, month_span
+
+
 def compute_annual_stats_filtered(transactions: list[dict], allowed_types: list[str]) -> dict:
     """Like compute_annual_stats but only includes transactions of specified types."""
     by_year: dict[str, list[int]] = {}
@@ -206,16 +265,32 @@ def analyze_project(name: str, transactions: list[dict]) -> dict:
     }
     by_type = {k: v for k, v in by_type.items() if v}
 
-    overall_cagr = compute_cagr(overall)
+    first_tx, latest_tx, start_period, end_period, month_span = period_for_transactions(transactions)
+    overall_cagr = compute_cagr_over_month_span(
+        overall,
+        start_period,
+        end_period,
+    )
     by_type_cagr = {}
+    by_type_period = {}
     for t, data in by_type.items():
-        c = compute_cagr(data)
+        type_transactions = [row for row in transactions if row["type"] == t]
+        type_first_tx, type_latest_tx, type_start_period, type_end_period, type_month_span = period_for_transactions(type_transactions)
+        c = compute_cagr_over_month_span(data, type_start_period, type_end_period)
         if c is not None:
             by_type_cagr[t] = c
+        if type_first_tx and type_latest_tx and type_month_span is not None:
+            by_type_period[t] = {
+                "start": type_first_tx["date"],
+                "end": type_latest_tx["date"],
+                "month_span": type_month_span,
+            }
 
     # 2BR+3BR only analysis
+    focus_transactions = [row for row in transactions if row["type"] in {"2BR", "3BR"}]
     only_23br = compute_annual_stats_filtered(transactions, ["2BR", "3BR"])
-    only_23br_cagr = compute_cagr(only_23br)
+    focus_first_tx, focus_latest_tx, focus_start_period, focus_end_period, focus_month_span = period_for_transactions(focus_transactions)
+    only_23br_cagr = compute_cagr_over_month_span(only_23br, focus_start_period, focus_end_period)
 
     info = PROJECT_INFO.get(name, {"top_year": None, "tenure": None, "units": None})
 
@@ -223,9 +298,20 @@ def analyze_project(name: str, transactions: list[dict]) -> dict:
         "overall": overall,
         "by_type": by_type,
         "overall_cagr": overall_cagr,
+        "overall_period": {
+            "start": first_tx["date"],
+            "end": latest_tx["date"],
+            "month_span": month_span,
+        },
         "by_type_cagr": by_type_cagr,
+        "by_type_period": by_type_period,
         "only_23br": only_23br,
         "only_23br_cagr": only_23br_cagr,
+        "only_23br_period": {
+            "start": focus_first_tx["date"] if focus_first_tx else None,
+            "end": focus_latest_tx["date"] if focus_latest_tx else None,
+            "month_span": focus_month_span,
+        },
         "info": info,
     }
 

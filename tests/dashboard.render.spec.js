@@ -15,6 +15,13 @@ test.describe('dashboard render', () => {
     const nonPropertyProject = data.projects.find(project => project.source_kind !== 'propertyforsale_csv');
     await expect(page.locator('#pk_kpis .kpi').first()).toBeVisible();
     await expect(page.locator('#overall_cagr_chart .cagr-row').first()).toBeVisible();
+    
+    await expect(page.locator('#cumulative_cagr_chart')).toBeVisible();
+    await expect(page.locator('#yoy_return_chart')).toBeVisible();
+    await expect(page.locator('#typed_bucket_cagr_chart')).toBeVisible();
+    
+    await page.locator('summary', { hasText: '口径 1 · 全部主源整体 CAGR 汇总' }).click();
+    await page.locator('summary', { hasText: '附加 · propertyforsale resale 主源 CAGR 汇总' }).click();
     await expect(page.locator('#overall_projects_table tbody tr').first()).toBeVisible();
     await expect(page.locator('#all_source_cagr_table tbody tr').first()).toBeVisible();
     await expect(page.locator('#layout_projects_table tbody tr').first()).toBeVisible();

@@ -51,6 +51,9 @@ MONTH_TO_NUM = {
     "Dec": 12,
 }
 
+MIN_CAGR_MONTH_SPAN = 12
+BASE_MONTHS = 12
+
 DISPLAY_NAME = {
     "alexis": "Alexis",
     "artra": "Artra",
@@ -82,6 +85,7 @@ DISPLAY_NAME = {
     "viva_vista": "Viva Vista",
     "whitehaven": "Whitehaven",
     "whistler_grand": "Whistler Grand",
+    "the_lakeshore": "The Lakeshore",
 }
 
 REGION_GROUP = {
@@ -115,6 +119,7 @@ REGION_GROUP = {
     "whitehaven": "Pasir Panjang / RCR edge",
     "caspian": "Lakeside / West",
     "lakefront": "Lakeside / West",
+    "the_lakeshore": "Lakeside / West",
 }
 
 
@@ -203,6 +208,21 @@ def compute_annual_stats_from_rows(rows: list[dict]) -> dict[str, dict]:
     return result
 
 
+def compute_monthly_stats_from_rows(rows: list[dict]) -> dict[str, dict]:
+    by_month: dict[str, list[int]] = {}
+    for row in rows:
+        key = f"{row['year']}-{row['month']:02d}"
+        by_month.setdefault(key, []).append(int(row["psf"]))
+    result: dict[str, dict] = {}
+    for key in sorted(by_month.keys()):
+        psf_values = sorted(by_month[key])
+        result[key] = {
+            "median_psf": round(float(statistics.median(psf_values)), 2),
+            "count": len(psf_values),
+        }
+    return result
+
+
 def compute_cagr_from_annual(annual_data: dict[str, dict]) -> float | None:
     if len(annual_data) < 2:
         return None
@@ -219,6 +239,115 @@ def compute_cagr_from_annual(annual_data: dict[str, dict]) -> float | None:
     return round(cagr * 100, 2)
 
 
+def month_span_between(start_period: tuple[int, int], end_period: tuple[int, int]) -> int:
+    return (end_period[0] - start_period[0]) * 12 + (end_period[1] - start_period[1])
+
+
+def compute_cagr_from_annual_over_month_span(
+    annual_data: dict[str, dict],
+    start_period: tuple[int, int],
+    end_period: tuple[int, int],
+) -> float | None:
+    if len(annual_data) < 2:
+        return None
+    start_psf = annual_data[min(annual_data.keys())]["median_psf"]
+    end_psf = annual_data[max(annual_data.keys())]["median_psf"]
+    if start_psf <= 0:
+        return None
+    month_span = month_span_between(start_period, end_period)
+    if month_span < MIN_CAGR_MONTH_SPAN:
+        return None
+    cagr = (end_psf / start_psf) ** (12 / month_span) - 1
+    return round(cagr * 100, 2)
+
+
+def _add_months(ym: tuple[int, int], n: int) -> tuple[int, int]:
+    y, m = ym
+    total = (y * 12 + m - 1) + n
+    return total // 12, total % 12 + 1
+
+
+def _ym_to_key(ym: tuple[int, int]) -> str:
+    return f"{ym[0]}-{ym[1]:02d}"
+
+
+def _key_to_ym(key: str) -> tuple[int, int]:
+    parts = key.split("-")
+    return int(parts[0]), int(parts[1])
+
+
+def compute_base_psf(
+    rows: list[dict], n_months: int = BASE_MONTHS
+) -> tuple[float | None, str | None]:
+    """Median PSF of transactions in the first *n_months*.
+
+    Returns (base_psf, start_month_key).
+    """
+    if not rows:
+        return None, None
+    first_row = min(rows, key=lambda r: (r["year"], r["month"]))
+    start_ym = (first_row["year"], first_row["month"])
+    cutoff_ym = _add_months(start_ym, n_months)
+    base_rows = [r for r in rows if (r["year"], r["month"]) < cutoff_ym]
+    if not base_rows:
+        return None, None
+    return round(float(statistics.median([r["psf"] for r in base_rows])), 2), _ym_to_key(start_ym)
+
+
+def compute_ttm_monthly(rows: list[dict]) -> dict[str, dict]:
+    """TTM (trailing 12-month) median PSF for each month in the data range.
+
+    Returns ``{YYYY-MM: {"median_psf": float, "count": int}}``.
+    """
+    if not rows:
+        return {}
+    by_month: dict[tuple[int, int], list[int]] = {}
+    for row in rows:
+        ym = (row["year"], row["month"])
+        by_month.setdefault(ym, []).append(int(row["psf"]))
+
+    all_yms = sorted(by_month.keys())
+    first_ym, last_ym = all_yms[0], all_yms[-1]
+
+    result: dict[str, dict] = {}
+    current = first_ym
+    while current <= last_ym:
+        window_start = _add_months(current, -11)
+        psf_values: list[int] = []
+        scan = window_start
+        while scan <= current:
+            psf_values.extend(by_month.get(scan, []))
+            scan = _add_months(scan, 1)
+        if psf_values:
+            result[_ym_to_key(current)] = {
+                "median_psf": round(float(statistics.median(psf_values)), 2),
+                "count": len(psf_values),
+            }
+        current = _add_months(current, 1)
+    return result
+
+
+def compute_cagr_from_base_ttm(
+    base_psf: float | None,
+    ttm_monthly: dict[str, dict],
+    start_month_key: str | None,
+) -> float | None:
+    """CAGR using base PSF vs the last TTM month.
+
+    ``span = M - BASE_MONTHS`` where *M* is the month offset from the start.
+    """
+    if not ttm_monthly or base_psf is None or base_psf <= 0 or not start_month_key:
+        return None
+    last_key = max(ttm_monthly.keys())
+    last_psf = ttm_monthly[last_key]["median_psf"]
+    m = month_span_between(_key_to_ym(start_month_key), _key_to_ym(last_key))
+    span = m - BASE_MONTHS
+    if span < MIN_CAGR_MONTH_SPAN:
+        return None
+    cagr = (last_psf / base_psf) ** (12 / span) - 1
+    return round(cagr * 100, 2)
+
+
 def build_bucket_metrics(
     rows: list[dict],
     bucket_order: list[str],
@@ -230,18 +359,29 @@ def build_bucket_metrics(
         if not bucket_rows:
             continue
         annual = compute_annual_stats_from_rows(bucket_rows)
+        monthly = compute_monthly_stats_from_rows(bucket_rows)
         years = sorted(annual.keys())
         latest_year = years[-1] if years else None
         latest_data = annual.get(latest_year, {}) if latest_year else {}
+        first_row, latest_row, month_span = row_period_bounds(bucket_rows)
+        base_psf, base_start = compute_base_psf(bucket_rows)
+        ttm_monthly = compute_ttm_monthly(bucket_rows)
+        cagr = compute_cagr_from_base_ttm(base_psf, ttm_monthly, base_start)
         metrics[bucket] = {
             "count": len(bucket_rows),
             "year_count": len(years),
             "year_range": year_range_label(years),
             "annual": annual,
-            "cagr": compute_cagr_from_annual(annual),
+            "monthly": monthly,
+            "cagr": cagr,
+            "base_psf": base_psf,
+            "base_start": base_start,
+            "ttm_monthly": ttm_monthly,
             "latest_year": latest_year,
             "latest_psf": latest_data.get("median_psf"),
             "latest_n": latest_data.get("count"),
+            "period_months": month_span,
+            "period_label": period_label_for_rows(bucket_rows),
         }
     return metrics
 
@@ -252,6 +392,31 @@ def year_range_label(years: list[str]) -> str:
     if len(years) == 1:
         return f"{years[0]} only"
     return f"{years[0]}-{years[-1]}"
+
+
+def month_span_label(month_span: int) -> str:
+    if month_span <= 0:
+        return "-"
+    return f"{month_span}个月"
+
+
+def row_period_bounds(rows: list[dict]) -> tuple[dict | None, dict | None, int | None]:
+    if not rows:
+        return None, None, None
+    first_row = min(rows, key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]))
+    latest_row = max(rows, key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]))
+    month_span = month_span_between(
+        (first_row["year"], first_row["month"]),
+        (latest_row["year"], latest_row["month"]),
+    )
+    return first_row, latest_row, month_span
+
+
+def period_label_for_rows(rows: list[dict]) -> str:
+    first_row, latest_row, month_span = row_period_bounds(rows)
+    if not first_row or not latest_row or month_span is None:
+        return "-"
+    return f"{first_row['date_label']} → {latest_row['date_label']} · {month_span_label(month_span)}"
 
 
 def slug_to_name(slug: str) -> str:
@@ -582,16 +747,36 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         },
         secondary_sources,
     )
-    overall = analysis.get("overall", {})
+    overall = compute_annual_stats_from_rows(rows)
+    overall_monthly = compute_monthly_stats_from_rows(rows)
     overall_years = sorted(overall.keys())
     latest_overall_year = overall_years[-1] if overall_years else None
     latest_overall = overall.get(latest_overall_year, {}) if latest_overall_year else {}
-    overall_pk_included = len(overall_years) >= 2 and analysis.get("overall_cagr") is not None
+    overall_month_span = month_span_between(
+        (first_row["year"], first_row["month"]),
+        (latest_row["year"], latest_row["month"]),
+    )
+    overall_period_label = period_label_for_rows(rows)
+    overall_base_psf, overall_base_start = compute_base_psf(rows)
+    overall_ttm_monthly = compute_ttm_monthly(rows)
+    overall_cagr = compute_cagr_from_base_ttm(
+        overall_base_psf, overall_ttm_monthly, overall_base_start,
+    )
+    overall_pk_included = len(overall_years) >= 2 and overall_cagr is not None
     public_window_pk_included = source_kind == "propertyforsale_csv" and overall_pk_included
-    only_23br = analysis.get("only_23br", {})
-    latest_focus_year = max(only_23br.keys()) if only_23br else None
-    latest_focus = only_23br.get(latest_focus_year, {}) if latest_focus_year else {}
-    pk_included = len(only_23br) >= 2 and analysis.get("only_23br_cagr") is not None
+    focus_rows = [row for row in rows if infer_area_proxy_bucket(row["sqft"]) is not None]
+    focus_annual = compute_annual_stats_from_rows(focus_rows)
+    focus_years = sorted(focus_annual.keys())
+    latest_focus_year = max(focus_annual.keys()) if focus_annual else None
+    latest_focus = focus_annual.get(latest_focus_year, {}) if latest_focus_year else {}
+    focus_first_row, focus_latest_row, focus_month_span = row_period_bounds(focus_rows)
+    focus_period_label = period_label_for_rows(focus_rows)
+    focus_base_psf, focus_base_start = compute_base_psf(focus_rows)
+    focus_ttm_monthly = compute_ttm_monthly(focus_rows)
+    focus_cagr = compute_cagr_from_base_ttm(
+        focus_base_psf, focus_ttm_monthly, focus_base_start,
+    )
+    pk_included = len(focus_years) >= 2 and focus_cagr is not None
     area_proxy_bucket_metrics = build_bucket_metrics(
         rows,
         AREA_PROXY_ORDER,
@@ -616,21 +801,29 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         "top_year": info.get("top_year"),
         "tenure": info.get("tenure"),
         "units": info.get("units"),
-        "overall_cagr": analysis.get("overall_cagr"),
+        "overall_cagr": overall_cagr,
+        "overall_base_psf": overall_base_psf,
+        "overall_base_start": overall_base_start,
+        "overall_ttm_monthly": overall_ttm_monthly,
         "overall_year_count": len(overall_years),
         "overall_latest_year": latest_overall_year,
         "overall_latest_psf": latest_overall.get("median_psf"),
         "overall_latest_n": latest_overall.get("count"),
         "overall_annual": overall,
+        "overall_monthly": overall_monthly,
         "overall_year_range": year_range_label(overall_years),
+        "overall_period_months": overall_month_span,
+        "overall_period_label": overall_period_label,
         "overall_pk_included": overall_pk_included,
         "public_window_pk_included": public_window_pk_included,
-        "focus_cagr": analysis.get("only_23br_cagr"),
-        "focus_year_count": len(only_23br),
+        "focus_cagr": focus_cagr,
+        "focus_year_count": len(focus_years),
         "focus_latest_year": latest_focus_year,
         "focus_latest_psf": latest_focus.get("median_psf"),
         "focus_latest_n": latest_focus.get("count"),
-        "focus_annual": only_23br,
+        "focus_annual": focus_annual,
+        "focus_period_months": focus_month_span,
+        "focus_period_label": focus_period_label,
         "source": source_label,
         "source_kind": source_kind,
         "source_url": source_url,
@@ -694,6 +887,7 @@ def build_ura_browser_projects(project_summaries: list[dict]) -> list[dict]:
                     "latest_psf": local_match.get("overall_latest_psf") if local_match else None,
                     "latest_n": local_match.get("overall_latest_n") if local_match else None,
                     "overall_cagr": local_match.get("overall_cagr") if local_match else None,
+                    "overall_period_label": local_match.get("overall_period_label") if local_match else None,
                     "source": local_match.get("source") if local_match else None,
                     "source_csv": local_match.get("source_csv") if local_match else None,
                     "transaction_count_gap": (
@@ -713,6 +907,191 @@ def build_ura_browser_projects(project_summaries: list[dict]) -> list[dict]:
         )
     )
     return browser_projects
+
+
+URA_RENTAL_PROJECTS = {
+    "lakeville": "LAKEVILLE",
+    "lake_grande": "LAKE GRANDE",
+}
+
+RENTAL_TYPE_RULES: dict[str, dict[tuple[str, str], str]] = {
+    "LAKEVILLE": {
+        ("2", "600-700"): "2b1b",
+        ("2", "700-800"): "2b2b",
+        ("2", "800-900"): "2b2b",
+        ("3", "900-1000"): "3b2b",
+    },
+    "LAKE GRANDE": {
+        ("2", "500-600"): "2b1b",
+        ("2", "600-700"): "2b1b",
+        ("2", "800-900"): "2b2b",
+        ("3", "900-1000"): "3b2b",
+    },
+}
+
+RENTAL_TYPE_RULES_SQM: dict[str, dict[tuple[str, str, str], str]] = {
+    "LAKE GRANDE": {
+        ("2", "700-800", "70-80"): "2b2b",
+        ("2", "700-800", "60-70"): "2b2b",
+    },
+}
+
+
+def classify_rental_contract(project_name: str, contract: dict) -> str | None:
+    bedrooms = contract.get("noOfBedRoom", "")
+    area_sqft = contract.get("areaSqft", "")
+    area_sqm = contract.get("areaSqm", "")
+
+    rules = RENTAL_TYPE_RULES.get(project_name, {})
+    result = rules.get((bedrooms, area_sqft))
+    if result:
+        return result
+
+    sqm_rules = RENTAL_TYPE_RULES_SQM.get(project_name, {})
+    result = sqm_rules.get((bedrooms, area_sqft, area_sqm))
+    if result:
+        return result
+
+    return None
+
+
+def normalize_ura_quarter(ref_period: str) -> str:
+    """Convert '21q1' -> '2021Q1' or pass through '2023Q1' unchanged."""
+    if len(ref_period) == 4 and "q" in ref_period:
+        yy, q = ref_period.split("q")
+        return f"20{yy}Q{q}"
+    return ref_period
+
+
+def quarter_sort_key(quarter: str) -> tuple[int, int]:
+    year = int(quarter[:4])
+    q = int(quarter[-1])
+    return (year, q)
+
+
+RENTAL_SLUG_TO_FOCUS_SLUG = {
+    "lakeville": "lakeville",
+    "lake_grande": "lakegrande",
+}
+
+TRAILING_QUARTERS = 4
+
+
+def _month_to_quarter(year: int, month: int) -> str:
+    q = (month - 1) // 3 + 1
+    return f"{year}Q{q}"
+
+
+def _prev_quarters(quarter: str, n: int) -> list[str]:
+    """Return *n* quarters ending at (and including) *quarter*."""
+    year = int(quarter[:4])
+    q = int(quarter[-1])
+    result = []
+    for _ in range(n):
+        result.append(f"{year}Q{q}")
+        q -= 1
+        if q == 0:
+            q = 4
+            year -= 1
+    return result
+
+
+def _load_price_by_quarter_bucket(
+    focus_slug: str,
+    catalog_by_project: dict[str, list[dict]],
+) -> dict[str, dict[str, list[int]]]:
+    """Return {bucket: {quarter: [prices]}} from layout-mapped transactions."""
+    rows = load_focus_mapping_rows(focus_slug, catalog_by_project.get(focus_slug, []))
+    price_map: dict[str, dict[str, list[int]]] = {
+        "2b1b": defaultdict(list),
+        "2b2b": defaultdict(list),
+        "3b2b": defaultdict(list),
+    }
+    for row in rows:
+        bucket = row["focus_bucket"]
+        if bucket not in price_map:
+            continue
+        q = _month_to_quarter(int(row["year"]), int(row["month"]))
+        price_map[bucket][q].append(row["price"])
+    return price_map
+
+
+def _trailing_median_price(
+    price_by_quarter: dict[str, list[int]],
+    quarter: str,
+    window: int = TRAILING_QUARTERS,
+) -> tuple[float | None, int]:
+    """Median price over a trailing window of quarters. Returns (median, count)."""
+    qs = _prev_quarters(quarter, window)
+    prices: list[int] = []
+    for q in qs:
+        prices.extend(price_by_quarter.get(q, []))
+    if not prices:
+        return None, 0
+    return round(float(statistics.median(prices))), len(prices)
+
+
+def build_rental_trends(layout_catalogs: dict[str, list[dict]]) -> dict:
+    ura_index = load_optional_json(URA_INDEX_PATH)
+    if not ura_index:
+        return {}
+
+    price_caches: dict[str, dict[str, dict[str, list[int]]]] = {}
+    for rental_slug, focus_slug in RENTAL_SLUG_TO_FOCUS_SLUG.items():
+        price_caches[rental_slug] = _load_price_by_quarter_bucket(
+            focus_slug, layout_catalogs,
+        )
+
+    result: dict[str, dict[str, list[dict]]] = {}
+
+    for local_slug, project_name in URA_RENTAL_PROJECTS.items():
+        ura_slug = local_slug
+        details = ura_index.get(ura_slug, {})
+        contracts = details.get("rentalContracts", [])
+
+        buckets: dict[str, dict[str, list[int]]] = {
+            "2b1b": defaultdict(list),
+            "2b2b": defaultdict(list),
+            "3b2b": defaultdict(list),
+        }
+
+        for contract in contracts:
+            unit_type = classify_rental_contract(project_name, contract)
+            if not unit_type:
+                continue
+            quarter = normalize_ura_quarter(contract.get("refPeriod", ""))
+            rent = contract.get("rent")
+            if rent and quarter:
+                buckets[unit_type][quarter].append(rent)
+
+        project_price_cache = price_caches.get(local_slug, {})
+
+        project_trends: dict[str, list[dict]] = {}
+        for unit_type in ("2b1b", "2b2b", "3b2b"):
+            quarter_data = buckets[unit_type]
+            sorted_quarters = sorted(quarter_data.keys(), key=quarter_sort_key)
+            price_by_q = project_price_cache.get(unit_type, {})
+            trend: list[dict] = []
+            for quarter in sorted_quarters:
+                rents = quarter_data[quarter]
+                median_rent = round(statistics.median(rents))
+                median_price, price_count = _trailing_median_price(price_by_q, quarter)
+                gross_yield = None
+                if median_price and median_price > 0:
+                    gross_yield = round(median_rent * 12 / median_price * 100, 2)
+                trend.append({
+                    "quarter": quarter,
+                    "median_rent": median_rent,
+                    "count": len(rents),
+                    "median_price": median_price,
+                    "price_txn_count": price_count,
+                    "gross_yield": gross_yield,
+                })
+            project_trends[unit_type] = trend
+
+        result[local_slug] = project_trends
+
+    return result
 
 
 def build_payload() -> dict:
@@ -745,12 +1124,18 @@ def build_payload() -> dict:
                     "tenure": summary["tenure"],
                     "units": summary["units"],
                     "overall_cagr": summary["overall_cagr"],
+                    "overall_base_psf": summary["overall_base_psf"],
+                    "overall_base_start": summary["overall_base_start"],
+                    "overall_ttm_monthly": summary["overall_ttm_monthly"],
                     "overall_annual": summary["overall_annual"],
+                    "overall_monthly": summary["overall_monthly"],
                     "overall_latest_year": summary["overall_latest_year"],
                     "overall_latest_psf": summary["overall_latest_psf"],
                     "overall_latest_n": summary["overall_latest_n"],
                     "record_count": summary["record_count"],
                     "year_range": summary["overall_year_range"],
+                    "overall_period_label": summary["overall_period_label"],
+                    "overall_period_months": summary["overall_period_months"],
                     "source_kind": summary["source_kind"],
                     "source_label": summary["source"],
                     "source_csv": summary["source_csv"],
@@ -774,6 +1159,8 @@ def build_payload() -> dict:
                     "focus_latest_n": summary["focus_latest_n"],
                     "record_count": summary["record_count"],
                     "year_range": summary["year_range"],
+                    "focus_period_label": summary["focus_period_label"],
+                    "focus_period_months": summary["focus_period_months"],
                     "source_kind": summary["source_kind"],
                     "source_label": summary["source"],
                     "source_csv": summary["source_csv"],
@@ -819,6 +1206,7 @@ def build_payload() -> dict:
         for slug in ("lakeville", "lakegrande")
     }
     ura_browser_projects = build_ura_browser_projects(project_summaries)
+    rental_trends = build_rental_trends(layout_catalogs)
     layout_comparison_projects = sorted(
         [
             {
@@ -877,6 +1265,7 @@ def build_payload() -> dict:
         "layout_comparison_projects": layout_comparison_projects,
         "focus_projects": focus_projects,
         "ura_browser_projects": ura_browser_projects,
+        "rental_trends": rental_trends,
     }
 
 
