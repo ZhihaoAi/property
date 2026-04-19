@@ -5,6 +5,9 @@
   "description": "Frontend and automation tooling for the Singapore property dashboard",
   "scripts": {
     "build:data": "python3 build_dashboard_data.py",
+    "build:wealth-xlsx": "node scripts/build_wealth_model_workbook.mjs",
+    "build:wealth-gsheets-xlsx": "node scripts/build_wealth_model_workbook.mjs --gsheets",
+    "build:wealth-numbers-xlsx": "node scripts/build_wealth_model_workbook.mjs --numbers",
     "fetch:srx": "node scripts/fetch_missing_srx_transactions.cjs",
     "sync:vendor": "node scripts/sync_vendor.cjs",
     "postinstall": "npm run sync:vendor",
