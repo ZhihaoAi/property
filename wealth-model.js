@@ -1,0 +1,574 @@
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) {
+    module.exports = api;
+  }
+  root.WealthModel = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  const LOAN_TENOR = 30;
+  const RESIDENTIAL_BSD_TIERS = [
+    [180000, 0.01],
+    [180000, 0.02],
+    [640000, 0.03],
+    [500000, 0.04],
+    [1500000, 0.05],
+    [Infinity, 0.06],
+  ];
+  const CPF_AGE_BANDS = [
+    { maxAge: 35, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.6217 },
+    { maxAge: 45, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.5677 },
+    { maxAge: 50, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.5136 },
+    { maxAge: 55, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.4055 },
+    { maxAge: 60, totalRate: 0.34, employeeRate: 0.18, employerRate: 0.16, oaRatio: 0.3530 },
+    { maxAge: 65, totalRate: 0.25, employeeRate: 0.125, employerRate: 0.125, oaRatio: 0.14 },
+    { maxAge: 70, totalRate: 0.165, employeeRate: 0.075, employerRate: 0.09, oaRatio: 0.0607 },
+    { maxAge: Infinity, totalRate: 0.125, employeeRate: 0.05, employerRate: 0.075, oaRatio: 0.08 },
+  ];
+
+  const DEFAULT_ASSUMPTIONS = {
+    assetsK: 800,
+    livingMonthly: 3000,
+    stockAnnualReturn: 0.07,
+    lakevilleAnnualGrowth: 0.02,
+    lakeGrandeAnnualGrowth: 0.02,
+    rentMonthly: 4000,
+    fixedRate: 0.015,
+    fixedYears: 2,
+    floatRate: 0.025,
+    simulationYears: 4,
+    loanCap: 1100000,
+    ltv: 0.75,
+    absdRate: 0.05,
+    legalFees: 5000,
+    mandatoryCashDownPaymentRate: 0.05,
+    loanTenorYears: LOAN_TENOR,
+    oaInterestRate: 0.025,
+    cpfOwCeilingMonthly: 8000,
+    useAverageBonusFlow: true,
+    cpfRulesVersion: 'CPF contribution and allocation rates from 1 Jan 2026; simplified AW handling without AW ceiling.',
+    irasRulesVersion: 'Residential BSD progressive tiers and PR first-home ABSD 5% as at 2026 assumptions.',
+    household: {
+      male: {
+        dob: '1997-06-25',
+        purchaseAge: 29,
+        grossMonthly: 8750,
+        annualBonusMonths: 1,
+        initialOA: 0,
+      },
+      female: {
+        dob: '1986-04-22',
+        purchaseAge: 40,
+        grossMonthly: 4000,
+        annualBonusMonths: 0,
+        initialOA: 0,
+      },
+    },
+  };
+
+  const BASE_PLANS = [
+    {
+      id: 'A',
+      name: 'LG 2B1B',
+      label: 'A: LG 2B1B',
+      projectName: 'Lake Grande',
+      projectSlug: 'lakegrande',
+      projectKey: 'lakeGrande',
+      bucket: '2b1b',
+      fixedCostMonthly: 360,
+      color: '#55efc4',
+      txUrl: 'https://www.99.co/singapore/sale/property/YTYDkuJdgRYTZvgbBgLcf9',
+      fallbackTransaction: { price: 1275000, dateLabel: 'Feb2026', sqft: 613 },
+      address: '3 Gateway Drive',
+      topInfo: '2019（7年）',
+      leaseInfo: '~94年',
+      mrtInfo: 'Lakeside 7min',
+    },
+    {
+      id: 'B',
+      name: 'LV 2B2B',
+      label: 'B: LV 2B2B',
+      projectName: 'Lakeville',
+      projectSlug: 'lakeville',
+      projectKey: 'lakeville',
+      bucket: '2b2b',
+      fixedCostMonthly: 430,
+      color: '#74b9ff',
+      txUrl: 'https://www.99.co/singapore/sale/property/lakeville-condo-GfhL2qN9siYLyrNcK5nboF',
+      fallbackTransaction: { price: 1260000, dateLabel: 'Dec2025', sqft: 731 },
+      address: '13 Jurong Lake Link',
+      topInfo: '2018（8年）',
+      leaseInfo: '~87年',
+      mrtInfo: 'Lakeside 10min',
+    },
+    {
+      id: 'C',
+      name: 'LG 2B2B',
+      label: 'C: LG 2B2B',
+      projectName: 'Lake Grande',
+      projectSlug: 'lakegrande',
+      projectKey: 'lakeGrande',
+      bucket: '2b2b',
+      fixedCostMonthly: 440,
+      color: '#a29bfe',
+      txUrl: 'https://www.99.co/singapore/sale/property/lake-grande-condo-GsAGr4gdbQvabXDFoh2pKQ',
+      fallbackTransaction: { price: 1514000, dateLabel: 'Feb2026', sqft: 818 },
+      address: '3 Gateway Drive',
+      topInfo: '2019（7年）',
+      leaseInfo: '~94年',
+      mrtInfo: 'Lakeside 7min',
+    },
+    {
+      id: 'D',
+      name: 'LG 3B2B',
+      label: 'D: LG 3B2B',
+      projectName: 'Lake Grande',
+      projectSlug: 'lakegrande',
+      projectKey: 'lakeGrande',
+      bucket: '3b2b',
+      fixedCostMonthly: 520,
+      color: '#fdcb6e',
+      txUrl: 'https://www.99.co/singapore/sale/property/lake-grande-condo-HbzY8PZF59oWxMm4YymJgA',
+      fallbackTransaction: { price: 1739000, dateLabel: 'Jan2026', sqft: 904 },
+      address: '3 Gateway Drive',
+      topInfo: '2019（7年）',
+      leaseInfo: '~94年',
+      mrtInfo: 'Lakeside 7min',
+    },
+    {
+      id: 'E',
+      name: 'LV 3B2B',
+      label: 'E: LV 3B2B',
+      projectName: 'Lakeville',
+      projectSlug: 'lakeville',
+      projectKey: 'lakeville',
+      bucket: '3b2b',
+      fixedCostMonthly: 530,
+      color: '#81ecec',
+      txUrl: 'https://www.99.co/singapore/sale/property/lakeville-condo-GNdReToNjTWUFUbYgTky7y',
+      fallbackTransaction: { price: 1795000, dateLabel: 'Aug2025', sqft: 968 },
+      address: '13 Jurong Lake Link',
+      topInfo: '2018（8年）',
+      leaseInfo: '~87年',
+      mrtInfo: 'Lakeside 10min',
+    },
+    {
+      id: 'F',
+      name: '纯租房',
+      label: 'F: 纯租房',
+      isRent: true,
+      color: '#9e9e9e',
+      dash: [6, 4],
+    },
+  ];
+
+  function roundNearestDollar(value) {
+    return Math.round(value);
+  }
+
+  function floorDollar(value) {
+    return Math.floor(value);
+  }
+
+  function round1(value) {
+    return Math.round(value * 10) / 10;
+  }
+
+  function getCpfAgeBand(age) {
+    return CPF_AGE_BANDS.find((band) => age <= band.maxAge) || CPF_AGE_BANDS[CPF_AGE_BANDS.length - 1];
+  }
+
+  function getProjectGrowthRate(plan, assumptions) {
+    return plan.projectKey === 'lakeville' ? assumptions.lakevilleAnnualGrowth : assumptions.lakeGrandeAnnualGrowth;
+  }
+
+  function calcBSD(price) {
+    let remaining = price;
+    let duty = 0;
+    for (const [bandSize, rate] of RESIDENTIAL_BSD_TIERS) {
+      if (remaining <= 0) break;
+      const taxable = Math.min(remaining, bandSize);
+      duty += taxable * rate;
+      remaining -= taxable;
+    }
+    return roundNearestDollar(duty);
+  }
+
+  function calcABSD(price, buyerProfile) {
+    return roundNearestDollar(price * (buyerProfile?.absdRate || 0));
+  }
+
+  function resolveLatestTransaction(plan, focusProjects) {
+    if (!plan || plan.isRent) return null;
+    const rows = focusProjects?.[plan.projectSlug]?.recent_by_bucket?.[plan.bucket] || [];
+    const latest = rows[0];
+    if (latest) {
+      return {
+        price: Number(latest.price),
+        dateLabel: latest.date_label,
+        sqft: Number(latest.sqft),
+        psf: latest.psf != null ? Number(latest.psf) : Number(latest.price) / Number(latest.sqft),
+        url: plan.txUrl || null,
+        source: 'focus_project_latest',
+      };
+    }
+    const fallback = plan.fallbackTransaction || {};
+    const fallbackPrice = Number(fallback.price || 0);
+    const fallbackSqft = Number(fallback.sqft || 0);
+    return {
+      price: fallbackPrice,
+      dateLabel: fallback.dateLabel || 'Fallback',
+      sqft: fallbackSqft,
+      psf: fallbackSqft ? fallbackPrice / fallbackSqft : null,
+      url: plan.txUrl || null,
+      source: 'fallback',
+    };
+  }
+
+  function calcLoan(price, ltv, loanCap) {
+    const desiredLoan = roundNearestDollar(price * ltv);
+    const actualLoan = Math.min(desiredLoan, loanCap);
+    const downPayment = price - actualLoan;
+    return {
+      desiredLoan,
+      actualLoan,
+      capped: actualLoan < desiredLoan,
+      downPayment,
+      downPaymentRatio: price > 0 ? downPayment / price : 0,
+    };
+  }
+
+  function calcCpfForWage({ wage, ageAtPurchase, owCeilingMonthly, isBonus }) {
+    const band = getCpfAgeBand(ageAtPurchase);
+    const contributionBase = isBonus ? wage : Math.min(wage, owCeilingMonthly);
+    const totalContribution = roundNearestDollar(contributionBase * band.totalRate);
+    const employeeShare = floorDollar(contributionBase * band.employeeRate);
+    const employerShare = totalContribution - employeeShare;
+    const oaCredit = roundNearestDollar(totalContribution * band.oaRatio);
+    return {
+      contributionBase,
+      totalContribution,
+      employeeShare,
+      employerShare,
+      oaCredit,
+    };
+  }
+
+  function calcCpfMonthly({ grossMonthly, annualBonusMonths = 0, ageAtPurchase, owCeilingMonthly = DEFAULT_ASSUMPTIONS.cpfOwCeilingMonthly }) {
+    const monthly = calcCpfForWage({ wage: grossMonthly, ageAtPurchase, owCeilingMonthly, isBonus: false });
+    const annualBonusGross = grossMonthly * annualBonusMonths;
+    const bonus = calcCpfForWage({ wage: annualBonusGross, ageAtPurchase, owCeilingMonthly, isBonus: true });
+    return {
+      ageAtPurchase,
+      grossMonthly,
+      annualBonusMonths,
+      annualBonusGross,
+      employeeShareMonthly: monthly.employeeShare,
+      employerShareMonthly: monthly.employerShare,
+      totalContributionMonthly: monthly.totalContribution,
+      oaCreditMonthly: monthly.oaCredit,
+      takeHomeMonthly: grossMonthly - monthly.employeeShare,
+      employeeShareAnnualBonus: bonus.employeeShare,
+      employerShareAnnualBonus: bonus.employerShare,
+      totalContributionAnnualBonus: bonus.totalContribution,
+      oaCreditAnnualBonus: bonus.oaCredit,
+      takeHomeAnnualBonus: annualBonusGross - bonus.employeeShare,
+      monthlyCashIncludingBonus: grossMonthly - monthly.employeeShare + (annualBonusGross - bonus.employeeShare) / 12,
+      monthlyOAIncludingBonus: monthly.oaCredit + bonus.oaCredit / 12,
+    };
+  }
+
+  function calcUpfrontFunding({ price, loan, bsd, absd, legalFees, household, mandatoryCashDownPaymentRate = DEFAULT_ASSUMPTIONS.mandatoryCashDownPaymentRate }) {
+    const mandatoryCash = roundNearestDollar(price * mandatoryCashDownPaymentRate);
+    const cpfEligible = Math.max(loan.downPayment - mandatoryCash, 0);
+    const maleInitialOA = household?.maleInitialOA || 0;
+    const femaleInitialOA = household?.femaleInitialOA || 0;
+    const totalOAAvailable = maleInitialOA + femaleInitialOA;
+    const totalCpfUsed = Math.min(cpfEligible, totalOAAvailable);
+    const oaUsedMale = Math.min(maleInitialOA, totalCpfUsed);
+    const oaUsedFemale = Math.min(femaleInitialOA, totalCpfUsed - oaUsedMale);
+    const oaShortfallToCash = Math.max(cpfEligible - totalCpfUsed, 0);
+    const totalCashUsed = mandatoryCash + bsd + absd + legalFees + oaShortfallToCash;
+    return {
+      bsd,
+      absd,
+      legalFees,
+      mandatoryCash,
+      cpfEligible,
+      totalCpfUsed,
+      oaUsedMale,
+      oaUsedFemale,
+      oaShortfallToCash,
+      totalCashUsed,
+      totalUpfront: totalCashUsed + totalCpfUsed,
+      totalOAAvailable,
+    };
+  }
+
+  function mortgagePmt(principal, annualRate, years) {
+    if (principal <= 0 || years <= 0) return 0;
+    const r = annualRate / 12;
+    const n = years * 12;
+    if (r === 0) return principal / n;
+    const pow = Math.pow(1 + r, n);
+    return principal * r * pow / (pow - 1);
+  }
+
+  function loanBalance(principal, annualRate, totalYears, paidYears) {
+    if (principal <= 0) return 0;
+    const r = annualRate / 12;
+    const n = totalYears * 12;
+    const t = paidYears * 12;
+    if (t <= 0) return principal;
+    if (t >= n) return 0;
+    if (r === 0) return principal * (1 - t / n);
+    const pn = Math.pow(1 + r, n);
+    const pt = Math.pow(1 + r, t);
+    return principal * (pn - pt) / (pn - 1);
+  }
+
+  function calcPhaseMonthlyHousing({ loanAmount, fixedRate, floatRate, fixedYears, loanTenorYears, fixedCostMonthly }) {
+    const mortgageFixed = roundNearestDollar(mortgagePmt(loanAmount, fixedRate, loanTenorYears));
+    const balanceAfterFixed = fixedYears > 0 ? loanBalance(loanAmount, fixedRate, loanTenorYears, fixedYears) : loanAmount;
+    const remainingTenor = Math.max(loanTenorYears - fixedYears, 1);
+    const mortgageFloat = roundNearestDollar(mortgagePmt(balanceAfterFixed, floatRate, remainingTenor));
+    return {
+      fixedPhase: {
+        mortgage: mortgageFixed,
+        fixedCost: fixedCostMonthly,
+        total: mortgageFixed + fixedCostMonthly,
+      },
+      floatPhase: {
+        mortgage: mortgageFloat,
+        fixedCost: fixedCostMonthly,
+        total: mortgageFloat + fixedCostMonthly,
+      },
+      balanceAfterFixed,
+    };
+  }
+
+  function calcTotalWealthCagr(totalWealth, initialWealth, years) {
+    if (!years || years <= 0 || initialWealth <= 0 || totalWealth <= 0) return null;
+    return Math.pow(totalWealth / initialWealth, 1 / years) - 1;
+  }
+
+  function combineHouseholdCpf(assumptions) {
+    const male = calcCpfMonthly({
+      grossMonthly: assumptions.household.male.grossMonthly,
+      annualBonusMonths: assumptions.household.male.annualBonusMonths,
+      ageAtPurchase: assumptions.household.male.purchaseAge,
+      owCeilingMonthly: assumptions.cpfOwCeilingMonthly,
+    });
+    const female = calcCpfMonthly({
+      grossMonthly: assumptions.household.female.grossMonthly,
+      annualBonusMonths: assumptions.household.female.annualBonusMonths,
+      ageAtPurchase: assumptions.household.female.purchaseAge,
+      owCeilingMonthly: assumptions.cpfOwCeilingMonthly,
+    });
+    return {
+      male,
+      female,
+      combinedCashMonthly: male.monthlyCashIncludingBonus + female.monthlyCashIncludingBonus,
+      combinedOAMonthly: male.monthlyOAIncludingBonus + female.monthlyOAIncludingBonus,
+    };
+  }
+
+  function simulateScenario({
+    plan,
+    transaction,
+    assumptions,
+    householdCpf,
+    upfront,
+    loan,
+    propertyGrowthRate,
+  }) {
+    const months = assumptions.simulationYears * 12;
+    const fixedMonths = Math.min(months, assumptions.fixedYears * 12);
+    const initialWealth = assumptions.assetsK * 1000 + assumptions.household.male.initialOA + assumptions.household.female.initialOA;
+    const initialStock = Math.max(assumptions.assetsK * 1000 - (upfront?.totalCashUsed || 0), 0);
+    const initialOA = plan.isRent
+      ? assumptions.household.male.initialOA + assumptions.household.female.initialOA
+      : Math.max((assumptions.household.male.initialOA + assumptions.household.female.initialOA) - upfront.totalCpfUsed, 0);
+    const monthlyStockRate = assumptions.stockAnnualReturn / 12;
+    const monthlyOARate = assumptions.oaInterestRate / 12;
+
+    let stockBalance = initialStock;
+    let oaBalance = initialOA;
+    const housing = plan.isRent
+      ? null
+      : calcPhaseMonthlyHousing({
+          loanAmount: loan.actualLoan,
+          fixedRate: assumptions.fixedRate,
+          floatRate: assumptions.floatRate,
+          fixedYears: assumptions.fixedYears,
+          loanTenorYears: assumptions.loanTenorYears,
+          fixedCostMonthly: plan.fixedCostMonthly,
+        });
+    const fixedCashFlows = [];
+    const floatCashFlows = [];
+    const fixedOAFlows = [];
+    const floatOAFlows = [];
+    const fixedInvestmentFlows = [];
+    const floatInvestmentFlows = [];
+    const trajectory = [];
+
+    for (let month = 1; month <= months; month += 1) {
+      stockBalance *= 1 + monthlyStockRate;
+      oaBalance *= 1 + monthlyOARate;
+      oaBalance += householdCpf.combinedOAMonthly;
+
+      let housingCash = 0;
+      let housingOA = 0;
+      if (plan.isRent) {
+        housingCash = assumptions.rentMonthly;
+      } else {
+        const phase = month <= fixedMonths ? housing.fixedPhase : housing.floatPhase;
+        housingOA = Math.min(oaBalance, phase.mortgage);
+        oaBalance -= housingOA;
+        housingCash = phase.fixedCost + (phase.mortgage - housingOA);
+      }
+
+      const investableCash = householdCpf.combinedCashMonthly - assumptions.livingMonthly - housingCash;
+      stockBalance = Math.max(stockBalance + investableCash, 0);
+
+      const inFixed = month <= fixedMonths;
+      if (inFixed) {
+        fixedCashFlows.push(housingCash);
+        fixedOAFlows.push(housingOA);
+        fixedInvestmentFlows.push(investableCash);
+      } else {
+        floatCashFlows.push(housingCash);
+        floatOAFlows.push(housingOA);
+        floatInvestmentFlows.push(investableCash);
+      }
+
+      if (month % 12 === 0 || month === months) {
+        const year = month / 12;
+        const propertyEquity = plan.isRent
+          ? 0
+          : transaction.price * Math.pow(1 + propertyGrowthRate, year)
+              - (year <= assumptions.fixedYears
+                ? loanBalance(loan.actualLoan, assumptions.fixedRate, assumptions.loanTenorYears, year)
+                : loanBalance(
+                    housing.balanceAfterFixed,
+                    assumptions.floatRate,
+                    Math.max(assumptions.loanTenorYears - assumptions.fixedYears, 1),
+                    year - assumptions.fixedYears
+                  ));
+        trajectory.push({
+          year,
+          stockBalance,
+          oaBalance,
+          propertyEquity,
+          totalWealth: stockBalance + oaBalance + propertyEquity,
+        });
+      }
+    }
+
+    const finalPoint = trajectory[trajectory.length - 1] || { stockBalance, oaBalance, propertyEquity: 0, totalWealth: stockBalance + oaBalance };
+    const totalWealth = finalPoint.totalWealth;
+    return {
+      initialStock,
+      initialOA,
+      stockFV: finalPoint.stockBalance,
+      oaBalance: finalPoint.oaBalance,
+      propEquity: finalPoint.propertyEquity,
+      totalWealth,
+      totalCagr: calcTotalWealthCagr(totalWealth, initialWealth, assumptions.simulationYears),
+      trajectory,
+      fixedPhaseCashHousing: fixedCashFlows.length ? fixedCashFlows.reduce((sum, value) => sum + value, 0) / fixedCashFlows.length : 0,
+      floatPhaseCashHousing: floatCashFlows.length ? floatCashFlows.reduce((sum, value) => sum + value, 0) / floatCashFlows.length : 0,
+      fixedPhaseOAHousing: fixedOAFlows.length ? fixedOAFlows.reduce((sum, value) => sum + value, 0) / fixedOAFlows.length : 0,
+      floatPhaseOAHousing: floatOAFlows.length ? floatOAFlows.reduce((sum, value) => sum + value, 0) / floatOAFlows.length : 0,
+      avgCashHousing: months ? [...fixedCashFlows, ...floatCashFlows].reduce((sum, value) => sum + value, 0) / months : 0,
+      avgOAHousing: months ? [...fixedOAFlows, ...floatOAFlows].reduce((sum, value) => sum + value, 0) / months : 0,
+      avgInvestableCash: months ? [...fixedInvestmentFlows, ...floatInvestmentFlows].reduce((sum, value) => sum + value, 0) / months : 0,
+      housing,
+    };
+  }
+
+  function buildScenario({ assumptions = DEFAULT_ASSUMPTIONS, plans = BASE_PLANS, focusProjects }) {
+    const householdCpf = combineHouseholdCpf(assumptions);
+    const buyResults = plans.filter((plan) => !plan.isRent).map((plan) => {
+      const transaction = resolveLatestTransaction(plan, focusProjects);
+      const bsd = calcBSD(transaction.price);
+      const absd = calcABSD(transaction.price, { absdRate: assumptions.absdRate });
+      const loan = calcLoan(transaction.price, assumptions.ltv, assumptions.loanCap);
+      const upfront = calcUpfrontFunding({
+        price: transaction.price,
+        loan,
+        bsd,
+        absd,
+        legalFees: assumptions.legalFees,
+        household: {
+          maleInitialOA: assumptions.household.male.initialOA,
+          femaleInitialOA: assumptions.household.female.initialOA,
+        },
+        mandatoryCashDownPaymentRate: assumptions.mandatoryCashDownPaymentRate,
+      });
+      const propertyGrowthRate = getProjectGrowthRate(plan, assumptions);
+      const wealth = simulateScenario({
+        plan,
+        transaction,
+        assumptions,
+        householdCpf,
+        upfront,
+        loan,
+        propertyGrowthRate,
+      });
+      return Object.assign({}, plan, {
+        transaction,
+        bsd,
+        absd,
+        loan,
+        upfront,
+        propertyGrowthRate,
+        householdCpf,
+        wealth,
+      });
+    });
+
+    const rentPlan = plans.find((plan) => plan.isRent);
+    const rentResult = rentPlan
+      ? Object.assign({}, rentPlan, {
+          wealth: simulateScenario({
+            plan: rentPlan,
+            transaction: { price: 0 },
+            assumptions,
+            householdCpf,
+            upfront: null,
+            loan: { actualLoan: 0 },
+            propertyGrowthRate: 0,
+          }),
+          householdCpf,
+        })
+      : null;
+
+    const results = rentResult ? [...buyResults, rentResult] : buyResults;
+    return {
+      assumptions,
+      householdCpf,
+      results,
+      buyResults,
+      rentResult,
+    };
+  }
+
+  return {
+    LOAN_TENOR,
+    BASE_PLANS,
+    DEFAULT_ASSUMPTIONS,
+    getCpfAgeBand,
+    resolveLatestTransaction,
+    calcBSD,
+    calcABSD,
+    calcLoan,
+    calcCpfMonthly,
+    calcUpfrontFunding,
+    calcPhaseMonthlyHousing,
+    calcTotalWealthCagr,
+    buildScenario,
+    mortgagePmt,
+    loanBalance,
+    round1,
+  };
+});

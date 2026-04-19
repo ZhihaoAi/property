@@ -133,7 +133,6 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     <button class="tab" onclick="go('s4',this)">📅 月供分析</button>
     <button class="tab" onclick="go('s5',this)">💎 财富模型</button>
     <button class="tab" onclick="go('s6',this)">👤 贷款策略</button>
-    <button class="tab" onclick="go('s7',this)">🧠 决策过程</button>
     <button class="tab" onclick="go('s8',this)">📋 数据来源</button>
     <button class="tab" onclick="go('s9',this)">📈 租金走势</button>
     <button class="tab on" onclick="go('s10',this)">🏘️ 小区PK</button>
@@ -163,25 +162,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 
     <div class="card" style="margin-top:20px">
       <div class="ct"><span class="dot" style="background:var(--cy)"></span>5个方案核心参数对比表</div>
-      <div style="overflow-x:auto">
-        <table class="dt">
-          <thead><tr><th>对比项</th><th>A: LG 2B1B</th><th>B: LV 2B2B</th><th>C: LG 2B2B</th><th>D: LG 3B2B</th><th>E: LV 3B2B</th></tr></thead>
-          <tbody>
-            <tr><td>楼盘</td><td>Lake Grande</td><td>Lakeville</td><td>Lake Grande</td><td>Lake Grande</td><td>Lakeville</td></tr>
-            <tr><td>地址</td><td>3 Gateway Drive</td><td>13 Jurong Lake Link</td><td>3 Gateway Drive</td><td>3 Gateway Drive</td><td>13 Jurong Lake Link</td></tr>
-            <tr><td>TOP / 楼龄</td><td>2019（7年）</td><td>2018（8年）</td><td>2019（7年）</td><td>2019（7年）</td><td>2018（8年）</td></tr>
-            <tr><td>剩余地契</td><td>~94年</td><td>~87年</td><td>~94年</td><td>~94年</td><td>~87年</td></tr>
-            <tr><td>面积</td><td class="hi">613 sqft</td><td>731 sqft</td><td>818 sqft</td><td>904 sqft</td><td>968 sqft</td></tr>
-            <tr><td>最新成交价</td><td class="hi"><a href="https://www.99.co/singapore/sale/property/YTYDkuJdgRYTZvgbBgLcf9" target="_blank" style="color:var(--ac)">$1.275M</a><br><span style="font-size:.75rem">Feb2026</span></td><td><a href="https://www.99.co/singapore/sale/property/lakeville-condo-GfhL2qN9siYLyrNcK5nboF" target="_blank" style="color:var(--ac)">$1.26M</a><br><span style="font-size:.75rem">Dec2025</span></td><td><a href="https://www.99.co/singapore/sale/property/lake-grande-condo-GsAGr4gdbQvabXDFoh2pKQ" target="_blank" style="color:var(--ac)">$1.514M</a><br><span style="font-size:.75rem">Feb2026</span></td><td class="wr"><a href="https://www.99.co/singapore/sale/property/lake-grande-condo-HbzY8PZF59oWxMm4YymJgA" target="_blank" style="color:var(--ac)">$1.739M</a><br><span style="font-size:.75rem">Jan2026</span></td><td class="bd"><a href="https://www.99.co/singapore/sale/property/lakeville-condo-GNdReToNjTWUFUbYgTky7y" target="_blank" style="color:var(--ac)">$1.795M</a><br><span style="font-size:.75rem">Aug2025</span></td></tr>
-            <tr><td>PSF</td><td>$2,078</td><td>$1,721</td><td>$1,850</td><td>$1,923</td><td>$1,852</td></tr>
-            <tr><td>贷款额</td><td>$956.3K</td><td>$945K</td><td class="wr">$1,100K(封顶)</td><td class="wr">$1,100K(封顶)</td><td class="bd">$1,100K(封顶)</td></tr>
-            <tr><td>首付比例</td><td>25%</td><td>25%</td><td class="wr">27.3%</td><td class="wr">36.7%</td><td class="bd">38.7%</td></tr>
-            <tr><td>数据来源</td><td colspan="5" style="color:var(--t2);font-size:.8rem">URA 转售交易记录 · 户型通过 <a href="https://www.99.co" target="_blank" style="color:var(--ac)">99.co</a> 房源信息确认 · <a href="https://www.ura.gov.sg/property-market-information/pmiResidentialTransaction" target="_blank" style="color:var(--ac)">URA 交易查询</a></td></tr>
-            <tr><td>最近MRT</td><td>Lakeside 7min</td><td>Lakeside 10min</td><td>Lakeside 7min</td><td>Lakeside 7min</td><td>Lakeside 10min</td></tr>
-            <tr><td>区域规划</td><td>裕廊湖区 JLD</td><td>裕廊湖区 JLD</td><td>裕廊湖区 JLD</td><td>裕廊湖区 JLD</td><td>裕廊湖区 JLD</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div style="overflow-x:auto" id="core_plan_table"></div>
     </div>
   </div>
 
@@ -212,18 +193,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
           <h4>$1.1M 贷款封顶影响</h4>
           <p>银行确认先生最高可贷 $1.1M。方案 A/B/C 在 75% LTV 范围内不受影响；<strong>方案 D/E 贷款封顶</strong>，首付比例从 25% 飙升至 35-39%，大幅增加现金/CPF 需求。</p>
         </div>
-        <div style="overflow-x:auto">
-          <table class="dt">
-            <thead><tr><th>方案</th><th>总价</th><th>75%LTV贷款</th><th>实际可贷</th><th>首付</th><th>是否封顶</th></tr></thead>
-            <tbody>
-              <tr><td><strong>A: LG 2B1B</strong></td><td>$1.275M</td><td>$956.3K</td><td class="hi">$956.3K</td><td>$318.8K (25%)</td><td class="hi">否</td></tr>
-              <tr><td><strong>B: LV 2B2B</strong></td><td>$1.26M</td><td>$945K</td><td class="hi">$945K</td><td>$315K (25%)</td><td class="hi">否</td></tr>
-              <tr><td><strong>C: LG 2B2B</strong></td><td>$1.514M</td><td>$1,135K</td><td class="wr">$1,100K</td><td class="wr">$414K (27.3%)</td><td class="bd">封顶</td></tr>
-              <tr><td><strong>D: LG 3B2B</strong></td><td>$1.739M</td><td>$1,304K</td><td class="wr">$1,100K</td><td class="wr">$639K (36.7%)</td><td class="bd">封顶</td></tr>
-              <tr><td><strong>E: LV 3B2B</strong></td><td>$1.795M</td><td>$1,346K</td><td class="bd">$1,100K</td><td class="bd">$695K (38.7%)</td><td class="bd">封顶</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div style="overflow-x:auto" id="loan_cap_table"></div>
       </div>
     </div>
   </div>
@@ -235,54 +205,32 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 
     <div class="alert" style="margin-bottom:20px">
       <h4>⚠️ 贷款封顶对方案 D/E 的影响</h4>
-      <p>银行确认最高贷款 $1.1M。方案 D (LG 3B2B $1.7M) 和 E (LV 3B2B $1.8M) 的 75% LTV 贷款额超出上限，首付比例被迫从 25% 提升至 35-39%，<strong>CPF 需求分别达 $515K 和 $610K</strong>。方案 E 的总前期投入 $854.6K 已超出 $780K 起始资产。</p>
+      <p id="cost_alert_text">银行确认最高贷款 $1.1M。默认场景下将按统一公式实时计算首付、BSD、ABSD、CPF OA 使用与现金补差。</p>
     </div>
 
     <div class="g2">
       <div class="card"><div class="ct"><span class="dot" style="background:var(--ac)"></span>前期总投入堆叠图 (PR身份 · 贷款上限$1.1M)</div><div class="cc"><canvas id="c_upfront"></canvas></div></div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--pk)"></span>现金需求 vs CPF需求对比</div><div class="cc"><canvas id="c_cashcpf"></canvas></div></div>
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--pk)"></span>前期现金支出 vs CPF OA支出</div><div class="cc"><canvas id="c_cashcpf"></canvas></div></div>
     </div>
 
     <div class="card" style="margin-top:20px">
       <div class="ct"><span class="dot" style="background:var(--cy)"></span>五方案购房成本明细表</div>
-      <div style="overflow-x:auto">
-        <table class="dt">
-          <thead><tr><th>项目</th><th>A: LG 2B1B $1.275M</th><th>B: LV 2B2B $1.26M</th><th>C: LG 2B2B $1.514M</th><th>D: LG 3B2B $1.739M</th><th>E: LV 3B2B $1.795M</th></tr></thead>
-          <tbody>
-            <tr><td>购买价</td><td class="hi">$1,275K</td><td>$1,260K</td><td>$1,514K</td><td>$1,739K</td><td class="wr">$1,795K</td></tr>
-            <tr><td>BSD</td><td>$35.6K</td><td class="hi">$35K</td><td>$45.3K</td><td>$56.6K</td><td>$59.4K</td></tr>
-            <tr><td>ABSD (5%)</td><td>$63.8K</td><td class="hi">$63K</td><td>$75.7K</td><td>$87K</td><td>$89.8K</td></tr>
-            <tr><td>律师费+杂费</td><td>$5K</td><td>$5K</td><td>$5K</td><td>$5K</td><td>$5K</td></tr>
-            <tr><td>首付</td><td>$318.8K (25%)</td><td class="hi">$315K (25%)</td><td class="wr">$414K (27.3%)</td><td class="wr">$639K (36.7%)</td><td class="bd">$695K (38.7%)</td></tr>
-            <tr><td>→ 现金 (5%房价)</td><td>$63.8K</td><td class="hi">$63K</td><td>$75.7K</td><td>$87K</td><td>$89.8K</td></tr>
-            <tr><td>→ CPF</td><td>$255K</td><td class="hi">$252K</td><td class="wr">$338.3K</td><td class="wr">$552K</td><td class="bd">$605.3K</td></tr>
-            <tr style="font-weight:700;background:var(--s2)"><td>现金总需求</td><td>$168.1K</td><td class="hi">$166K</td><td>$201.7K</td><td>$235.5K</td><td class="wr">$244K</td></tr>
-            <tr style="font-weight:700;background:var(--s2)"><td>CPF总需求</td><td>$255K</td><td class="hi">$252K</td><td class="wr">$338.3K</td><td class="wr">$552K</td><td class="bd">$605.3K</td></tr>
-            <tr style="font-weight:700;background:var(--s2)"><td>贷款额</td><td>$956.3K</td><td>$945K</td><td class="wr">$1,100K(封顶)</td><td class="wr">$1,100K(封顶)</td><td class="bd">$1,100K(封顶)</td></tr>
-            <tr style="font-weight:700;background:rgba(225,112,85,.1)"><td>前期总投入(现金+CPF)</td><td>$423.1K</td><td class="hi">$418K</td><td class="wr">$540K</td><td class="wr">$787.5K</td><td class="bd">$849K ⚠️</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="color:var(--rd);font-size:.82rem;margin-top:12px">* 方案C/D/E因$1.1M贷款封顶，首付比例高于25%。方案D前期总投入$787.5K已超出起始现金$780K，方案E的$849K更需大量CPF支撑。</p>
+      <div style="overflow-x:auto" id="cost_detail_table"></div>
+      <p style="color:var(--rd);font-size:.82rem;margin-top:12px" id="cost_detail_note">* 默认假设双方初始 OA 为 0，CPF 可支付部分会自动转为现金补差。</p>
     </div>
   </div>
 
   <!-- ===== S4: MONTHLY ===== -->
   <div id="s4" class="sec">
     <div class="st">📅 每月支出与现金流分析（两阶段利率）</div>
-    <p class="sd">先生28岁贷30年 · 前2年固定1.5% · 第3年起浮动~2.5% · 太太暂无法贷款</p>
+    <p class="sd">先生 29 岁按 30 年贷期估算 · 前 2 年固定 1.5% · 第 3 年起浮动 ~2.5% · 月供和 OA 抵扣统一按场景计算</p>
 
     <div class="alert info">
       <h4>💡 两阶段利率：前2年月供显著更低</h4>
-      <p>银行确认前2年固定利率 <strong>1.5%</strong>，第3年起转浮动约 <strong>2.5%</strong>。以方案B ($945K贷款) 为例：前2年月供 $3,261 → 第3年起跳升至 $3,708，<strong>月增 $447</strong>。下方图表展示两个阶段的月支出对比。</p>
+      <p>银行确认前2年固定利率 <strong>1.5%</strong>，第3年起转浮动约 <strong>2.5%</strong>。以方案B ($945K贷款) 为例：前2年月供 $3,261 → 第3年起跳升至 $3,704，<strong>月增 $443</strong>。下方图表展示两个阶段的月支出对比。</p>
     </div>
 
-    <div class="kpi-r">
-      <div class="kpi"><div class="l">当前月租(你们份额)</div><div class="v">$1,700</div></div>
-      <div class="kpi"><div class="l">方案A月支出(Y1-2)</div><div class="v" style="color:var(--g2)">$3,207</div><div class="c">LG 2B1B · 最低</div></div>
-      <div class="kpi"><div class="l">方案A月支出(Y3+)</div><div class="v" style="color:var(--or)">$3,597</div><div class="c">利率跳升后</div></div>
-      <div class="kpi"><div class="l">方案D/E月支出(Y3+)</div><div class="v" style="color:var(--rd)">~$4,840</div><div class="c">3BR · 最高</div></div>
-    </div>
+    <div class="kpi-r" id="monthly_kpis"></div>
 
     <div class="g2">
       <div class="card">
@@ -302,44 +250,43 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 
     <div class="card" style="margin-top:20px">
       <div class="ct"><span class="dot" style="background:var(--cy)"></span>月供明细对比表（两阶段利率）</div>
-      <div style="overflow-x:auto">
-        <table class="dt">
-          <thead><tr><th>方案</th><th>贷款额</th><th>房贷(Y1-2<br>@1.5%)</th><th>房贷(Y3+<br>@2.5%)</th><th>管理费</th><th>房产税</th><th>月总(Y1-2)</th><th>月总(Y3+)</th><th>月增幅</th></tr></thead>
-          <tbody>
-            <tr><td><strong>A: LG 2B1B</strong></td><td>$956.3K</td><td>$3,300</td><td>$3,752</td><td>$300</td><td>$60</td><td>$3,660</td><td>$4,112</td><td>+$452</td></tr>
-            <tr><td><strong>B: LV 2B2B</strong></td><td>$945K</td><td class="hi">$3,261</td><td>$3,708</td><td>$350</td><td>$80</td><td class="hi">$3,691</td><td>$4,138</td><td>+$447</td></tr>
-            <tr><td><strong>C: LG 2B2B</strong></td><td class="wr">$1,100K</td><td>$3,796</td><td>$4,316</td><td>$350</td><td>$90</td><td>$4,236</td><td>$4,756</td><td>+$520</td></tr>
-            <tr><td><strong>D: LG 3B2B</strong></td><td class="wr">$1,100K</td><td>$3,796</td><td>$4,316</td><td>$400</td><td>$120</td><td>$4,316</td><td>$4,836</td><td>+$520</td></tr>
-            <tr><td><strong>E: LV 3B2B</strong></td><td class="bd">$1,100K</td><td>$3,796</td><td>$4,316</td><td>$400</td><td>$130</td><td>$4,326</td><td>$4,846</td><td>+$520</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="color:var(--t2);font-size:.82rem;margin-top:12px">* 方案C/D/E贷款额均封顶在$1.1M，因此房贷月供相同。管理费和房产税因面积/楼盘略有差异。</p>
+      <div style="overflow-x:auto" id="monthly_detail_table"></div>
+      <p style="color:var(--t2);font-size:.82rem;margin-top:12px" id="monthly_detail_note">* 月供会根据 OA 入账与利率阶段自动拆成现金支出和 OA 支出。</p>
     </div>
   </div>
 
   <!-- ===== S5: 5-YEAR ===== -->
   <div id="s5" class="sec">
     <div class="st">💎 完整财富模型 — 房产 + 股票投资综合模拟</div>
-    <p class="sd">基于 $780K 起始资产 · 两阶段利率(可配置) · 贷款上限$1.1M · 先生30年贷期</p>
+    <p class="sd">基于统一默认假设：起始投入资金 $800K · 双方 CPF OA 默认 0 · 前 2 年 1.5% / 后续 2.5% · 贷款上限 $1.1M</p>
 
     <div class="alert info">
       <h4>🔧 调整下方参数，所有图表和数据会实时更新</h4>
-      <p>默认假设家庭月收入$12,000（先生+太太$4,000）、月生活费$4,000（含宝宝开销）。利率和模拟年限可在下方自由调整。</p>
+      <p>默认假设男方税前工资 $8,750 + 1 个月年终奖、女方税前工资 $4,000、月生活费 $3,000。模型会按内置 CPF 年龄档估算每月现金流和 OA，并将 OA 不足部分自动转现金。</p>
     </div>
 
     <div class="inputs">
-      <div class="inp"><label>起始可用资产（现金+股票）</label><input type="number" id="i_assets" value="780" step="10"><div class="unit">S$ 千 (不含CPF)</div></div>
-      <div class="inp"><label>家庭月收入</label><input type="number" id="i_income" value="12000" step="500"><div class="unit">S$/月 (先生+太太$4K)</div></div>
-      <div class="inp"><label>月生活费（不含住房）</label><input type="number" id="i_living" value="4000" step="200"><div class="unit">S$/月 (含宝宝开销)</div></div>
-      <div class="inp"><label>股票年化回报</label><input type="number" id="i_stock" value="7" step="0.5" min="0" max="20"><div class="unit">% / 年</div></div>
-      <div class="inp"><label>Lakeville 房产年增值</label><input type="number" id="i_rate_lv" value="2" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史CAGR 2.4%</div></div>
-      <div class="inp"><label>Lake Grande 房产年增值</label><input type="number" id="i_rate_lg" value="2" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史CAGR 4.12%</div></div>
-      <div class="inp"><label>纯租房月租金</label><input type="number" id="i_rent" value="4000" step="200" min="0" max="10000"><div class="unit">S$/月 (不买房基准)</div></div>
-      <div class="inp"><label>固定利率</label><input type="number" id="i_fixed_rate" value="1.5" step="0.1" min="0" max="10"><div class="unit">% / 年</div></div>
-      <div class="inp"><label>固定利率年限</label><input type="number" id="i_fixed_yrs" value="2" step="1" min="1" max="10"><div class="unit">年</div></div>
-      <div class="inp"><label>浮动利率（固定期后）</label><input type="number" id="i_float_rate" value="3" step="0.1" min="0" max="10"><div class="unit">% / 年</div></div>
-      <div class="inp"><label>模拟年限</label><input type="number" id="i_total_yrs" value="4" step="1" min="1" max="30"><div class="unit">年</div></div>
+      <div class="inp"><label>起始投入资金（现金+股票）</label><input type="number" id="i_assets" step="10"><div class="unit">S$ 千（CPF OA 另算）</div></div>
+      <div class="inp"><label>男方税前月工资</label><input type="number" id="i_male_gross" step="250"><div class="unit">S$/月</div></div>
+      <div class="inp"><label>男方年终奖（月）</label><input type="number" id="i_male_bonus" step="0.5" min="0" max="12"><div class="unit">按同年龄档 CPF 简化估算</div></div>
+      <div class="inp"><label>男方初始 OA</label><input type="number" id="i_male_oa" step="5000" min="0"><div class="unit">S$</div></div>
+      <div class="inp"><label>女方税前月工资</label><input type="number" id="i_female_gross" step="250"><div class="unit">S$/月</div></div>
+      <div class="inp"><label>女方年终奖（月）</label><input type="number" id="i_female_bonus" step="0.5" min="0" max="12"><div class="unit">S$/月数</div></div>
+      <div class="inp"><label>女方初始 OA</label><input type="number" id="i_female_oa" step="5000" min="0"><div class="unit">S$</div></div>
+      <div class="inp"><label>月生活费（不含住房）</label><input type="number" id="i_living" step="200"><div class="unit">S$/月</div></div>
+      <div class="inp"><label>股票年化回报</label><input type="number" id="i_stock" step="0.5" min="0" max="20"><div class="unit">% / 年</div></div>
+      <div class="inp"><label>Lakeville 房产年增值</label><input type="number" id="i_rate_lv" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史 CAGR 2.4%</div></div>
+      <div class="inp"><label>Lake Grande 房产年增值</label><input type="number" id="i_rate_lg" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史 CAGR 4.12%</div></div>
+      <div class="inp"><label>纯租房月租金</label><input type="number" id="i_rent" step="200" min="0" max="10000"><div class="unit">S$/月 (不买房基准)</div></div>
+      <div class="inp"><label>固定利率</label><input type="number" id="i_fixed_rate" step="0.1" min="0" max="10"><div class="unit">% / 年</div></div>
+      <div class="inp"><label>固定利率年限</label><input type="number" id="i_fixed_yrs" step="1" min="1" max="10"><div class="unit">年</div></div>
+      <div class="inp"><label>浮动利率（固定期后）</label><input type="number" id="i_float_rate" step="0.1" min="0" max="10"><div class="unit">% / 年</div></div>
+      <div class="inp"><label>模拟年限</label><input type="number" id="i_total_yrs" step="1" min="1" max="30"><div class="unit">年</div></div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="ct"><span class="dot" style="background:var(--cy)"></span>默认假设与口径</div>
+      <div id="assumptions_box"></div>
     </div>
 
     <div class="kpi-r" id="kpi_wealth"></div>
@@ -439,101 +386,6 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
             <p>太太当前月收入$4,000+CPF，计入家庭总收入但不作为贷款借贷人。随着公司运营年限增长和流水积累，未来可重新评估贷款资格，为第二套房产或再融资提供更多选择。</p>
             <div class="vd ok">✓ 太太收入仍贡献家庭现金流，降低月供压力</div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== S7: DECISION ===== -->
-  <div id="s7" class="sec">
-    <div class="st">🧠 决策过程展示</div>
-    <p class="sd">基于银行确认条件（贷款上限$1.1M、利率1.5%→2.5%）的完整推理链路</p>
-
-    <div class="g2" style="margin-bottom:24px">
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--ac)"></span>多维度评分雷达图</div><div class="cc t"><canvas id="c_radar"></canvas></div></div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--g)"></span>综合评分排名</div><div class="cc t"><canvas id="c_score"></canvas></div></div>
-    </div>
-
-    <div class="card" style="margin-bottom:24px">
-      <div class="ct"><span class="dot" style="background:var(--pk)"></span>决策推理流程</div>
-      <div class="flow">
-        <div class="fs">
-          <div class="fn" style="background:var(--ac);color:#fff">1</div>
-          <div class="fc">
-            <h4>Step 1：明确核心需求 + 贷款条件</h4>
-            <p>一家三口（含新生儿），7月底租期到期。倾向"买便宜condo住进去，选大的住得舒服，剩余资金投资股票"。<br>
-            <strong>银行确认：</strong>先生最高可贷$1.1M，前2年固定1.5%，后浮动。太太暂无法贷款。</p>
-            <div class="vd ok">✓ 约束条件明确：贷款上限$1.1M + 低总价 + 大面积 + 投资余力</div>
-          </div>
-        </div>
-        <div class="fs">
-          <div class="fn" style="background:var(--bl);color:#fff">2</div>
-          <div class="fc">
-            <h4>Step 2：评估贷款封顶影响</h4>
-            <p>$1.1M贷款上限对方案A/B/C无影响（75%LTV贷款额均在上限内）。<br>
-            <strong>方案D (LG 3B2B $1.7M)：</strong>75%LTV需贷$1,275K，封顶后首付从$425K飙升至$600K（+$175K）。<br>
-            <strong>方案E (LV 3B2B $1.8M)：</strong>75%LTV需贷$1,350K，封顶后首付$700K，前期总投入$854.6K超出$780K起始资产。</p>
-            <div class="vd nu">→ 方案D勉强可行但资金紧张，方案E可行性存疑</div>
-          </div>
-        </div>
-        <div class="fs">
-          <div class="fn" style="background:var(--g);color:#000">3</div>
-          <div class="fc">
-            <h4>Step 3：对比同面积 LV 2B2B vs LG 2B2B</h4>
-            <p>两者同为775sqft 2房2卫。<strong>LV 2B2B $1.27M</strong> vs <strong>LG 2B2B $1.45M</strong>：Lakeville便宜$180K，PSF低$232。<br>
-            Lake Grande 地契多7年(94 vs 87)、楼龄少1年(7 vs 8)，更靠近MRT(7min vs 10min)。<br>
-            但$180K价差需要评估是否值得为更好的地契和楼龄支付溢价。</p>
-            <div class="vd ok">✓ LV 2B2B 性价比更高；LG 2B2B 地契和楼龄更优</div>
-          </div>
-        </div>
-        <div class="fs">
-          <div class="fn" style="background:var(--or);color:#000">4</div>
-          <div class="fc">
-            <h4>Step 4：LG 2B1B 最低门槛选项</h4>
-            <p><strong>LG 2B1B (614sqft) $1.1M：</strong>总价最低、月供最低(Y1-2 $3,207 / Y3+ $3,597)、投资余力最大。但面积仅614sqft，一家三口住会较紧凑。<br>
-            适合"先上车再换"的策略：低成本入市，积累房产增值+股票投资，2-3年后视情况升级。</p>
-            <div class="vd ok">✓ 最低入场成本，最多投资余力；面积是主要取舍</div>
-          </div>
-        </div>
-        <div class="fs">
-          <div class="fn" style="background:var(--pk);color:#fff">5</div>
-          <div class="fc">
-            <h4>Step 5：综合评分 → 最终排序</h4>
-            <p>7个维度评分（前期成本、月供压力、居住面积、地契安全、增值潜力、投资灵活性、贷款可行性）加权计算。贷款封顶对方案D/E是重要负面因素。</p>
-            <div class="vd ok">✓ 第一推荐：LG 2B1B($1.1M) 或 LV 2B2B($1.27M) → 不受贷款封顶影响<br>
-            ✓ 第二推荐：LG 2B2B($1.45M) → 更好的户型配置</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>最终排名</div>
-      <div class="rk">
-        <div class="ri" style="border-color:var(--g)">
-          <div class="rb" style="background:linear-gradient(135deg,#00b894,#55efc4);color:#000">🥇</div>
-          <div class="rin"><h4>方案 A：LG 2B1B · $1.1M · 614sqft</h4><p>最低总价和月供(Y1-2 $3,207/月)，最多余力投资股票。前期现金仅需$143.6K。面积紧凑但可"先上车再换"。</p></div>
-          <div class="rs" style="color:var(--g2)">84</div>
-        </div>
-        <div class="ri" style="border-color:var(--bl)">
-          <div class="rb" style="background:linear-gradient(135deg,#74b9ff,#0984e3);color:#fff">🥈</div>
-          <div class="rin"><h4>方案 B：LV 2B2B · $1.27M · 775sqft</h4><p>性价比最高的2B2B，PSF最低($1,639)。月供适中(Y3+ $4,167/月)。775sqft一家三口可住2-3年。</p></div>
-          <div class="rs" style="color:var(--bl)">82</div>
-        </div>
-        <div class="ri">
-          <div class="rb" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7);color:#fff">🥉</div>
-          <div class="rin"><h4>方案 C：LG 2B2B · $1.45M · 775sqft</h4><p>地契多7年(94年)、更近MRT(7min)，但比LV 2B2B贵$180K。贷款$1,087.5K接近上限但未封顶。</p></div>
-          <div class="rs" style="color:var(--ac2)">76</div>
-        </div>
-        <div class="ri">
-          <div class="rb" style="background:var(--s2);color:var(--t2)">4</div>
-          <div class="rin"><h4>方案 D：LG 3B2B · $1.7M · 904sqft</h4><p>3房可住5-8年不换房。但贷款封顶$1.1M，首付飙升至$600K(35.3%)，CPF需$515K，资金压力大。</p></div>
-          <div class="rs" style="color:var(--or)">62</div>
-        </div>
-        <div class="ri" style="border-color:var(--rd);opacity:.7">
-          <div class="rb" style="background:rgba(225,112,85,.2);color:var(--rd)">5</div>
-          <div class="rin"><h4>方案 E：LV 3B2B · $1.8M · 968sqft</h4><p>面积最大但前期总投入$854.6K超出起始资产$780K。贷款封顶导致首付$700K(38.9%)，可行性存疑。</p></div>
-          <div class="rs" style="color:var(--rd)">48</div>
         </div>
       </div>
     </div>
@@ -828,6 +680,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 </div>
 
 <script src="data/dashboard_data.js"></script>
+<script src="wealth-model.js"></script>
 <script>
 Chart.register(ChartDataLabels);
 Chart.defaults.color='#9399b2';
@@ -836,330 +689,297 @@ Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'PingFang SC',sans-
 Chart.defaults.plugins.datalabels.display=false;
 
 const C={bl:'#74b9ff',pr:'#a29bfe',pk:'#fd79a8',gn:'#55efc4',or:'#fdcb6e',rd:'#e17055',cy:'#81ecec'};
+const WM=window.WealthModel;
 
 function go(id,el){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.getElementById(id).classList.add('on');el.classList.add('on')}
 
-// S1: PSF
-new Chart(document.getElementById('c_psf'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[{label:'PSF (S$/sqft)',data:[2078,1721,1850,1923,1852],
-    backgroundColor:[C.gn+'99',C.bl+'99',C.pr+'99',C.or+'99',C.cy+'99'],
-    borderColor:[C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2,borderRadius:6}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:1500,title:{display:true,text:'PSF (S$/sqft)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v}}}
-});
+const DEFAULTS=WM.DEFAULT_ASSUMPTIONS;
+const BASE_PLANS=WM.BASE_PLANS;
+const SCATTER_DATA={
+  lakeville:[{x:560,y:894},{x:635,y:1080},{x:635,y:1168},{x:678,y:1070},{x:678,y:1019},{x:731,y:1260},{x:731,y:1250},{x:775,y:1270},{x:775,y:1370},{x:764,y:1230},{x:721,y:1270},{x:968,y:1795}],
+  lakeGrande:[{x:516,y:785},{x:613,y:1275},{x:624,y:1100},{x:721,y:1360},{x:721,y:1285},{x:775,y:1430},{x:775,y:1446},{x:775,y:1468},{x:775,y:1510},{x:818,y:1514},{x:818,y:1495},{x:861,y:1630},{x:904,y:1739},{x:947,y:1600}],
+};
+let psfChart,tpChart,scatterChart,upfrontChart,cashCpfChart,m30Chart,m25Chart,rateJumpChart,wealthChart,breakdownChart,flowChart,leverageChart,loanCapChart,tenureChart;
+let activeDashboardData=null;
 
-// S1: Total price
-new Chart(document.getElementById('c_tp'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[{label:'总价 (S$千)',data:[1275,1260,1514,1739,1795],
-    backgroundColor:[C.gn+'99',C.bl+'99',C.pr+'99',C.or+'99',C.cy+'99'],
-    borderColor:[C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2,borderRadius:6}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:1000,title:{display:true,text:'总价 (S$ 千)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v+'K'}}}
-});
+function toK(v){return v/1000}
+function fmtMoney(v){return '$'+Math.round(v).toLocaleString()}
+function fmtK(v){return '$'+(Math.round(v/100)/10).toLocaleString()+'K'}
+function fmtPct(value,digits=1){return (value*100).toFixed(digits)+'%'}
+function avg(values){return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0}
+function hiClass(result,index,buyResults){if(result.loan.capped)return'wr';if(index===0)return'hi';if(index===buyResults.length-1)return'bd';return''}
+function wealthYearsLabels(years){return['今天',...Array.from({length:years},(_,i)=>'Y'+(i+1))]}
 
-// S2: Scatter
-new Chart(document.getElementById('c_scatter'),{type:'scatter',data:{
-  datasets:[
-    {label:'Lakeville',data:[{x:560,y:894},{x:635,y:1080},{x:635,y:1168},{x:678,y:1070},{x:678,y:1019},{x:731,y:1260},{x:731,y:1250},{x:775,y:1270},{x:775,y:1370},{x:764,y:1230},{x:721,y:1270},{x:968,y:1795}],backgroundColor:C.bl,pointRadius:7,pointHoverRadius:10},
-    {label:'Lake Grande',data:[{x:516,y:785},{x:613,y:1275},{x:624,y:1100},{x:721,y:1360},{x:721,y:1285},{x:775,y:1430},{x:775,y:1446},{x:775,y:1468},{x:775,y:1510},{x:818,y:1514},{x:818,y:1495},{x:861,y:1630},{x:904,y:1739},{x:947,y:1600}],backgroundColor:C.pr,pointRadius:7,pointHoverRadius:10},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'面积 (sqft)'},grid:{color:'#2d324466'}},y:{title:{display:true,text:'总价 (S$ 千)'},grid:{color:'#2d324466'}}},plugins:{legend:{position:'top'}}}
-});
-
-// S3: Upfront
-new Chart(document.getElementById('c_upfront'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[
-    {label:'现金首付(5%)',data:[63.8,63,75.7,87,89.8],backgroundColor:C.bl+'cc'},
-    {label:'CPF首付',data:[255,252,338.3,552,605.3],backgroundColor:C.pr+'cc'},
-    {label:'BSD',data:[35.6,35,45.3,56.6,59.4],backgroundColor:C.or+'cc'},
-    {label:'ABSD(5%)',data:[63.8,63,75.7,87,89.8],backgroundColor:C.rd+'cc'},
-    {label:'律师费',data:[5,5,5,5,5],backgroundColor:C.cy+'cc'},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'}}}
-});
-
-// S3: Cash vs CPF
-new Chart(document.getElementById('c_cashcpf'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[
-    {label:'现金需求',data:[168.1,166,201.7,235.5,244],backgroundColor:C.rd+'99',borderColor:C.rd,borderWidth:2},
-    {label:'CPF需求',data:[255,252,338.3,552,605.3],backgroundColor:C.pr+'99',borderColor:C.pr,borderWidth:2},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v+'K'}}}
-});
-
-// S4: Monthly Y1-2 @1.5%
-new Chart(document.getElementById('c_m30'),{type:'bar',data:{
-  labels:['当前租金','A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[{label:'月支出 Y1-2 @1.5%',data:[1700,3660,3691,4236,4316,4326],
-    backgroundColor:['#9399b244',C.gn+'99',C.bl+'99',C.pr+'99',C.or+'99',C.cy+'99'],
-    borderColor:['#9399b2',C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2,borderRadius:6}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'S$/月 (Y1-2 @1.5%)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v.toLocaleString()}}}
-});
-
-// S4: Monthly Y3+ @2.5%
-new Chart(document.getElementById('c_m25'),{type:'bar',data:{
-  labels:['当前租金','A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[{label:'月支出 Y3+ @2.5%',data:[1700,4112,4138,4756,4836,4846],
-    backgroundColor:['#9399b244',C.gn+'99',C.bl+'99',C.pr+'99',C.or+'99',C.cy+'99'],
-    borderColor:['#9399b2',C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2,borderRadius:6}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'S$/月 (Y3+ @2.5%)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v.toLocaleString()}}}
-});
-
-// S4: Rate jump comparison
-new Chart(document.getElementById('c_rate_jump'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[
-    {label:'Y1-2 @1.5% 月总',data:[3660,3691,4236,4316,4326],backgroundColor:[C.gn+'66',C.bl+'66',C.pr+'66',C.or+'66',C.cy+'66'],borderColor:[C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2},
-    {label:'Y3+ @2.5% 月总',data:[4112,4138,4756,4836,4846],backgroundColor:[C.gn+'cc',C.bl+'cc',C.pr+'cc',C.or+'cc',C.cy+'cc'],borderColor:[C.gn,C.bl,C.pr,C.or,C.cy],borderWidth:2},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:3400,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},
-  plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v.toLocaleString()}}}
-});
-
-// ===== S5: INTERACTIVE WEALTH MODEL =====
-const PLANS=[
-  {id:'A',name:'LG 2B1B',price:1275,cashOut:168.1,loan:956.3,fixedCost:360,color:C.gn,label:'A: LG 2B1B $1.275M',txDate:'Feb2026',txSqft:613,txUrl:'https://www.99.co/singapore/sale/property/YTYDkuJdgRYTZvgbBgLcf9'},
-  {id:'B',name:'LV 2B2B',price:1260,cashOut:166,loan:945,fixedCost:430,color:C.bl,label:'B: LV 2B2B $1.26M',txDate:'Dec2025',txSqft:731,txUrl:'https://www.99.co/singapore/sale/property/lakeville-condo-GfhL2qN9siYLyrNcK5nboF'},
-  {id:'C',name:'LG 2B2B',price:1514,cashOut:201.7,loan:1100,fixedCost:440,color:C.pr,label:'C: LG 2B2B $1.514M',capped:true,txDate:'Feb2026',txSqft:818,txUrl:'https://www.99.co/singapore/sale/property/lake-grande-condo-GsAGr4gdbQvabXDFoh2pKQ'},
-  {id:'D',name:'LG 3B2B',price:1739,cashOut:235.5,loan:1100,fixedCost:520,color:C.or,label:'D: LG 3B2B $1.739M',capped:true,txDate:'Jan2026',txSqft:904,txUrl:'https://www.99.co/singapore/sale/property/lake-grande-condo-HbzY8PZF59oWxMm4YymJgA'},
-  {id:'E',name:'LV 3B2B',price:1795,cashOut:244,loan:1100,fixedCost:530,color:C.cy,label:'E: LV 3B2B $1.795M',capped:true,txDate:'Aug2025',txSqft:968,txUrl:'https://www.99.co/singapore/sale/property/lakeville-condo-GNdReToNjTWUFUbYgTky7y'},
-  {id:'F',name:'纯租房',price:0,cashOut:0,loan:0,fixedCost:0,color:'#9e9e9e',label:'F: 纯租房',isRent:true,dash:[6,4]},
-];
-const LOAN_TENOR=30;
-function mortgagePmt(principal,annualRate,years){const r=annualRate/12,n=years*12;if(r===0)return principal/n;const p=Math.pow(1+r,n);return principal*r*p/(p-1)}
-function loanBalance(principal,annualRate,totalYears,paidYears){const r=annualRate/12,n=totalYears*12,t=paidYears*12;if(r===0)return principal*(1-t/n);const pn=Math.pow(1+r,n),pt=Math.pow(1+r,t);return principal*(pn-pt)/(pn-1)}
-
-let wealthChart,breakdownChart,flowChart,leverageChart;
-
-function calcWealth(){
-  const assets=parseFloat(document.getElementById('i_assets').value)||780;
-  const income=parseFloat(document.getElementById('i_income').value)||12000;
-  const living=parseFloat(document.getElementById('i_living').value)||4000;
-  const stockR=(parseFloat(document.getElementById('i_stock').value)||7)/100;
-  const rateLV=(parseFloat(document.getElementById('i_rate_lv').value)||3.5)/100;
-  const rateLG=(parseFloat(document.getElementById('i_rate_lg').value)||4.0)/100;
-  const fixedRate=(parseFloat(document.getElementById('i_fixed_rate').value)||1.5)/100;
-  const fixedYrs=Math.max(parseInt(document.getElementById('i_fixed_yrs').value)||2,1);
-  const floatRate=(parseFloat(document.getElementById('i_float_rate').value)||3)/100;
-  const totalYrs=Math.max(parseInt(document.getElementById('i_total_yrs').value)||4,1);
-  const monthlyR=stockR/12;
-  const available=income-living;
-
-  const rent=parseFloat(document.getElementById('i_rent').value)||4000;
-  const yrs=['今天',...Array.from({length:totalYrs},(_,i)=>'Y'+(i+1))];
-  const effectiveFixedYrs=Math.min(fixedYrs,totalYrs);
-  const floatSimYrs=totalYrs-effectiveFixedYrs;
-
-  const results=PLANS.map(p=>{
-    if(p.isRent){
-      const initStock=assets;
-      const monthlySurplus=Math.max(available-rent,0);
-      let stockFV=initStock*Math.pow(1+stockR,totalYrs);
-      const totalMonths=totalYrs*12;
-      const factor=totalMonths>0?((Math.pow(1+monthlyR,totalMonths)-1)/monthlyR):0;
-      stockFV+=monthlySurplus*factor/1000;
-      const trajectory=[];
-      for(let y=0;y<=totalYrs;y++){
-        const sf=initStock*Math.pow(1+stockR,y);
-        const af=y>0?monthlySurplus*((Math.pow(1+monthlyR,y*12)-1)/monthlyR)/1000:0;
-        trajectory.push(Math.round(sf+af));
-      }
-      return{...p,propRate:0,monthly:rent,initStock:Math.round(initStock*10)/10,monthlySurplus,stockFV:Math.round(stockFV*10)/10,propEquity:0,totalWealth:Math.round(stockFV*10)/10,trajectory,m12:rent,m35:rent};
-    }
-
-    const loanK=p.loan, loanAmt=p.loan*1000;
-    const m12=Math.round(mortgagePmt(loanAmt,fixedRate,LOAN_TENOR)+p.fixedCost);
-    const bal1=loanBalance(loanAmt,fixedRate,LOAN_TENOR,fixedYrs);
-    const m35=Math.round(mortgagePmt(bal1,floatRate,LOAN_TENOR-fixedYrs)+p.fixedCost);
-
-    const propRate=p.name.startsWith('LV')?rateLV:rateLG;
-    const initStock=Math.max(assets-p.cashOut,0);
-    const avgMonthly=totalYrs>0?Math.round((m12*effectiveFixedYrs+m35*floatSimYrs)/totalYrs):m12;
-    const monthlySurplus12=Math.max(available-m12,0);
-    const monthlySurplus35=Math.max(available-m35,0);
-    const avgSurplus=totalYrs>0?Math.round((monthlySurplus12*effectiveFixedYrs+monthlySurplus35*floatSimYrs)/totalYrs):monthlySurplus12;
-
-    let stockFV=initStock*Math.pow(1+stockR,totalYrs);
-    const months12=effectiveFixedYrs*12, months35=floatSimYrs*12;
-    const factor12=months12>0?((Math.pow(1+monthlyR,months12)-1)/monthlyR):0;
-    const growFactor12=Math.pow(1+stockR,floatSimYrs);
-    stockFV+=monthlySurplus12*factor12/1000*growFactor12;
-    const factor35=months35>0?((Math.pow(1+monthlyR,months35)-1)/monthlyR):0;
-    stockFV+=monthlySurplus35*factor35/1000;
-
-    const propVal=p.price*Math.pow(1+propRate,totalYrs);
-    let loanLeft;
-    if(totalYrs<=fixedYrs){
-      loanLeft=loanBalance(loanAmt,fixedRate,LOAN_TENOR,totalYrs)/1000;
-    }else{
-      loanLeft=loanBalance(bal1,floatRate,LOAN_TENOR-fixedYrs,totalYrs-fixedYrs)/1000;
-    }
-    const propEquity=propVal-loanLeft;
-    const totalWealth=stockFV+propEquity;
-
-    const trajectory=[];
-    for(let y=0;y<=totalYrs;y++){
-      const pv=p.price*Math.pow(1+propRate,y);
-      let ll;
-      if(y<=fixedYrs){ll=loanBalance(loanAmt,fixedRate,LOAN_TENOR,y)/1000}
-      else{ll=loanBalance(bal1,floatRate,LOAN_TENOR-fixedYrs,y-fixedYrs)/1000}
-      const pe=pv-ll;
-      const sf=initStock*Math.pow(1+stockR,y);
-      const af=y>0?avgSurplus*((Math.pow(1+monthlyR,y*12)-1)/monthlyR)/1000:0;
-      trajectory.push(Math.round(pe+sf+af));
-    }
-    return{...p,propRate,monthly:avgMonthly,initStock:Math.round(initStock*10)/10,monthlySurplus:avgSurplus,stockFV:Math.round(stockFV*10)/10,propEquity:Math.round(propEquity*10)/10,totalWealth:Math.round(totalWealth*10)/10,trajectory,m12,m35};
-  });
-
-  const best=results.reduce((a,b)=>a.totalWealth>b.totalWealth?a:b);
-  const worst=results.reduce((a,b)=>a.totalWealth<b.totalWealth?a:b);
-
-  // KPIs sorted by total wealth descending
-  const sorted=results.slice().sort((a,b)=>b.totalWealth-a.totalWealth);
-  document.getElementById('kpi_wealth').innerHTML=sorted.map((r,i)=>{
-    const isBest=r===best;
-    return`<div class="kpi"><div class="l">${r.label}</div><div class="v" style="color:${isBest?'var(--g2)':r.color}">$${Math.round(r.totalWealth)}K</div><div class="c" style="color:${isBest?'var(--g)':'var(--t2)'}">房产$${Math.round(r.propEquity)}K + 股票$${Math.round(r.stockFV)}K</div></div>`;
-  }).join('');
-
-  // Wealth trajectory chart
-  if(wealthChart)wealthChart.destroy();
-  wealthChart=new Chart(document.getElementById('c_wealth'),{type:'line',data:{
-    labels:yrs,
-    datasets:results.map(r=>({label:r.label,data:r.trajectory,borderColor:r.color,tension:.3,borderWidth:3,borderDash:r.dash||[]}))
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'总财富 S$千 = 房产权益 + 股票组合'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'}}}});
-
-  // Breakdown chart
-  if(breakdownChart)breakdownChart.destroy();
-  breakdownChart=new Chart(document.getElementById('c_breakdown'),{type:'bar',data:{
-    labels:results.map(r=>r.id+': '+r.name),
-    datasets:[
-      {label:'房产净权益',data:results.map(r=>Math.round(r.propEquity)),backgroundColor:results.map(r=>r.color+'99'),borderColor:results.map(r=>r.color),borderWidth:2},
-      {label:'股票组合',data:results.map(r=>Math.round(r.stockFV)),backgroundColor:results.map(()=>C.gn+'66'),borderColor:results.map(()=>C.gn),borderWidth:2},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},
-  plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:(v,ctx)=>{if(v<50)return'';return'$'+v+'K'}}}}});
-
-  // Monthly flow chart
-  if(flowChart)flowChart.destroy();
-  flowChart=new Chart(document.getElementById('c_flow'),{type:'bar',data:{
-    labels:results.map(r=>r.id+': '+r.name),
-    datasets:[
-      {label:'月住房支出',data:results.map(r=>r.monthly),backgroundColor:C.rd+'99',borderColor:C.rd,borderWidth:1},
-      {label:'月结余→股票',data:results.map(r=>r.monthlySurplus),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1},
-    ]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},
-  plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v.toLocaleString()}}}});
-
-  // Dynamic chart titles
-  document.getElementById('ct_wealth').innerHTML=`<span class="dot" style="background:var(--ac)"></span>${totalYrs}年总财富轨迹（房产权益 + 股票组合）`;
-  document.getElementById('ct_breakdown').innerHTML=`<span class="dot" style="background:var(--g)"></span>第${totalYrs}年末财富构成拆解`;
-
-  // Leverage return chart
-  if(leverageChart)leverageChart.destroy();
-  const buyPlans=results.filter(r=>!r.isRent);
-  const leverageData=buyPlans.map(r=>{
-    const equityIn=r.cashOut;
-    const propGain=r.price*Math.pow(1+r.propRate,totalYrs)-r.price;
-    const roe=((propGain/equityIn)*100/totalYrs).toFixed(1);
-    return parseFloat(roe);
-  });
-  leverageChart=new Chart(document.getElementById('c_leverage'),{type:'bar',data:{
-    labels:[...buyPlans.map(r=>r.id+':房产杠杆'),'股票(无杠杆)'],
-    datasets:[{label:'年化权益回报率 %',
-      data:[...leverageData,parseFloat((stockR*100).toFixed(1))],
-      backgroundColor:[...buyPlans.map(r=>r.color+'99'),C.gn+'99'],
-      borderColor:[...buyPlans.map(r=>r.color),C.gn],borderWidth:2,borderRadius:6}]
-  },options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'年化回报率 %'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},
-  plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:13},formatter:v=>v+'%'}}}});
-
-  // Table
-  const fRateLabel=(fixedRate*100).toFixed(1),flRateLabel=(floatRate*100).toFixed(1);
-  document.getElementById('wealth_table_card').innerHTML=`
-    <div class="ct"><span class="dot" style="background:var(--or)"></span>完整财富模型数据表（起始$${assets}K，月入$${income.toLocaleString()}，月生活费$${living.toLocaleString()}，利率${fRateLabel}%→${flRateLabel}%）</div>
-    <div style="overflow-x:auto"><table class="dt">
-      <thead><tr><th>指标</th>${results.map(r=>'<th>'+r.label+'</th>').join('')}</tr></thead>
-      <tbody>
-        <tr><td>成交价（最新）</td>${results.map(r=>'<td>'+(r.isRent?'—':r.txDate?'<a href="'+r.txUrl+'" target="_blank" style="color:var(--ac)">$'+(r.price/1000).toFixed(r.price%1000?3:0)+'M</a><br><span style="font-size:.75rem;color:var(--t2)">'+r.txDate+' · '+r.txSqft+'sqft</span>':'$'+(r.price/1000).toFixed(1)+'M')+'</td>').join('')}</tr>
-        <tr><td>购房现金支出</td>${results.map(r=>'<td>'+(r.isRent?'—':'$'+r.cashOut+'K')+'</td>').join('')}</tr>
-        <tr><td>购房后剩余→股票初始</td>${results.map(r=>'<td'+(r===best?' class="hi"':'')+'>$'+r.initStock+'K</td>').join('')}</tr>
-        <tr><td>月住房支出(Y1-${effectiveFixedYrs}${results.some(r=>!r.isRent)?' @'+fRateLabel+'%':''})</td>${results.map(r=>'<td>$'+r.m12.toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')}</tr>
-        <tr><td>月住房支出(Y${effectiveFixedYrs+1}+${results.some(r=>!r.isRent)?' @'+flRateLabel+'%':''})</td>${results.map(r=>'<td>$'+r.m35.toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')}</tr>
-        <tr><td>月均结余→定投股票</td>${results.map(r=>'<td'+(r.monthlySurplus===Math.max(...results.map(x=>x.monthlySurplus))?' class="hi"':'')+'>$'+r.monthlySurplus.toLocaleString()+'</td>').join('')}</tr>
-        <tr><td>贷款额</td>${results.map(r=>'<td'+(r.capped?' class="wr"':'')+'>'+(r.isRent?'—':'$'+r.loan+'K'+(r.capped?' (封顶)':''))+'</td>').join('')}</tr>
-        <tr style="background:var(--s2)"><td>房产年增值假设</td>${results.map(r=>'<td style="color:var(--ac)">'+(r.isRent?'—':(r.propRate*100).toFixed(1)+'%/年')+'</td>').join('')}</tr>
-        <tr><td>${totalYrs}年后股票组合</td>${results.map(r=>'<td'+(r.isRent?' class="hi"':'')+'>$'+Math.round(r.stockFV)+'K</td>').join('')}</tr>
-        <tr><td>${totalYrs}年后房产净权益</td>${results.map(r=>'<td>'+(r.isRent?'—':'$'+Math.round(r.propEquity)+'K')+'</td>').join('')}</tr>
-        <tr style="font-weight:700;background:var(--s2)"><td>${totalYrs}年后总财富</td>${results.map(r=>'<td style="color:'+(r===best?'var(--g2)':r.color)+'"><span class="wealth-num">$'+Math.round(r.totalWealth)+'K</span></td>').join('')}</tr>
-        <tr><td>财富排名</td>${results.slice().sort((a,b)=>b.totalWealth-a.totalWealth).map((r,i)=>'').join('')}${results.map(r=>{const rank=results.slice().sort((a,b)=>b.totalWealth-a.totalWealth).findIndex(x=>x.id===r.id)+1;return'<td style="font-weight:700;color:'+(rank===1?'var(--g2)':rank===results.length?'var(--rd)':'var(--t2)')+'">第'+rank+'名</td>'}).join('')}</tr>
-      </tbody>
-    </table></div>`;
-
-  // Insight
-  const diff=Math.round(best.totalWealth-worst.totalWealth);
-  const leverageBeat=leverageData.filter(v=>v>stockR*100).length;
-  const cappedPlans=results.filter(r=>r.capped);
-  const rentPlan=results.find(r=>r.isRent);
-  const bestBuy=results.filter(r=>!r.isRent).reduce((a,b)=>a.totalWealth>b.totalWealth?a:b);
-  const rentVsBuy=rentPlan?Math.round(bestBuy.totalWealth-rentPlan.totalWealth):0;
-  const m12Range=buyPlans.map(r=>r.m12),m35Range=buyPlans.map(r=>r.m35);
-  const avgDiff=Math.round(m35Range.reduce((a,b)=>a+b,0)/m35Range.length-m12Range.reduce((a,b)=>a+b,0)/m12Range.length);
-  document.getElementById('insight_box').innerHTML=`
-    <h3>🔍 关键发现</h3>
-    <p><strong>1. 买 vs 租：</strong>${rentVsBuy>0?
-      '最优购房方案 <strong style="color:'+bestBuy.color+'">'+bestBuy.label+'</strong> '+totalYrs+'年后总财富比纯租房多 <strong>$'+rentVsBuy+'K</strong>，说明在当前增值假设下购房的杠杆优势显著。':
-      '纯租房方案总财富反超购房方案 <strong>$'+Math.abs(rentVsBuy)+'K</strong>，说明在当前增值/利率假设下租房+全额投资股票更优。'}
-    调整房产增值率和股票回报率可以看到临界点。</p>
-    <p style="margin-top:10px"><strong>2. 杠杆效应：</strong>房产贷款放大回报。${leverageBeat}个购房方案的房产杠杆年化回报(${leverageData.join('%, ')}%)${leverageBeat>=3?'均':''}超过股票的${(stockR*100).toFixed(1)}%。
-    但方案D/E因贷款封顶$1.1M，杠杆效应被部分削弱。</p>
-    <p style="margin-top:10px"><strong>3. 排名结果：</strong>方案 <strong style="color:${best.color}">${best.label}</strong> 以 <strong>$${Math.round(best.totalWealth)}K</strong> 总财富排名第一，
-    比最低的 ${worst.label}($${Math.round(worst.totalWealth)}K) 多 <strong>$${diff}K</strong>（差距${(diff/worst.totalWealth*100).toFixed(1)}%）。</p>
-    <p style="margin-top:10px"><strong>4. 两阶段利率的影响：</strong>前${effectiveFixedYrs}年${fRateLabel}%固定利率月供更低，每月多出的结余可以投入股票。第${effectiveFixedYrs+1}年转${flRateLabel}%浮动后月供平均增加约$${avgDiff}/月。
-    建议利用前${effectiveFixedYrs}年低利率窗口积极定投，为利率跳升做好缓冲。</p>`;
+function setScenarioInputDefaults(){
+  const {household}=DEFAULTS;
+  const values={
+    i_assets:DEFAULTS.assetsK,
+    i_male_gross:household.male.grossMonthly,
+    i_male_bonus:household.male.annualBonusMonths,
+    i_male_oa:household.male.initialOA,
+    i_female_gross:household.female.grossMonthly,
+    i_female_bonus:household.female.annualBonusMonths,
+    i_female_oa:household.female.initialOA,
+    i_living:DEFAULTS.livingMonthly,
+    i_stock:DEFAULTS.stockAnnualReturn*100,
+    i_rate_lv:DEFAULTS.lakevilleAnnualGrowth*100,
+    i_rate_lg:DEFAULTS.lakeGrandeAnnualGrowth*100,
+    i_rent:DEFAULTS.rentMonthly,
+    i_fixed_rate:DEFAULTS.fixedRate*100,
+    i_fixed_yrs:DEFAULTS.fixedYears,
+    i_float_rate:DEFAULTS.floatRate*100,
+    i_total_yrs:DEFAULTS.simulationYears,
+  };
+  Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.value=value;});
 }
 
-document.querySelectorAll('.inputs input').forEach(el=>el.addEventListener('input',calcWealth));
-calcWealth();
+function readScenarioInputs(){
+  return {
+    assetsK:parseFloat(document.getElementById('i_assets').value)||DEFAULTS.assetsK,
+    livingMonthly:parseFloat(document.getElementById('i_living').value)||DEFAULTS.livingMonthly,
+    stockAnnualReturn:(parseFloat(document.getElementById('i_stock').value)||DEFAULTS.stockAnnualReturn*100)/100,
+    lakevilleAnnualGrowth:(parseFloat(document.getElementById('i_rate_lv').value)||DEFAULTS.lakevilleAnnualGrowth*100)/100,
+    lakeGrandeAnnualGrowth:(parseFloat(document.getElementById('i_rate_lg').value)||DEFAULTS.lakeGrandeAnnualGrowth*100)/100,
+    rentMonthly:parseFloat(document.getElementById('i_rent').value)||DEFAULTS.rentMonthly,
+    fixedRate:(parseFloat(document.getElementById('i_fixed_rate').value)||DEFAULTS.fixedRate*100)/100,
+    fixedYears:Math.max(parseInt(document.getElementById('i_fixed_yrs').value,10)||DEFAULTS.fixedYears,1),
+    floatRate:(parseFloat(document.getElementById('i_float_rate').value)||DEFAULTS.floatRate*100)/100,
+    simulationYears:Math.max(parseInt(document.getElementById('i_total_yrs').value,10)||DEFAULTS.simulationYears,1),
+    loanCap:DEFAULTS.loanCap,
+    ltv:DEFAULTS.ltv,
+    absdRate:DEFAULTS.absdRate,
+    legalFees:DEFAULTS.legalFees,
+    mandatoryCashDownPaymentRate:DEFAULTS.mandatoryCashDownPaymentRate,
+    loanTenorYears:DEFAULTS.loanTenorYears,
+    oaInterestRate:DEFAULTS.oaInterestRate,
+    cpfOwCeilingMonthly:DEFAULTS.cpfOwCeilingMonthly,
+    cpfRulesVersion:DEFAULTS.cpfRulesVersion,
+    irasRulesVersion:DEFAULTS.irasRulesVersion,
+    household:{
+      male:{
+        dob:DEFAULTS.household.male.dob,
+        purchaseAge:DEFAULTS.household.male.purchaseAge,
+        grossMonthly:parseFloat(document.getElementById('i_male_gross').value)||DEFAULTS.household.male.grossMonthly,
+        annualBonusMonths:parseFloat(document.getElementById('i_male_bonus').value)||DEFAULTS.household.male.annualBonusMonths,
+        initialOA:parseFloat(document.getElementById('i_male_oa').value)||DEFAULTS.household.male.initialOA,
+      },
+      female:{
+        dob:DEFAULTS.household.female.dob,
+        purchaseAge:DEFAULTS.household.female.purchaseAge,
+        grossMonthly:parseFloat(document.getElementById('i_female_gross').value)||DEFAULTS.household.female.grossMonthly,
+        annualBonusMonths:parseFloat(document.getElementById('i_female_bonus').value)||DEFAULTS.household.female.annualBonusMonths,
+        initialOA:parseFloat(document.getElementById('i_female_oa').value)||DEFAULTS.household.female.initialOA,
+      },
+    },
+  };
+}
 
-// S6: Loan cap impact
-new Chart(document.getElementById('c_loan'),{type:'bar',data:{
-  labels:['A: LG 2B1B\n$1.275M','B: LV 2B2B\n$1.26M','C: LG 2B2B\n$1.514M','D: LG 3B2B\n$1.739M','E: LV 3B2B\n$1.795M'],
-  datasets:[
-    {label:'75% LTV理论贷款',data:[956.3,945,1135.4,1304.3,1346.3],backgroundColor:C.pr+'66',borderColor:C.pr,borderWidth:2},
-    {label:'实际可贷(上限$1.1M)',data:[956.3,945,1100,1100,1100],backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:2},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:600,title:{display:true,text:'贷款额 S$千'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},
-  plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v+'K'},
-  annotation:{annotations:{line1:{type:'line',yMin:1100,yMax:1100,borderColor:C.rd,borderWidth:2,borderDash:[6,4],label:{display:true,content:'$1.1M 贷款上限',position:'start',backgroundColor:C.rd}}}}}}
-});
+function buildScenarioModel(){
+  return WM.buildScenario({
+    assumptions:readScenarioInputs(),
+    plans:BASE_PLANS,
+    focusProjects:activeDashboardData?.focus_projects,
+  });
+}
 
-// S6: Two-phase rate comparison
-new Chart(document.getElementById('c_tenure'),{type:'bar',data:{
-  labels:['A: LG 2B1B','B: LV 2B2B','C: LG 2B2B','D: LG 3B2B','E: LV 3B2B'],
-  datasets:[
-    {label:'Y1-2 @1.5%月供',data:[3300,3261,3796,3796,3796],backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1},
-    {label:'Y3+ @2.5%月供',data:[3752,3708,4316,4316,4316],backgroundColor:C.or+'99',borderColor:C.or,borderWidth:1},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:2800,title:{display:true,text:'房贷月供 S$'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},
-  plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{size:11,weight:'bold'},formatter:v=>'$'+v.toLocaleString()}}}
-});
+function renderAssumptionsBox(assumptions,householdCpf){
+  document.getElementById('assumptions_box').innerHTML=
+    '<div class="ag">'+
+      '<div class="ai"><div class="l">起始投入资金</div><div class="v">$'+(assumptions.assetsK*1000).toLocaleString()+'（现金+股票）</div></div>'+
+      '<div class="ai"><div class="l">男方默认收入</div><div class="v">$'+assumptions.household.male.grossMonthly.toLocaleString()+'/月 + '+assumptions.household.male.annualBonusMonths+' 薪 · 初始 OA $'+assumptions.household.male.initialOA.toLocaleString()+'</div></div>'+
+      '<div class="ai"><div class="l">女方默认收入</div><div class="v">$'+assumptions.household.female.grossMonthly.toLocaleString()+'/月 + '+assumptions.household.female.annualBonusMonths+' 薪 · 初始 OA $'+assumptions.household.female.initialOA.toLocaleString()+'</div></div>'+
+      '<div class="ai"><div class="l">生活费 / 租金</div><div class="v">$'+assumptions.livingMonthly.toLocaleString()+'/月 · 纯租房基准 $'+assumptions.rentMonthly.toLocaleString()+'/月</div></div>'+
+      '<div class="ai"><div class="l">CPF 规则</div><div class="v">'+assumptions.cpfRulesVersion+'</div></div>'+
+      '<div class="ai"><div class="l">税费规则</div><div class="v">'+assumptions.irasRulesVersion+'</div></div>'+
+      '<div class="ai"><div class="l">每月到手 / OA</div><div class="v">男方现金 $'+Math.round(householdCpf.male.monthlyCashIncludingBonus).toLocaleString()+' · OA $'+Math.round(householdCpf.male.monthlyOAIncludingBonus).toLocaleString()+'；女方现金 $'+Math.round(householdCpf.female.monthlyCashIncludingBonus).toLocaleString()+' · OA $'+Math.round(householdCpf.female.monthlyOAIncludingBonus).toLocaleString()+'</div></div>'+
+    '</div>';
+}
 
-// S7: Radar
-new Chart(document.getElementById('c_radar'),{type:'radar',data:{
-  labels:['前期成本低','月供压力低','居住面积','地契安全','增值潜力','投资灵活性','贷款可行性'],
-  datasets:[
-    {label:'A: LG 2B1B',data:[10,10,4,9,8,10,10],borderColor:C.gn,backgroundColor:C.gn+'22',pointBackgroundColor:C.gn},
-    {label:'B: LV 2B2B',data:[8,8,6,7,7,8,9],borderColor:C.bl,backgroundColor:C.bl+'22',pointBackgroundColor:C.bl},
-    {label:'C: LG 2B2B',data:[6,6,6,9,8,6,8],borderColor:C.pr,backgroundColor:C.pr+'22',pointBackgroundColor:C.pr},
-    {label:'D: LG 3B2B',data:[4,5,8,9,8,4,5],borderColor:C.or,backgroundColor:C.or+'22',pointBackgroundColor:C.or},
-    {label:'E: LV 3B2B',data:[3,5,9,7,7,3,3],borderColor:C.cy,backgroundColor:C.cy+'22',pointBackgroundColor:C.cy},
-  ]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:10,grid:{color:'#2d324444'},angleLines:{color:'#2d324444'},pointLabels:{font:{size:12},color:'#e4e6f0'},ticks:{display:false}}},plugins:{legend:{position:'top'}}}
-});
+function renderCorePlanTable(buyResults){
+  document.getElementById('core_plan_table').innerHTML=
+    '<table class="dt"><thead><tr><th>对比项</th>'+buyResults.map(r=>'<th>'+r.label+'</th>').join('')+'</tr></thead><tbody>'+
+    '<tr><td>楼盘</td>'+buyResults.map(r=>'<td>'+r.projectName+'</td>').join('')+'</tr>'+
+    '<tr><td>地址</td>'+buyResults.map(r=>'<td>'+r.address+'</td>').join('')+'</tr>'+
+    '<tr><td>TOP / 楼龄</td>'+buyResults.map(r=>'<td>'+r.topInfo+'</td>').join('')+'</tr>'+
+    '<tr><td>剩余地契</td>'+buyResults.map(r=>'<td>'+r.leaseInfo+'</td>').join('')+'</tr>'+
+    '<tr><td>面积</td>'+buyResults.map((r,i)=>'<td'+(i===0?' class="hi"':'')+'>'+r.transaction.sqft+' sqft</td>').join('')+'</tr>'+
+    '<tr><td>最新成交价</td>'+buyResults.map(r=>'<td'+(r.loan.capped?' class="wr"':'')+'><a href="'+r.transaction.url+'" target="_blank" style="color:var(--ac)">$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M</a><br><span style="font-size:.75rem">'+r.transaction.dateLabel+'</span></td>').join('')+'</tr>'+
+    '<tr><td>PSF</td>'+buyResults.map(r=>'<td>$'+Math.round(r.transaction.psf).toLocaleString()+'</td>').join('')+'</tr>'+
+    '<tr><td>贷款额</td>'+buyResults.map(r=>'<td'+(r.loan.capped?' class="wr"':'')+'>'+fmtK(r.loan.actualLoan)+(r.loan.capped?'(封顶)':'')+'</td>').join('')+'</tr>'+
+    '<tr><td>首付比例</td>'+buyResults.map(r=>'<td'+(r.loan.capped?' class="wr"':'')+'>'+fmtPct(r.loan.downPaymentRatio)+'</td>').join('')+'</tr>'+
+    '<tr><td>数据来源</td><td colspan="'+buyResults.length+'" style="color:var(--t2);font-size:.8rem">默认取 `focus_projects.recent_by_bucket` 的最新户型成交；若缺失则回退到页面内置成交元数据。</td></tr>'+
+    '<tr><td>最近MRT</td>'+buyResults.map(r=>'<td>'+r.mrtInfo+'</td>').join('')+'</tr>'+
+    '<tr><td>区域规划</td>'+buyResults.map(()=>'<td>裕廊湖区 JLD</td>').join('')+'</tr>'+
+    '</tbody></table>';
+}
 
-// S7: Score
-new Chart(document.getElementById('c_score'),{type:'bar',data:{
-  labels:['A: LG 2B1B $1.1M','B: LV 2B2B $1.27M','C: LG 2B2B $1.45M','D: LG 3B2B $1.7M','E: LV 3B2B $1.8M'],
-  datasets:[{label:'综合评分',data:[84,82,76,62,48],
-    backgroundColor:[C.gn+'cc',C.bl+'cc',C.pr+'cc',C.or+'66',C.rd+'44'],
-    borderColor:[C.gn,C.bl,C.pr,C.or,C.rd],borderWidth:2,borderRadius:8}]
-  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{min:0,max:100,title:{display:true,text:'综合评分 (满分100)'},grid:{color:'#2d324466'}},y:{grid:{display:false}}},
-  plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:15},formatter:v=>v+'分'}}}
-});
+function renderLoanCapTable(buyResults){
+  document.getElementById('loan_cap_table').innerHTML=
+    '<table class="dt"><thead><tr><th>方案</th><th>总价</th><th>75%LTV贷款</th><th>实际可贷</th><th>首付</th><th>是否封顶</th></tr></thead><tbody>'+
+    buyResults.map((r,i)=>'<tr><td><strong>'+r.label+'</strong></td><td>$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M</td><td>'+fmtK(r.loan.desiredLoan)+'</td><td class="'+hiClass(r,i,buyResults)+'">'+fmtK(r.loan.actualLoan)+'</td><td>'+fmtK(r.loan.downPayment)+' ('+fmtPct(r.loan.downPaymentRatio)+')</td><td class="'+(r.loan.capped?'bd':'hi')+'">'+(r.loan.capped?'封顶':'否')+'</td></tr>').join('')+
+    '</tbody></table>';
+}
+
+function renderCostSection(buyResults,assumptions){
+  if(upfrontChart)upfrontChart.destroy();
+  upfrontChart=new Chart(document.getElementById('c_upfront'),{type:'bar',data:{
+    labels:buyResults.map(r=>r.label),
+    datasets:[
+      {label:'现金首付(5%)',data:buyResults.map(r=>WM.round1(toK(r.upfront.mandatoryCash))),backgroundColor:C.bl+'cc'},
+      {label:'CPF可支付首付',data:buyResults.map(r=>WM.round1(toK(r.upfront.cpfEligible))),backgroundColor:C.pr+'cc'},
+      {label:'BSD',data:buyResults.map(r=>WM.round1(toK(r.bsd))),backgroundColor:C.or+'cc'},
+      {label:'ABSD(5%)',data:buyResults.map(r=>WM.round1(toK(r.absd))),backgroundColor:C.rd+'cc'},
+      {label:'律师费',data:buyResults.map(r=>WM.round1(toK(r.upfront.legalFees))),backgroundColor:C.cy+'cc'},
+    ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'}}}});
+
+  if(cashCpfChart)cashCpfChart.destroy();
+  cashCpfChart=new Chart(document.getElementById('c_cashcpf'),{type:'bar',data:{
+    labels:buyResults.map(r=>r.label),
+    datasets:[
+      {label:'现金支出',data:buyResults.map(r=>WM.round1(toK(r.upfront.totalCashUsed))),backgroundColor:C.rd+'99',borderColor:C.rd,borderWidth:2},
+      {label:'CPF OA支出',data:buyResults.map(r=>WM.round1(toK(r.upfront.totalCpfUsed))),backgroundColor:C.pr+'99',borderColor:C.pr,borderWidth:2},
+    ]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v+'K'}}}});
+
+  document.getElementById('cost_detail_table').innerHTML=
+    '<table class="dt"><thead><tr><th>项目</th>'+buyResults.map(r=>'<th>'+r.label+' $'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M</th>').join('')+'</tr></thead><tbody>'+
+    '<tr><td>购买价</td>'+buyResults.map(r=>'<td>'+fmtK(r.transaction.price)+'</td>').join('')+'</tr>'+
+    '<tr><td>BSD</td>'+buyResults.map(r=>'<td>'+fmtK(r.bsd)+'</td>').join('')+'</tr>'+
+    '<tr><td>ABSD (5%)</td>'+buyResults.map(r=>'<td>'+fmtK(r.absd)+'</td>').join('')+'</tr>'+
+    '<tr><td>律师费+杂费</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.legalFees)+'</td>').join('')+'</tr>'+
+    '<tr><td>首付</td>'+buyResults.map(r=>'<td>'+fmtK(r.loan.downPayment)+' ('+fmtPct(r.loan.downPaymentRatio)+')</td>').join('')+'</tr>'+
+    '<tr><td>→ 强制现金 (5%)</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.mandatoryCash)+'</td>').join('')+'</tr>'+
+    '<tr><td>→ CPF 可支付部分</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.cpfEligible)+'</td>').join('')+'</tr>'+
+    '<tr><td>→ 实际 CPF OA 支出</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.totalCpfUsed)+'</td>').join('')+'</tr>'+
+    '<tr><td>→ OA 不足转现金</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.oaShortfallToCash)+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:var(--s2)"><td>前期现金支出</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.totalCashUsed)+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:var(--s2)"><td>前期 CPF OA 支出</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.totalCpfUsed)+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:var(--s2)"><td>贷款额</td>'+buyResults.map(r=>'<td>'+(fmtK(r.loan.actualLoan))+(r.loan.capped?' (封顶)':'')+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:rgba(225,112,85,.1)"><td>前期总投入(现金+CPF)</td>'+buyResults.map(r=>'<td>'+fmtK(r.upfront.totalUpfront)+'</td>').join('')+'</tr>'+
+    '</tbody></table>';
+
+  const capped=buyResults.filter(r=>r.loan.capped).map(r=>r.label).join('、');
+  const cashTight=buyResults.filter(r=>r.upfront.totalCashUsed>assumptions.assetsK*1000).map(r=>r.label).join('、');
+  document.getElementById('cost_alert_text').innerHTML='银行确认最高贷款 $1.1M。当前场景下'+(capped?'<strong>'+capped+'</strong> 触发贷款封顶；':'所有方案都在贷款上限内；')+'首付、税费与 OA/现金分配已经统一按函数实时计算。'+(cashTight?' <strong>'+cashTight+'</strong> 的前期现金支出超过起始投入资金。':'');
+  document.getElementById('cost_detail_note').textContent='* 默认双方初始 OA 为 $'+(assumptions.household.male.initialOA+assumptions.household.female.initialOA).toLocaleString()+'。CPF 可支付部分会先吃 OA，不足再转现金。';
+}
+
+function renderMonthlySection(results,buyResults,assumptions){
+  const rentResult=results.find(r=>r.isRent);
+  const fixedTotals=[rentResult?rentResult.wealth.fixedPhaseCashHousing:0,...buyResults.map(r=>r.wealth.housing.fixedPhase.total)];
+  const floatTotals=[rentResult?rentResult.wealth.floatPhaseCashHousing:0,...buyResults.map(r=>r.wealth.housing.floatPhase.total)];
+  const labels=['纯租房',...buyResults.map(r=>r.label)];
+
+  document.getElementById('monthly_kpis').innerHTML=[
+    '<div class="kpi"><div class="l">纯租房月租</div><div class="v">$'+Math.round(rentResult.wealth.fixedPhaseCashHousing).toLocaleString()+'</div></div>',
+    '<div class="kpi"><div class="l">最低固定期月总</div><div class="v" style="color:var(--g2)">$'+Math.round(Math.min(...buyResults.map(r=>r.wealth.housing.fixedPhase.total))).toLocaleString()+'</div><div class="c">'+buyResults.slice().sort((a,b)=>a.wealth.housing.fixedPhase.total-b.wealth.housing.fixedPhase.total)[0].label+'</div></div>',
+    '<div class="kpi"><div class="l">最低浮动期月总</div><div class="v" style="color:var(--or)">$'+Math.round(Math.min(...buyResults.map(r=>r.wealth.housing.floatPhase.total))).toLocaleString()+'</div><div class="c">'+buyResults.slice().sort((a,b)=>a.wealth.housing.floatPhase.total-b.wealth.housing.floatPhase.total)[0].label+'</div></div>',
+    '<div class="kpi"><div class="l">最高浮动期月总</div><div class="v" style="color:var(--rd)">$'+Math.round(Math.max(...buyResults.map(r=>r.wealth.housing.floatPhase.total))).toLocaleString()+'</div><div class="c">利率跳升后</div></div>',
+  ].join('');
+
+  if(m30Chart)m30Chart.destroy();
+  m30Chart=new Chart(document.getElementById('c_m30'),{type:'bar',data:{labels,datasets:[{label:'月支出 Y1-'+assumptions.fixedYears+' @固定利率',data:fixedTotals,backgroundColor:['#9399b244',...buyResults.map(r=>r.color+'99')],borderColor:['#9399b2',...buyResults.map(r=>r.color)],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+  if(m25Chart)m25Chart.destroy();
+  m25Chart=new Chart(document.getElementById('c_m25'),{type:'bar',data:{labels,datasets:[{label:'月支出 Y'+(assumptions.fixedYears+1)+'+ @浮动利率',data:floatTotals,backgroundColor:['#9399b244',...buyResults.map(r=>r.color+'99')],borderColor:['#9399b2',...buyResults.map(r=>r.color)],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+  if(rateJumpChart)rateJumpChart.destroy();
+  rateJumpChart=new Chart(document.getElementById('c_rate_jump'),{type:'bar',data:{labels:buyResults.map(r=>r.label),datasets:[{label:'固定期月总',data:buyResults.map(r=>r.wealth.housing.fixedPhase.total),backgroundColor:buyResults.map(r=>r.color+'66'),borderColor:buyResults.map(r=>r.color),borderWidth:2},{label:'浮动期月总',data:buyResults.map(r=>r.wealth.housing.floatPhase.total),backgroundColor:buyResults.map(r=>r.color+'cc'),borderColor:buyResults.map(r=>r.color),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+
+  document.getElementById('monthly_detail_table').innerHTML=
+    '<table class="dt"><thead><tr><th>方案</th><th>贷款额</th><th>房贷(Y1-'+assumptions.fixedYears+')</th><th>房贷(Y'+(assumptions.fixedYears+1)+'+)</th><th>固定费用</th><th>现金(Y1-'+assumptions.fixedYears+')</th><th>OA(Y1-'+assumptions.fixedYears+')</th><th>现金(Y'+(assumptions.fixedYears+1)+'+)</th><th>OA(Y'+(assumptions.fixedYears+1)+'+)</th></tr></thead><tbody>'+
+    buyResults.map(r=>'<tr><td><strong>'+r.label+'</strong></td><td>'+(fmtK(r.loan.actualLoan))+(r.loan.capped?' (封顶)':'')+'</td><td>$'+Math.round(r.wealth.housing.fixedPhase.mortgage).toLocaleString()+'</td><td>$'+Math.round(r.wealth.housing.floatPhase.mortgage).toLocaleString()+'</td><td>$'+Math.round(r.fixedCostMonthly).toLocaleString()+'</td><td>$'+Math.round(r.wealth.fixedPhaseCashHousing).toLocaleString()+'</td><td>$'+Math.round(r.wealth.fixedPhaseOAHousing).toLocaleString()+'</td><td>$'+Math.round(r.wealth.floatPhaseCashHousing).toLocaleString()+'</td><td>$'+Math.round(r.wealth.floatPhaseOAHousing).toLocaleString()+'</td></tr>').join('')+
+    '</tbody></table>';
+}
+
+function renderWealthSection(scenario){
+  const assumptions=scenario.assumptions;
+  const results=scenario.results.map(result=>{
+    if(result.isRent){
+      return Object.assign({},result,{displayLabel:result.label,cagr:result.wealth.totalCagr});
+    }
+    return Object.assign({},result,{displayLabel:result.label+' $'+(result.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M',cagr:result.wealth.totalCagr});
+  });
+  const best=results.reduce((a,b)=>a.wealth.totalWealth>b.wealth.totalWealth?a:b);
+  const worst=results.reduce((a,b)=>a.wealth.totalWealth<b.wealth.totalWealth?a:b);
+
+  document.getElementById('kpi_wealth').innerHTML=results.slice().sort((a,b)=>b.wealth.totalWealth-a.wealth.totalWealth).map(r=>'<div class="kpi"><div class="l">'+r.displayLabel+'</div><div class="v" style="color:'+(r===best?'var(--g2)':r.color)+'">'+fmtK(r.wealth.totalWealth)+'</div><div class="c">股票 '+fmtK(r.wealth.stockFV)+' + 房产 '+fmtK(r.wealth.propEquity)+' + OA '+fmtK(r.wealth.oaBalance)+' · CAGR '+(r.cagr!=null?fmtPct(r.cagr,2):'-')+'</div></div>').join('');
+
+  const labels=wealthYearsLabels(assumptions.simulationYears);
+  if(wealthChart)wealthChart.destroy();
+  wealthChart=new Chart(document.getElementById('c_wealth'),{type:'line',data:{labels,datasets:results.map(r=>({label:r.displayLabel,data:[(assumptions.assetsK*1000+assumptions.household.male.initialOA+assumptions.household.female.initialOA)/1000,...r.wealth.trajectory.map(pt=>Math.round(pt.totalWealth/1000))],borderColor:r.color,tension:.3,borderWidth:3,borderDash:r.dash||[]}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'总财富 S$千 = 房产净权益 + 股票组合 + CPF OA'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'}}}});
+
+  if(breakdownChart)breakdownChart.destroy();
+  breakdownChart=new Chart(document.getElementById('c_breakdown'),{type:'bar',data:{labels:results.map(r=>r.label),datasets:[{label:'房产净权益',data:results.map(r=>Math.round(toK(r.wealth.propEquity))),backgroundColor:results.map(r=>r.color+'99'),borderColor:results.map(r=>r.color),borderWidth:2},{label:'股票组合',data:results.map(r=>Math.round(toK(r.wealth.stockFV))),backgroundColor:results.map(()=>C.gn+'66'),borderColor:results.map(()=>C.gn),borderWidth:2},{label:'CPF OA',data:results.map(r=>Math.round(toK(r.wealth.oaBalance))),backgroundColor:results.map(()=>C.cy+'66'),borderColor:results.map(()=>C.cy),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>v>=50?'$'+v+'K':''}}}});
+
+  if(flowChart)flowChart.destroy();
+  flowChart=new Chart(document.getElementById('c_flow'),{type:'bar',data:{labels:results.map(r=>r.label),datasets:[{label:'月住房现金支出',data:results.map(r=>Math.round(r.wealth.avgCashHousing)),backgroundColor:C.rd+'99',borderColor:C.rd,borderWidth:1},{label:'月住房 OA 支出',data:results.map(r=>Math.round(r.wealth.avgOAHousing)),backgroundColor:C.cy+'99',borderColor:C.cy,borderWidth:1},{label:'月均结余→股票',data:results.map(r=>Math.round(Math.max(r.wealth.avgInvestableCash,0))),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+
+  document.getElementById('ct_wealth').innerHTML='<span class="dot" style="background:var(--ac)"></span>'+assumptions.simulationYears+'年总财富轨迹（房产净权益 + 股票组合 + CPF OA）';
+  document.getElementById('ct_breakdown').innerHTML='<span class="dot" style="background:var(--g)"></span>第'+assumptions.simulationYears+'年末财富构成拆解';
+
+  if(leverageChart)leverageChart.destroy();
+  const buyResults=scenario.buyResults;
+  const leverageData=buyResults.map(r=>parseFloat((((r.transaction.price*Math.pow(1+r.propertyGrowthRate,assumptions.simulationYears)-r.transaction.price)/Math.max(r.upfront.totalCashUsed,1))*100/assumptions.simulationYears).toFixed(1)));
+  leverageChart=new Chart(document.getElementById('c_leverage'),{type:'bar',data:{labels:[...buyResults.map(r=>r.id+':房产杠杆'),'股票(无杠杆)'],datasets:[{label:'年化权益回报率 %',data:[...leverageData,parseFloat((assumptions.stockAnnualReturn*100).toFixed(1))],backgroundColor:[...buyResults.map(r=>r.color+'99'),C.gn+'99'],borderColor:[...buyResults.map(r=>r.color),C.gn],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'年化回报率 %'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:13},formatter:v=>v+'%'}}}});
+
+  document.getElementById('wealth_table_card').innerHTML=
+    '<div class="ct"><span class="dot" style="background:var(--or)"></span>完整财富模型数据表（起始$'+assumptions.assetsK+'K，月生活费$'+assumptions.livingMonthly.toLocaleString()+'，利率'+(assumptions.fixedRate*100).toFixed(1)+'%→'+(assumptions.floatRate*100).toFixed(1)+'%）</div>'+
+    '<div style="overflow-x:auto"><table class="dt"><thead><tr><th>指标</th>'+results.map(r=>'<th>'+r.displayLabel+'</th>').join('')+'</tr></thead><tbody>'+
+    '<tr><td>最新成交价</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td><a href="'+r.transaction.url+'" target="_blank" style="color:var(--ac)">$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M</a><br><span style="font-size:.75rem;color:var(--t2)">'+r.transaction.dateLabel+' · '+r.transaction.sqft+'sqft</span></td>').join('')+'</tr>'+
+    '<tr><td>前期现金支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.totalCashUsed)+'</td>').join('')+'</tr>'+
+    '<tr><td>前期 CPF OA 支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.totalCpfUsed)+'</td>').join('')+'</tr>'+
+    '<tr><td>OA 不足转现金</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.oaShortfallToCash)+'</td>').join('')+'</tr>'+
+    '<tr><td>购房后剩余现金→股票初始</td>'+results.map(r=>'<td>'+fmtK(r.wealth.initialStock)+'</td>').join('')+'</tr>'+
+    '<tr><td>购房后剩余 OA</td>'+results.map(r=>'<td>'+fmtK(r.wealth.initialOA)+'</td>').join('')+'</tr>'+
+    '<tr><td>月住房现金支出(Y1-'+assumptions.fixedYears+')</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.fixedPhaseCashHousing).toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')+'</tr>'+
+    '<tr><td>月住房 OA 支出(Y1-'+assumptions.fixedYears+')</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.fixedPhaseOAHousing).toLocaleString()+'</td>').join('')+'</tr>'+
+    '<tr><td>月住房现金支出(Y'+(assumptions.fixedYears+1)+'+)</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.floatPhaseCashHousing).toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')+'</tr>'+
+    '<tr><td>月住房 OA 支出(Y'+(assumptions.fixedYears+1)+'+)</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.floatPhaseOAHousing).toLocaleString()+'</td>').join('')+'</tr>'+
+    '<tr><td>贷款额</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.loan.actualLoan)+(r.loan.capped?' (封顶)':'')+'</td>').join('')+'</tr>'+
+    '<tr style="background:var(--s2)"><td>房产年增值假设</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td style="color:var(--ac)">'+fmtPct(r.propertyGrowthRate)+'/年</td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后股票组合</td>'+results.map(r=>'<td>'+fmtK(r.wealth.stockFV)+'</td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后房产净权益</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.wealth.propEquity)+'</td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后 CPF OA</td>'+results.map(r=>'<td>'+fmtK(r.wealth.oaBalance)+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:var(--s2)"><td>'+assumptions.simulationYears+'年后总财富</td>'+results.map(r=>'<td style="color:'+(r===best?'var(--g2)':r.color)+'"><span class="wealth-num">'+fmtK(r.wealth.totalWealth)+'</span></td>').join('')+'</tr>'+
+    '<tr><td>总财富 CAGR</td>'+results.map(r=>'<td>'+(r.wealth.totalCagr!=null?fmtPct(r.wealth.totalCagr,2):'-')+'</td>').join('')+'</tr>'+
+    '</tbody></table></div>';
+
+  const buyBest=scenario.buyResults.reduce((a,b)=>a.wealth.totalWealth>b.wealth.totalWealth?a:b);
+  const rentResult=scenario.rentResult;
+  const rentDelta=rentResult?buyBest.wealth.totalWealth-rentResult.wealth.totalWealth:0;
+  document.getElementById('insight_box').innerHTML=
+    '<h3>🔍 关键发现</h3>'+
+    '<p><strong>1. 买 vs 租：</strong>'+(rentDelta>=0?'最优购房方案 <strong style="color:'+buyBest.color+'">'+buyBest.label+'</strong> 比纯租房高 '+fmtK(rentDelta)+'。':'纯租房当前高于最佳购房方案 '+fmtK(Math.abs(rentDelta))+'。')+' 这里的总财富已经包含股票、房产净权益和 CPF OA。</p>'+
+    '<p style="margin-top:10px"><strong>2. 现金口径已修正：</strong>前期资金分为“实际现金支出”“实际 CPF OA 支出”和“OA 不足转现金”。默认 OA 为 0 时，原本可由 CPF 支付的部分会完整转成现金压力。</p>'+
+    '<p style="margin-top:10px"><strong>3. CAGR 口径：</strong>总 CAGR 采用净资产 CAGR，分母是起始投入资金与起始 OA，分子是期末股票 + 房产净权益 + OA。</p>'+
+    '<p style="margin-top:10px"><strong>4. 当前排名：</strong><strong style="color:'+best.color+'">'+best.displayLabel+'</strong> 以 '+fmtK(best.wealth.totalWealth)+' 排名第一；最低为 '+worst.displayLabel+' '+fmtK(worst.wealth.totalWealth)+'。</p>';
+}
+
+function renderScenario(){
+  const scenario=buildScenarioModel();
+  const {buyResults,results,householdCpf}=scenario;
+
+  renderAssumptionsBox(scenario.assumptions,householdCpf);
+  renderCorePlanTable(buyResults);
+  renderLoanCapTable(buyResults);
+  renderCostSection(buyResults,scenario.assumptions);
+  renderMonthlySection(results,buyResults,scenario.assumptions);
+  renderWealthSection(scenario);
+
+  if(psfChart)psfChart.destroy();
+  psfChart=new Chart(document.getElementById('c_psf'),{type:'bar',data:{labels:buyResults.map(r=>r.label),datasets:[{label:'PSF (S$/sqft)',data:buyResults.map(r=>Math.round(r.transaction.psf)),backgroundColor:buyResults.map(r=>r.color+'99'),borderColor:buyResults.map(r=>r.color),borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:1500,title:{display:true,text:'PSF (S$/sqft)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v}}}});
+  if(tpChart)tpChart.destroy();
+  tpChart=new Chart(document.getElementById('c_tp'),{type:'bar',data:{labels:buyResults.map(r=>r.label),datasets:[{label:'总价 (S$千)',data:buyResults.map(r=>Math.round(toK(r.transaction.price))),backgroundColor:buyResults.map(r=>r.color+'99'),borderColor:buyResults.map(r=>r.color),borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:1000,title:{display:true,text:'总价 (S$ 千)'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold'},formatter:v=>'$'+v+'K'}}}});
+  if(!scatterChart){
+    scatterChart=new Chart(document.getElementById('c_scatter'),{type:'scatter',data:{datasets:[{label:'Lakeville',data:SCATTER_DATA.lakeville,backgroundColor:C.bl,pointRadius:7,pointHoverRadius:10},{label:'Lake Grande',data:SCATTER_DATA.lakeGrande,backgroundColor:C.pr,pointRadius:7,pointHoverRadius:10}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'面积 (sqft)'},grid:{color:'#2d324466'}},y:{title:{display:true,text:'总价 (S$ 千)'},grid:{color:'#2d324466'}}},plugins:{legend:{position:'top'}}}});
+  }
+  if(loanCapChart)loanCapChart.destroy();
+  loanCapChart=new Chart(document.getElementById('c_loan'),{type:'bar',data:{labels:buyResults.map(r=>r.label+'\n$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M'),datasets:[{label:'75% LTV理论贷款',data:buyResults.map(r=>WM.round1(toK(r.loan.desiredLoan))),backgroundColor:C.pr+'66',borderColor:C.pr,borderWidth:2},{label:'实际可贷(上限$1.1M)',data:buyResults.map(r=>WM.round1(toK(r.loan.actualLoan))),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:600,title:{display:true,text:'贷款额 S$千'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v+'K'}}}});
+  if(tenureChart)tenureChart.destroy();
+  tenureChart=new Chart(document.getElementById('c_tenure'),{type:'bar',data:{labels:buyResults.map(r=>r.label),datasets:[{label:'固定期月供',data:buyResults.map(r=>r.wealth.housing.fixedPhase.mortgage),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1},{label:'浮动期月供',data:buyResults.map(r=>r.wealth.housing.floatPhase.mortgage),backgroundColor:C.or+'99',borderColor:C.or,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:2800,title:{display:true,text:'房贷月供 S$'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{size:11,weight:'bold'},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+}
+
+setScenarioInputDefaults();
+document.querySelectorAll('.inputs input').forEach(el=>el.addEventListener('input',renderScenario));
+renderScenario();
 
 // ===== Local dashboard data: S2 / S10 / S12 =====
 (function(){
@@ -2171,6 +1991,8 @@ function dashboardLoadErrorMessage(error){
 
 loadDashboardData()
   .then(data => {
+    activeDashboardData=data;
+    renderScenario();
     renderFocusProject('lv_focus_content', data.focus_projects?.lakeville);
     renderFocusProject('lg_focus_content', data.focus_projects?.lakegrande);
     renderPk(data);
@@ -2180,6 +2002,8 @@ loadDashboardData()
   })
   .catch(error => {
     console.error(error);
+    activeDashboardData=null;
+    renderScenario();
     const message = dashboardLoadErrorMessage(error);
     ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'focus_mapping_cards', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
       renderEmptyState(id, message);

@@ -77,4 +77,25 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#ura_rental_median_table')).toContainText('2025Q4');
     await expect(page.locator('#ura_rental_contracts_table')).toContainText('2026 Q1');
   });
+
+  test('s5 renders unified wealth model rows and assumptions', async ({ page }) => {
+    await page.goto('/?tab=s5');
+    await expect(page.locator('#s5')).not.toContainText('出生日期');
+    await expect(page.locator('#s5')).not.toContainText('买房时年龄');
+    await expect(page.locator('#assumptions_box')).not.toContainText('1997-06-25');
+    await expect(page.locator('#assumptions_box')).not.toContainText('1986-04-22');
+    await expect(page.locator('#i_assets')).toHaveValue('800');
+    await expect(page.locator('#wealth_table_card')).toContainText('前期 CPF OA 支出');
+    await expect(page.locator('#wealth_table_card')).toContainText('OA 不足转现金');
+    await expect(page.locator('#wealth_table_card')).toContainText('总财富 CAGR');
+    await expect(page.locator('#wealth_table_card')).toContainText('起始$800K');
+    await expect(page.locator('#monthly_detail_table')).toContainText('OA(Y1-');
+    await expect(page.locator('#cost_detail_table')).toContainText('实际 CPF OA 支出');
+  });
+
+  test('decision process tab and section are removed', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: /决策过程/ })).toHaveCount(0);
+    await expect(page.locator('#s7')).toHaveCount(0);
+  });
 });
