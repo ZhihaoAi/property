@@ -14,6 +14,7 @@ function loadDashboardData() {
 test('focus projects expose owner-pool metrics and confidence metadata', () => {
   const data = loadDashboardData();
   const project = data.focus_projects.lakeville;
+  const lakeGrande = data.focus_projects.lakegrande;
 
   assert.ok(project.owner_pool_direct);
   assert.ok(project.owner_pool_filled);
@@ -32,6 +33,19 @@ test('focus projects expose owner-pool metrics and confidence metadata', () => {
   assert.ok(project.owner_pool_filled.yoy_monthly);
   assert.equal(project.owner_pool_filled.current_yoy, project.owner_pool_filled.yoy_monthly[Object.keys(project.owner_pool_filled.yoy_monthly).sort().at(-1)]);
   assert.equal(project.owner_pool_filled.all_time_cagr, project.owner_pool_filled.cagr_monthly[Object.keys(project.owner_pool_filled.cagr_monthly).sort().at(-1)]);
+
+  [project, lakeGrande].forEach((focusProject) => {
+    assert.ok(focusProject);
+    assert.match(focusProject.slug, /^(lakeville|lakegrande)$/);
+    assert.equal(typeof focusProject.name, 'string');
+    ['2b1b', '2b2b'].forEach((bucket) => {
+      const metric = focusProject.type_breakout[bucket];
+      assert.ok(metric, `${focusProject.slug} missing ${bucket}`);
+      assert.ok(metric.cagr_monthly, `${focusProject.slug} ${bucket} missing cagr_monthly`);
+      assert.ok(metric.yoy_monthly, `${focusProject.slug} ${bucket} missing yoy_monthly`);
+      assert.ok(metric.current, `${focusProject.slug} ${bucket} missing current metric`);
+    });
+  });
 });
 
 test('dashboard payload exposes four PK lenses with unified all-time CAGR and YoY fields', () => {

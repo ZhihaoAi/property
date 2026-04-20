@@ -22,6 +22,12 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#area_proxy_yoy_chart')).toBeVisible();
     await expect(page.locator('#owner_pool_cagr_chart')).toBeVisible();
     await expect(page.locator('#owner_pool_yoy_chart')).toBeVisible();
+    await expect(page.locator('#layout_focus_detail_chart')).toBeVisible();
+    await expect(page.locator('#owner_pool_focus_detail_chart')).toBeVisible();
+    await expect(page.locator('#layout_focus_metric_toggle')).toContainText('All-time CAGR');
+    await expect(page.locator('#layout_focus_metric_toggle')).toContainText('YoY');
+    await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('All-time CAGR');
+    await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('YoY');
 
     await page.locator('summary:has-text("口径 1 · 全项目汇总")').click();
     await page.locator('summary:has-text("口径 2 · 真实户型映射汇总")').click();
@@ -36,9 +42,12 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#s10')).toContainText('口径 2 · 真实户型映射');
     await expect(page.locator('#s10')).toContainText('口径 3 · 面积代理');
     await expect(page.locator('#s10')).toContainText('口径 4 · 自住口径');
+    await expect(page.locator('#s10')).toContainText('全项目 resale-only 聚合线');
+    await expect(page.locator('#s10')).toContainText('2b1b 600-699 sqft · 2b2b 700-849 sqft · 3b2b 850-1199 sqft');
+    await expect(page.locator('#s10')).toContainText('真实 2b2b -> 真实 2b1b+2b2b -> 面积代理 -> 全项目');
     await expect(page.locator('#s10')).not.toContainText('当前自住池价格位置');
     await expect(page.locator('#s10')).not.toContainText('历史位置');
-    await expect(page.locator('#s10 canvas')).toHaveCount(8);
+    await expect(page.locator('#s10 canvas')).toHaveCount(10);
     const defaultVisible = await page.evaluate(() => {
       const chart = Chart.getChart(document.getElementById('overall_cagr_chart'));
       return chart.data.datasets.filter((dataset, index) => chart.isDatasetVisible(index)).map((dataset) => dataset.label).sort();
@@ -55,6 +64,68 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#owner_pool_projects_table')).toContainText('YoY');
     await expect(page.locator('#layout_projects_table')).toContainText('Lake Grande');
     await expect(page.locator('#layout_projects_table')).toContainText('映射覆盖率');
+  });
+
+  test('s10 focus detail charts keep fixed project colors and metric toggles', async ({ page }) => {
+    await page.goto('/?tab=s10');
+
+    const beforeToggle = await page.evaluate(() => {
+      const overall = Chart.getChart(document.getElementById('overall_cagr_chart'));
+      const layoutDetail = Chart.getChart(document.getElementById('layout_focus_detail_chart'));
+      const ownerDetail = Chart.getChart(document.getElementById('owner_pool_focus_detail_chart'));
+
+      return {
+        overallColors: Object.fromEntries(
+          overall.data.datasets
+            .filter((dataset) => dataset.label === 'Lakeville' || dataset.label === 'Lake Grande')
+            .map((dataset) => [dataset.label, dataset.borderColor])
+        ),
+        layoutLabels: layoutDetail.data.datasets.map((dataset) => dataset.label).sort(),
+        ownerLabels: ownerDetail.data.datasets.map((dataset) => dataset.label).sort(),
+        layoutLakevilleColor: layoutDetail.data.datasets.find((dataset) => dataset.label === 'Lakeville · 主线')?.borderColor,
+        ownerLakevilleColor: ownerDetail.data.datasets.find((dataset) => dataset.label === 'Lakeville · 主线')?.borderColor,
+        layoutLakeGrandeColor: layoutDetail.data.datasets.find((dataset) => dataset.label === 'Lake Grande · 主线')?.borderColor,
+        ownerLakeGrandeColor: ownerDetail.data.datasets.find((dataset) => dataset.label === 'Lake Grande · 主线')?.borderColor,
+        layoutSeriesSnapshot: layoutDetail.data.datasets.map((dataset) => ({
+          label: dataset.label,
+          borderDash: dataset.borderDash,
+          data: dataset.data,
+        })),
+      };
+    });
+
+    expect(beforeToggle.layoutLabels).toEqual([
+      'Lake Grande · 2b1b',
+      'Lake Grande · 2b2b',
+      'Lake Grande · 主线',
+      'Lakeville · 2b1b',
+      'Lakeville · 2b2b',
+      'Lakeville · 主线',
+    ]);
+    expect(beforeToggle.ownerLabels).toEqual(beforeToggle.layoutLabels);
+    expect(beforeToggle.layoutLakevilleColor).toBe(beforeToggle.overallColors.Lakeville);
+    expect(beforeToggle.ownerLakevilleColor).toBe(beforeToggle.overallColors.Lakeville);
+    expect(beforeToggle.layoutLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
+    expect(beforeToggle.ownerLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
+
+    await page.getByRole('button', { name: 'YoY' }).nth(0).click();
+
+    const afterToggle = await page.evaluate(() => {
+      const layoutDetail = Chart.getChart(document.getElementById('layout_focus_detail_chart'));
+      return layoutDetail.data.datasets.map((dataset) => ({
+        label: dataset.label,
+        borderDash: dataset.borderDash,
+        data: dataset.data,
+      }));
+    });
+
+    expect(afterToggle.map((dataset) => dataset.label).sort()).toEqual(beforeToggle.layoutLabels);
+    expect(afterToggle.map((dataset) => JSON.stringify(dataset.borderDash))).toEqual(
+      beforeToggle.layoutSeriesSnapshot.map((dataset) => JSON.stringify(dataset.borderDash))
+    );
+    expect(afterToggle.map((dataset) => JSON.stringify(dataset.data))).not.toEqual(
+      beforeToggle.layoutSeriesSnapshot.map((dataset) => JSON.stringify(dataset.data))
+    );
   });
 
   test('s12 renders scraped project table and PK inclusion status', async ({ page }) => {

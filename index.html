@@ -53,6 +53,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .sel{background:var(--surface);color:var(--t);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;min-width:280px}
 .compare-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .mini-note{font-size:.82rem;color:var(--t2)}
+.lens-note{margin:-6px 0 14px;color:var(--t2);font-size:.84rem}
+.chart-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.chart-switch .switch-btn{background:var(--s2);color:var(--t2);border:1px solid var(--bdr);border-radius:999px;padding:6px 12px;font-size:.82rem;cursor:pointer;transition:.2s}
+.chart-switch .switch-btn:hover{color:var(--t);border-color:var(--ac2)}
+.chart-switch .switch-btn.active{background:rgba(108,92,231,.18);border-color:var(--ac2);color:var(--t)}
 .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .exp-btn{background:none;border:1px solid var(--bdr);color:var(--ac2);border-radius:8px;padding:4px 8px;cursor:pointer}
 .exp-btn:hover{border-color:var(--ac);color:var(--t)}
@@ -503,6 +508,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
           口径 1 · 全项目
         </span>
       </summary>
+      <div class="lens-note" id="overall_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="overall_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
@@ -525,10 +531,14 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实户型映射</span>
       </summary>
+      <div class="lens-note" id="layout_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="layout_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="layout_yoy_chart"></canvas></div>
+      <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--bl)"></span>Lakeville / Lake Grande 细分线</div>
+      <div class="chart-switch" id="layout_focus_metric_toggle"></div>
+      <div class="cc t"><canvas id="layout_focus_detail_chart"></canvas></div>
     </details>
 
     <details class="card collapsible-card" style="margin-top:20px">
@@ -547,6 +557,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积代理</span>
       </summary>
+      <div class="lens-note" id="area_proxy_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="area_proxy_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
@@ -569,10 +580,14 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label"><span class="dot" style="background:var(--pk)"></span>口径 4 · 自住口径</span>
       </summary>
+      <div class="lens-note" id="owner_pool_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="owner_pool_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="owner_pool_yoy_chart"></canvas></div>
+      <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--pk)"></span>Lakeville / Lake Grande 细分线</div>
+      <div class="chart-switch" id="owner_pool_focus_metric_toggle"></div>
+      <div class="cc t"><canvas id="owner_pool_focus_detail_chart"></canvas></div>
     </details>
 
     <details class="card collapsible-card" style="margin-top:20px">
@@ -1002,11 +1017,102 @@ const DASHBOARD_COLORS = [
   C.bl, C.pr, C.or, C.cy, C.gn, C.pk, '#778beb', '#e17055', '#00b894', '#fdcb6e',
   '#81ecec', '#fab1a0', '#55efc4', '#74b9ff', '#a29bfe', '#fd79a8', '#ffeaa7',
 ];
-
-const chartColors = [
-  '#6c5ce7', '#00b894', '#fd79a8', '#74b9ff', '#fdcb6e',
-  '#e17055', '#a29bfe', '#55efc4', '#81ecec', '#ffeaa7'
-];
+const PK_FOCUS_PROJECT_SLUGS = ['lakeville', 'lakegrande'];
+const PK_METRIC_TOGGLE_OPTIONS = {
+  cagr_monthly: { label: 'All-time CAGR', axisText: 'All-time CAGR (%)' },
+  yoy_monthly: { label: 'YoY', axisText: 'YoY (%)' },
+};
+const PK_DETAIL_LINE_STYLES = {
+  primary: { label: '主线', borderDash: [], borderWidth: 3 },
+  '2b1b': { label: '2b1b', borderDash: [10, 6], borderWidth: 2 },
+  '2b2b': { label: '2b2b', borderDash: [2, 6], borderWidth: 2 },
+};
+const PK_LENS_CONFIG = {
+  overall: {
+    projectsKey: 'overall_comparison_projects',
+    noteId: 'overall_lens_note',
+    describe: () => '全项目 resale-only 聚合线。主线反映各项目整体转售样本的滚动 12 个月中位 PSF 变化。',
+    cagr: {
+      canvasId: 'overall_cagr_chart',
+      yAxisTitle: '全项目累积 CAGR (%)',
+      emptyMessage: '当前没有可用于全项目 cumulative CAGR 对比的项目。'
+    },
+    yoy: {
+      canvasId: 'overall_yoy_chart',
+      yAxisTitle: '全项目 YoY (%)',
+      emptyMessage: '当前没有可用于全项目 YoY 对比的项目。'
+    },
+  },
+  layout: {
+    projectsKey: 'layout_comparison_projects',
+    noteId: 'layout_lens_note',
+    describe: () => '只基于已正式映射的真实户型样本；focus 细分图里的 2b1b/2b2b 是真实映射线。',
+    cagr: {
+      canvasId: 'layout_cagr_chart',
+      yAxisTitle: '真实户型累积 CAGR (%)',
+      emptyMessage: '当前没有可用于真实户型映射 cumulative CAGR 对比的项目。'
+    },
+    yoy: {
+      canvasId: 'layout_yoy_chart',
+      yAxisTitle: '真实户型 YoY (%)',
+      emptyMessage: '当前没有可用于真实户型映射 YoY 对比的项目。'
+    },
+    focusDetail: {
+      stateKey: 'layout',
+      toggleId: 'layout_focus_metric_toggle',
+      chartId: 'layout_focus_detail_chart',
+      emptyMessage: '当前没有可用于真实户型 focus 细分的项目。',
+      mainMetric: project => project.owner_pool_direct || project,
+      axisPrefix: '真实户型 focus 细分'
+    },
+  },
+  area_proxy: {
+    projectsKey: 'area_proxy_comparison_projects',
+    noteId: 'area_proxy_lens_note',
+    describe: (data, projects) => {
+      const scope = projects[0]?.area_proxy_scope || '2b1b 600-699 sqft · 2b2b 700-849 sqft · 3b2b 850-1199 sqft';
+      return scope + '。主线是该面积代理池聚合结果，不是真实户型。';
+    },
+    cagr: {
+      canvasId: 'area_proxy_cagr_chart',
+      yAxisTitle: '面积代理累积 CAGR (%)',
+      emptyMessage: '当前没有可用于面积代理 cumulative CAGR 对比的项目。'
+    },
+    yoy: {
+      canvasId: 'area_proxy_yoy_chart',
+      yAxisTitle: '面积代理 YoY (%)',
+      emptyMessage: '当前没有可用于面积代理 YoY 对比的项目。'
+    },
+  },
+  owner_pool: {
+    projectsKey: 'comparison_projects',
+    noteId: 'owner_pool_lens_note',
+    describe: () => '真实 2b2b -> 真实 2b1b+2b2b -> 面积代理 -> 全项目。细分图中的 2b1b/2b2b 仅对 focus project 展示。',
+    cagr: {
+      canvasId: 'owner_pool_cagr_chart',
+      yAxisTitle: '自住口径累积 CAGR (%)',
+      emptyMessage: '当前没有可用于自住口径 cumulative CAGR 对比的项目。'
+    },
+    yoy: {
+      canvasId: 'owner_pool_yoy_chart',
+      yAxisTitle: '自住口径 YoY (%)',
+      emptyMessage: '当前没有可用于自住口径 YoY 对比的项目。'
+    },
+    focusDetail: {
+      stateKey: 'owner_pool',
+      toggleId: 'owner_pool_focus_metric_toggle',
+      chartId: 'owner_pool_focus_detail_chart',
+      emptyMessage: '当前没有可用于自住口径 focus 细分的项目。',
+      mainMetric: project => project.owner_pool_filled || project,
+      axisPrefix: '自住口径 focus 细分'
+    },
+  },
+};
+let s10ProjectColorMap = {};
+const pkFocusDetailState = {
+  layout: 'cagr_monthly',
+  owner_pool: 'cagr_monthly',
+};
 
 function fmtMoney(value){
   return '$' + Number(value).toLocaleString();
@@ -1222,24 +1328,58 @@ function createLegendClickHandler() {
 const legendClickHandlerA = createLegendClickHandler();
 const s10ChartInstances = {};
 
-function prepareMetricTrendData(projects, seriesKey) {
+function isFocusComparisonProject(project) {
+  return project && PK_FOCUS_PROJECT_SLUGS.includes(project.slug);
+}
+
+function buildS10ProjectColorMap(data) {
+  const overrides = {
+    lakeville: C.bl,
+    lakegrande: C.pr,
+  };
+  const orderedPalette = DASHBOARD_COLORS.filter(color => !Object.values(overrides).includes(color));
+  const slugs = Array.from(new Set(
+    []
+      .concat((data.projects || []).map(project => project.slug))
+      .concat((data.overall_comparison_projects || []).map(project => project.slug))
+      .concat((data.layout_comparison_projects || []).map(project => project.slug))
+      .concat((data.area_proxy_comparison_projects || []).map(project => project.slug))
+      .concat((data.comparison_projects || []).map(project => project.slug))
+  )).filter(Boolean).sort();
+  const result = { ...overrides };
+  let paletteIndex = 0;
+  slugs.forEach(slug => {
+    if (!result[slug]) {
+      result[slug] = orderedPalette[paletteIndex % orderedPalette.length];
+      paletteIndex += 1;
+    }
+  });
+  return result;
+}
+
+function getS10ProjectColor(project, fallbackIndex) {
+  if (project?.slug && s10ProjectColorMap[project.slug]) return s10ProjectColorMap[project.slug];
+  return DASHBOARD_COLORS[fallbackIndex % DASHBOARD_COLORS.length];
+}
+
+function prepareMetricTrendData(seriesDescriptors) {
   const allMonths = new Set();
-  projects.forEach(project => {
-    Object.keys(project[seriesKey] || {}).forEach(month => allMonths.add(month));
+  seriesDescriptors.forEach(descriptor => {
+    Object.keys(descriptor.series || {}).forEach(month => allMonths.add(month));
   });
   const labels = Array.from(allMonths).sort();
-  const datasets = projects
-    .filter(project => Object.keys(project[seriesKey] || {}).length)
-    .map((project, idx) => {
-      const series = project[seriesKey] || {};
-      const color = chartColors[idx % chartColors.length];
+  const datasets = seriesDescriptors
+    .filter(descriptor => Object.keys(descriptor.series || {}).length)
+    .map((descriptor, idx) => {
+      const color = descriptor.color || getS10ProjectColor(descriptor, idx);
       return {
-        label: project.name,
-        hidden: !isFocusComparisonProject(project),
-        data: labels.map(month => (series[month] != null ? series[month] : null)),
+        label: descriptor.label,
+        hidden: Boolean(descriptor.hidden),
+        data: labels.map(month => (descriptor.series[month] != null ? descriptor.series[month] : null)),
         borderColor: color,
         backgroundColor: color + '33',
-        borderWidth: 2,
+        borderWidth: descriptor.borderWidth || 2,
+        borderDash: descriptor.borderDash || [],
         tension: 0.25,
         spanGaps: true,
         pointRadius: 0,
@@ -1249,11 +1389,20 @@ function prepareMetricTrendData(projects, seriesKey) {
   return { labels, datasets };
 }
 
-function renderHistoricalLineChart(canvasId, projects, seriesKey, yAxisTitle, emptyMessage) {
+function buildHistoricalLineSeries(projects, seriesKey) {
+  return projects.map(project => ({
+    label: project.name,
+    slug: project.slug,
+    hidden: !isFocusComparisonProject(project),
+    series: project[seriesKey] || {},
+  }));
+}
+
+function renderLineChart(canvasId, seriesDescriptors, yAxisTitle, emptyMessage) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const wrap = canvas.parentElement;
-  const trendData = prepareMetricTrendData(projects, seriesKey);
+  const trendData = prepareMetricTrendData(seriesDescriptors);
   if (!trendData.datasets.length) {
     if (wrap) wrap.innerHTML = '<div class="alert"><p>' + emptyMessage + '</p></div>';
     return;
@@ -1293,12 +1442,84 @@ function renderHistoricalLineChart(canvasId, projects, seriesKey, yAxisTitle, em
   });
 }
 
+function renderHistoricalLineChart(canvasId, projects, seriesKey, yAxisTitle, emptyMessage) {
+  renderLineChart(canvasId, buildHistoricalLineSeries(projects, seriesKey), yAxisTitle, emptyMessage);
+}
+
 function safeText(value) {
   return value == null || value === '' ? '-' : value;
 }
 
-function isFocusComparisonProject(project) {
-  return project && (project.slug === 'lakeville' || project.slug === 'lakegrande');
+function focusProjectSortValue(project) {
+  const index = PK_FOCUS_PROJECT_SLUGS.indexOf(project?.slug);
+  return index === -1 ? PK_FOCUS_PROJECT_SLUGS.length : index;
+}
+
+function getOrderedFocusProjects(projects) {
+  return (projects || []).filter(isFocusComparisonProject).slice().sort((a, b) => focusProjectSortValue(a) - focusProjectSortValue(b));
+}
+
+function renderLensNote(noteId, content) {
+  const target = document.getElementById(noteId);
+  if (target) target.innerHTML = content;
+}
+
+function renderFocusMetricToggle(toggleId, stateKey) {
+  const target = document.getElementById(toggleId);
+  if (!target) return;
+  const currentMetric = pkFocusDetailState[stateKey] || 'cagr_monthly';
+  target.innerHTML = Object.entries(PK_METRIC_TOGGLE_OPTIONS).map(([metricKey, option]) => (
+    '<button type="button" class="switch-btn' + (currentMetric === metricKey ? ' active' : '') + '" data-metric-key="' + metricKey + '">' + option.label + '</button>'
+  )).join('');
+  target.querySelectorAll('.switch-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const nextMetric = button.getAttribute('data-metric-key');
+      if (!nextMetric || pkFocusDetailState[stateKey] === nextMetric) return;
+      pkFocusDetailState[stateKey] = nextMetric;
+      if (activeDashboardData) renderPk(activeDashboardData);
+    });
+  });
+}
+
+function buildFocusDetailSeries(projects, metricKey, mainMetricAccessor) {
+  const detailDescriptors = [];
+  getOrderedFocusProjects(projects).forEach((project, index) => {
+    const color = getS10ProjectColor(project, index);
+    const metricsBySeries = {
+      primary: mainMetricAccessor(project),
+      '2b1b': project.type_breakout?.['2b1b'],
+      '2b2b': project.type_breakout?.['2b2b'],
+    };
+    Object.entries(PK_DETAIL_LINE_STYLES).forEach(([seriesKey, style]) => {
+      const metric = metricsBySeries[seriesKey];
+      const series = metric?.[metricKey] || {};
+      if (!Object.keys(series).length) return;
+      detailDescriptors.push({
+        label: project.name + ' · ' + style.label,
+        slug: project.slug,
+        color,
+        borderDash: style.borderDash,
+        borderWidth: style.borderWidth,
+        series,
+      });
+    });
+  });
+  return detailDescriptors;
+}
+
+function renderFocusDetailChart(config, projects) {
+  const detailConfig = config.focusDetail;
+  if (!detailConfig) return;
+  renderFocusMetricToggle(detailConfig.toggleId, detailConfig.stateKey);
+  const metricKey = pkFocusDetailState[detailConfig.stateKey] || 'cagr_monthly';
+  const axisLabel = PK_METRIC_TOGGLE_OPTIONS[metricKey]?.axisText || 'All-time CAGR (%)';
+  const seriesDescriptors = buildFocusDetailSeries(projects, metricKey, detailConfig.mainMetric);
+  renderLineChart(
+    detailConfig.chartId,
+    seriesDescriptors,
+    detailConfig.axisPrefix + ' · ' + axisLabel,
+    detailConfig.emptyMessage
+  );
 }
 
 function renderPk(data){
@@ -1306,7 +1527,14 @@ function renderPk(data){
   const layoutProjects = (data.layout_comparison_projects || []).slice();
   const areaProxyProjects = (data.area_proxy_comparison_projects || []).slice();
   const ownerPoolProjects = (data.comparison_projects || []).slice();
+  s10ProjectColorMap = buildS10ProjectColorMap(data);
   const directProjectCount = ownerPoolProjects.filter(project => project.owner_pool_filled?.provenance === 'direct_2b2b' || project.owner_pool_filled?.provenance === 'direct_owner_pool').length;
+  const lensProjects = {
+    overall: overallProjects,
+    layout: layoutProjects,
+    area_proxy: areaProxyProjects,
+    owner_pool: ownerPoolProjects,
+  };
 
   document.getElementById('pk_kpis').innerHTML = [
     '<div class="kpi"><div class="l">当前已爬楼盘</div><div class="v" style="color:var(--g2)">' + (data.meta?.project_count || 0) + '</div><div class="c">来自本地 CSV</div></div>',
@@ -1317,14 +1545,15 @@ function renderPk(data){
     '<div class="kpi"><div class="l">真实自住口径</div><div class="v" style="color:var(--or)">' + directProjectCount + '</div><div class="c">真实 2b2b / 真实 2b1b+2b2b</div></div>',
   ].join('');
 
-  renderHistoricalLineChart('overall_cagr_chart', overallProjects, 'cagr_monthly', '全项目累积 CAGR (%)', '当前没有可用于全项目 cumulative CAGR 对比的项目。');
-  renderHistoricalLineChart('overall_yoy_chart', overallProjects, 'yoy_monthly', '全项目 YoY (%)', '当前没有可用于全项目 YoY 对比的项目。');
-  renderHistoricalLineChart('layout_cagr_chart', layoutProjects, 'cagr_monthly', '真实户型累积 CAGR (%)', '当前没有可用于真实户型映射 cumulative CAGR 对比的项目。');
-  renderHistoricalLineChart('layout_yoy_chart', layoutProjects, 'yoy_monthly', '真实户型 YoY (%)', '当前没有可用于真实户型映射 YoY 对比的项目。');
-  renderHistoricalLineChart('area_proxy_cagr_chart', areaProxyProjects, 'cagr_monthly', '面积代理累积 CAGR (%)', '当前没有可用于面积代理 cumulative CAGR 对比的项目。');
-  renderHistoricalLineChart('area_proxy_yoy_chart', areaProxyProjects, 'yoy_monthly', '面积代理 YoY (%)', '当前没有可用于面积代理 YoY 对比的项目。');
-  renderHistoricalLineChart('owner_pool_cagr_chart', ownerPoolProjects, 'cagr_monthly', '自住口径累积 CAGR (%)', '当前没有可用于自住口径 cumulative CAGR 对比的项目。');
-  renderHistoricalLineChart('owner_pool_yoy_chart', ownerPoolProjects, 'yoy_monthly', '自住口径 YoY (%)', '当前没有可用于自住口径 YoY 对比的项目。');
+  Object.values(PK_LENS_CONFIG).forEach(config => {
+    const projects = lensProjects[config.projectsKey.replace('_comparison_projects', '')] || lensProjects[config.projectsKey] || data[config.projectsKey] || [];
+    renderLensNote(config.noteId, config.describe(data, projects));
+    renderHistoricalLineChart(config.cagr.canvasId, projects, 'cagr_monthly', config.cagr.yAxisTitle, config.cagr.emptyMessage);
+    renderHistoricalLineChart(config.yoy.canvasId, projects, 'yoy_monthly', config.yoy.yAxisTitle, config.yoy.emptyMessage);
+    if (config.focusDetail) {
+      renderFocusDetailChart(config, projects);
+    }
+  });
 
   const overallBody = document.querySelector('#overall_projects_table tbody');
   overallBody.innerHTML = overallProjects.map(project => {
@@ -1901,7 +2130,7 @@ loadDashboardData()
     activeDashboardData=null;
     renderScenario();
     const message = dashboardLoadErrorMessage(error);
-    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart', 'area_proxy_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_yoy_chart', 'focus_mapping_cards', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
+    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart', 'layout_focus_detail_chart', 'area_proxy_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_yoy_chart', 'owner_pool_focus_detail_chart', 'focus_mapping_cards', 'overall_lens_note', 'layout_lens_note', 'area_proxy_lens_note', 'owner_pool_lens_note', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
       renderEmptyState(id, message);
     });
     const overallTable = document.querySelector('#overall_projects_table tbody');
@@ -1918,6 +2147,10 @@ loadDashboardData()
     if (scrapedTable) scrapedTable.innerHTML = '<tr><td colspan="13">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
     if (uraSelect) uraSelect.innerHTML = '<option>加载失败</option>';
     if (uraKpis) uraKpis.innerHTML = '';
+    const layoutToggle = document.getElementById('layout_focus_metric_toggle');
+    const ownerToggle = document.getElementById('owner_pool_focus_metric_toggle');
+    if (layoutToggle) layoutToggle.innerHTML = '';
+    if (ownerToggle) ownerToggle.innerHTML = '';
   });
 })();
 
