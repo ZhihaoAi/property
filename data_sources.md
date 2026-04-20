@@ -38,7 +38,7 @@
 | 外部原始源 | `propertyforsale.com.sg` | 默认 resale 主交易源 | `data/*_transactions.csv`、`data/propertyforsale_html/*` | `scripts/fetch_missing_propertyforsale_transactions.py` | 只保留显式标记为 `Resale` 的成交 |
 | 外部原始源 | `URA Data Service` | 默认 resale fallback | `data/*_transactions.csv`、`data/ura/*` | `scripts/fetch_missing_propertyforsale_transactions.py`、`scripts/fetch_ura_private_residential.py` | 只取 `typeOfSale = 转售`，并在 propertyforsale resale 不可用时顶上 |
 | 外部原始源 | `SRX last-transacted-prices` | 历史备份源 | `data/srx/*` | `scripts/fetch_missing_srx_transactions.cjs` | 不再作为默认主源，只留作备查 |
-| 外部原始源 | `99.co` 搜索缓存片段 | 户型证据源 | `data/poc_layout/*`、`data/layout_mapping/*` | `classify_resale_layout_poc.py`、`scripts/build_layout_mappings.py` | 只用于 `Lakeville / Lake Grande` 的 bed/bath 映射 |
+| 外部原始源 | `99.co` 搜索缓存片段 | 户型证据源 | `data/poc_layout/layout_reference_poc.csv`、`data/layout_mapping/*` | `scripts/build_layout_mappings.py` | `layout_reference_poc.csv` 仍是正式 mapping 的输入证据；正式输出统一写入 `data/layout_mapping/*` |
 | 本地派生产物 | 统一 dashboard 数据 | 前端唯一直接读取的数据 | `data/dashboard_data.json`、`data/dashboard_data.js` | `build_dashboard_data.py` | 聚合了默认 resale CSV、分析结果、layout mapping、URA 浏览数据 |
 | 本地派生产物 | 年度统计与 CAGR | 分析中间层 | `data/appreciation_analysis.json` | `analyze.py` | 基于默认 resale CSV 计算 |
 | 本地派生产物 | 详细 resale 明细 | 辅助分析层 | `data/detailed/*`、`data/resale_transactions_detailed.csv` | `extract_resale_detailed.py` | 只覆盖部分项目，且来自 propertyforsale 原始缓存页 |
@@ -132,13 +132,11 @@
 主要文件：
 
 - `data/poc_layout/layout_reference_poc.csv`
-- `data/poc_layout/*_transactions_layout_poc.csv`
 - `data/layout_mapping/layout_reference_catalog.csv`
 - `data/layout_mapping/*_transaction_layout_map.csv`
 
 相关脚本：
 
-- `classify_resale_layout_poc.py`
 - `scripts/build_layout_mappings.py`
 
 ## 本地文件分层
@@ -172,8 +170,8 @@
 
 ### D. 户型映射层
 
-- `data/poc_layout/*`
-  - 旧 POC 输出
+- `data/poc_layout/layout_reference_poc.csv`
+  - 正式 mapping 仍在使用的输入证据
 - `data/layout_mapping/*`
   - 当前正式 mapping 输出
 

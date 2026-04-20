@@ -67,6 +67,8 @@ table.dt td{padding:9px 13px;border-bottom:1px solid var(--bdr)}
 table.dt tr:hover td{background:rgba(108,92,231,.05)}
 table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoration:underline}
 .hi{color:var(--g2);font-weight:600}.wr{color:var(--or)}.bd{color:var(--rd)}
+.focus-row{background:rgba(85,239,196,.08)}
+.focus-row td:first-child,.focus-row td:first-child strong{color:var(--g2)}
 .flow{display:flex;flex-direction:column;margin:20px 0}
 .fs{display:flex;align-items:flex-start;gap:20px;position:relative;padding-bottom:36px}
 .fs:last-child{padding-bottom:0}
@@ -480,94 +482,110 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S10: CONDO COMPARISON ===== -->
   <div id="s10" class="sec on">
     <div class="st">🏘️ 小区PK · 当前已爬数据</div>
-    <p class="sd">当前默认口径是 `resale-only`。PK 仍分三套：一套看默认主源窗口的整体 CAGR；一套看精细到 `2b1b / 2b2b / 3b2b` 的真实户型 CAGR；一套看按面积近似分桶后的 `2b1b / 2b2b / 3b2b` CAGR，把三个 data bar 放在同一行里对比。当前统一规则是：`窗口不足12个月不显示 CAGR`。</p>
+    <p class="sd">当前默认口径是 `resale-only`。S10 同时展示四套 PK lens：`全项目`、`真实户型映射`、`面积代理`、`自住口径`。每套 lens 只看两张图：`All-time CAGR` 和 `YoY`；表格默认折叠，只做小区 agg 汇总。</p>
 
     <div class="kpi-r" id="pk_kpis"></div>
 
     <div class="alert info">
       <h4>📡 数据源与覆盖范围说明</h4>
-      <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件都由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json`、`data/layout_mapping/*` 自动生成；若正式映射文件缺失，才回退到旧的 `data/poc_layout/*`。<br>
-      <strong>基础口径（统一公式）：</strong>所有口径（1 / 2 / 3）共用同一 CAGR 公式——起始 PSF = 项目最早 `12个月` 交易的 `median PSF`；终止 PSF = 当月 `TTM`（过去12个月所有交易）的 `median PSF`；年化跨度 = `月份偏移 − 12`。至少需要 `24个月` 数据才能产出 CAGR。<br>
-      <strong>口径 1：</strong>`主源整体 CAGR` 对当前每个项目默认 `resale-only` 主源窗口的全部成交应用基础口径公式；当前主源优先 `propertyforsale resale`，拿不到时用 `URA resale fallback`。<br>
-      <strong>口径 2：</strong>`细户型 CAGR` 只展示当前已经做完正式 `2b1b / 2b2b / 3b2b` 映射的小区；每个户型在各自行内独立应用基础口径公式。<br>
-      <strong>口径 3：</strong>`面积近似 CAGR` 用统一面积带粗分：`2b1b = 600-699 sqft`、`2b2b = 700-849 sqft`、`3b2b = 850-1199 sqft`；每个桶独立应用基础口径公式，并按三个桶里可用 `CAGR` 的平均值降序排。<br>
-      <strong>注意：</strong>默认不再把 `New Sale / Sub Sale` 混进主 CSV。若某项目本地缓存里拿不到 resale，则该项目会退出默认集；历史 `SRX` 窗口只保留在 `data/srx/*` 作为备份，不再是默认主口径。</p>
+      <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json`、`data/layout_mapping/*` 自动生成。<br>
+      <strong>四套 lens：</strong>口径 1 = `全项目`；口径 2 = `真实户型映射`；口径 3 = `面积代理`；口径 4 = `自住口径`。<br>
+      <strong>All-time CAGR：</strong>起点是最早可用的 `12个月 median PSF`，终点是最新 `12个月 median PSF`，按真实月份跨度年化。<br>
+      <strong>YoY：</strong>最新滚动 `12个月 median PSF` 相对 `12个月前` 对应滚动窗口的同比；若缺少去年同期窗口则留空。<br>
+      <strong>自住口径：</strong>`自住池 = 2b1b + 2b2b`，优先顺序固定为：真实 `2b2b` → 真实 `2b1b + 2b2b` → `600-849 sqft` 面积代理 → 全项目。<br>
+      <strong>注意：</strong>默认不再把 `New Sale / Sub Sale` 混进主 CSV。历史 `SRX` 窗口只保留在 `data/srx/*` 作为备份，不再进入主排序。</p>
     </div>
 
     <details class="card collapsible-card" style="margin-bottom:20px" open>
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label">
           <span class="dot" style="background:var(--ac)"></span>
-          CAGR 趋势折线图
+          口径 1 · 全项目
         </span>
       </summary>
-      
-      <div class="ct"><span class="dot" style="background:var(--g)"></span>基础口径 · 累积 CAGR（前12个月基准 vs TTM，精确月份年化）</div>
-      <p class="mini-note">起始 PSF = 项目最早12个月交易的中位数；每月终止 PSF = 该月 TTM（过去12个月）中位数；年化跨度 = 月份偏移 − 12。与口径 1 排名使用同一公式，最后一个点数值完全一致。单击图例切换显隐，双击图例可单独查看某小区</p>
-      <div class="cc t"><canvas id="cumulative_cagr_chart"></canvas></div>
-    </details>
-
-    <details class="card collapsible-card" open>
-      <summary class="ct collapsible-toggle">
-        <span class="collapsible-label"><span class="dot" style="background:var(--g)"></span>口径 1 · 全部默认主源整体 CAGR 排名（前12个月基准 vs TTM）</span>
-      </summary>
-      <div id="overall_cagr_chart"></div>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
+      <div class="cc t"><canvas id="overall_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
+      <div class="cc t"><canvas id="overall_yoy_chart"></canvas></div>
     </details>
 
     <details class="card collapsible-card" style="margin-top:20px">
       <summary class="ct collapsible-toggle">
-        <span class="collapsible-label"><span class="dot" style="background:var(--ac)"></span>口径 1 · 全部主源整体 CAGR 汇总（前12个月基准 vs TTM）</span>
+        <span class="collapsible-label"><span class="dot" style="background:var(--ac)"></span>口径 1 · 全项目汇总</span>
       </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="overall_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>总户数</th><th>来源</th><th>窗口</th><th>总成交量</th><th>最新年PSF</th><th>最新年N</th><th>主源整体CAGR</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>总户数</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
+    </details>
+
+    <details class="card collapsible-card" style="margin-top:20px" open>
+      <summary class="ct collapsible-toggle">
+        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实户型映射</span>
+      </summary>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
+      <div class="cc t"><canvas id="layout_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
+      <div class="cc t"><canvas id="layout_yoy_chart"></canvas></div>
     </details>
 
     <details class="card collapsible-card" style="margin-top:20px">
       <summary class="ct collapsible-toggle">
-        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>附加 · propertyforsale resale 主源 CAGR 汇总（前12个月基准 vs TTM）</span>
+        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实户型映射汇总</span>
       </summary>
       <div style="overflow-x:auto">
-        <table class="dt" id="all_source_cagr_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>来源</th><th>窗口</th><th>总成交量</th><th>最新年PSF</th><th>最新年N</th><th>propertyforsale resale CAGR</th></tr></thead>
+        <table class="dt" id="layout_projects_table">
+          <thead><tr><th>楼盘</th><th>区域</th><th>映射覆盖率</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </details>
-
-    <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--or)"></span>口径 2 · 细户型 CAGR（前12个月基准 vs TTM）</div>
-      <div style="overflow-x:auto">
-        <table class="dt" id="layout_projects_table">
-          <thead><tr><th>楼盘</th><th>映射覆盖率</th><th>2b1b CAGR</th><th>2b1b 窗口</th><th>2b2b CAGR</th><th>2b2b 窗口</th><th>3b2b CAGR</th><th>3b2b 窗口</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
 
     <details class="card collapsible-card" style="margin-top:20px" open>
       <summary class="ct collapsible-toggle">
-        <span class="collapsible-label">
-          <span class="dot" style="background:var(--cy)"></span>
-          口径 3 · 面积近似 CAGR 趋势（前12个月基准 vs TTM，桶均值）
-        </span>
+        <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积代理</span>
       </summary>
-      <p class="mini-note">每个项目取 2b1b / 2b2b / 3b2b 各桶当月 CAGR 的可用均值画线。单击图例切换显隐，双击图例可单独查看某小区</p>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="area_proxy_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
+      <div class="cc t"><canvas id="area_proxy_yoy_chart"></canvas></div>
     </details>
 
-    <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积近似户型 CAGR（前12个月基准 vs TTM；每个小区 3 个 data bar）</div>
+    <details class="card collapsible-card" style="margin-top:20px">
+      <summary class="ct collapsible-toggle">
+        <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积代理汇总</span>
+      </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="area_proxy_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>来源</th><th>2b1b CAGR<br>(600-699 sqft)</th><th>2b2b CAGR<br>(700-849 sqft)</th><th>3b2b CAGR<br>(850-1199 sqft)</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
-    </div>
+    </details>
+
+    <details class="card collapsible-card" style="margin-top:20px" open>
+      <summary class="ct collapsible-toggle">
+        <span class="collapsible-label"><span class="dot" style="background:var(--pk)"></span>口径 4 · 自住口径</span>
+      </summary>
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
+      <div class="cc t"><canvas id="owner_pool_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
+      <div class="cc t"><canvas id="owner_pool_yoy_chart"></canvas></div>
+    </details>
+
+    <details class="card collapsible-card" style="margin-top:20px">
+      <summary class="ct collapsible-toggle">
+        <span class="collapsible-label"><span class="dot" style="background:var(--pk)"></span>口径 4 · 自住口径汇总</span>
+      </summary>
+      <div style="overflow-x:auto">
+        <table class="dt" id="owner_pool_projects_table">
+          <thead><tr><th>楼盘</th><th>区域</th><th>主口径</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th><th>映射覆盖率</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th><th>confidence</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </details>
   </div>
 
   <!-- ===== S12: SCRAPED DATA ===== -->
@@ -587,14 +605,11 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
         <div class="insight" style="margin:0">
           <h3>当前数据口径</h3>
           <p>1. <strong>全量小区表</strong>：直接来自本地 `data/*_transactions.csv`，默认只保留 `resale-only` 成交；当前优先用 `propertyforsale resale`，拿不到时用 `URA resale fallback`。<br>
-          历史 `SRX` 窗口只继续保留在 `data/srx/*` 作为备份，表格来源列会同时列出主源和备份源。<br>
-          2. <strong>细户型分类</strong>：目前只对 Lakeville / Lake Grande 做了 `小户型 / 2b1b / 2b2b / 3b2b / 大户型` 映射，优先读取正式 `data/layout_mapping/*`，缺失时才回退旧 `poc_layout`。<br>
-          3. <strong>口径 1 PK</strong>：默认看当前 resale 主源窗口的整体 CAGR；先取年度中位 `PSF`，再按首末成交月份的实际月数精确年化，`propertyforsale resale` 主源和 `URA resale fallback` 主源都会进入。<br>
-          4. <strong>口径 2 PK</strong>：只看已经拿到 `2b1b / 2b2b / 3b2b` 数据的小区；每个桶都按首末成交月份精确年化，并分别展示对应窗口。<br>
-          5. <strong>口径 3 PK</strong>：按面积近似分桶，统一用 `600-699 / 700-849 / 850-1199 sqft` 粗分出 `2b1b / 2b2b / 3b2b`。<br>
-          6. <strong>propertyforsale resale</strong>：这里指 propertyforsale 页面里显式标记为 `Resale` 的成交，不会默认混入 `New Sale / Sub Sale`。<br>
-          7. <strong>URA fallback</strong>：这里只在本地拿不到 propertyforsale resale 时启用，并且只保留 `typeOfSale = 转售`。<br>
-          8. <strong>待确认</strong>：表示当前公开片段存在冲突，或者面积尚未拿到足够多的户型证据，不会强行归类。</p>
+          2. <strong>自住主口径</strong>：优先看真实 `2b2b`，不足时退到真实 `2b1b + 2b2b`，再退到 `600-849 sqft` 面积代理，最后才看全项目。<br>
+          3. <strong>真实细户型</strong>：目前只有 Lakeville / Lake Grande 做了正式 `2b1b / 2b2b / 3b2b` 映射。<br>
+          4. <strong>评分排序</strong>：主排序同时考虑“当前入场值不值”和“中期走势好不好”，不是只按单一 CAGR 排。<br>
+          5. <strong>confidence</strong>：综合最近 `24个月` 样本量、映射覆盖率和当前 provenance，用来提醒哪些结论更稳。<br>
+          6. <strong>待确认</strong>：表示当前公开片段存在冲突，或者面积尚未拿到足够多的户型证据，不会强行归类。</p>
         </div>
       </div>
     </div>
@@ -603,7 +618,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="ct"><span class="dot" style="background:var(--ac)"></span>已爬小区明细</div>
       <div style="overflow-x:auto">
         <table class="dt" id="scraped_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>来源数据</th><th>成交数</th><th>时间范围</th><th>常见面积</th><th>主源最新PSF</th><th>主源整体CAGR</th><th>口径1 PK</th><th>细户型PK</th><th>面积近似PK</th><th>详细明细</th><th>细户型映射</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>来源数据</th><th>成交数</th><th>时间范围</th><th>常见面积</th><th>全项目当前PSF</th><th>全项目3y / 5y</th><th>自住PK</th><th>自住主口径</th><th>confidence</th><th>详细明细</th><th>细户型映射</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -1007,6 +1022,90 @@ function fmtCount(value){
   return Number.isFinite(num) ? num.toLocaleString() : '-';
 }
 
+function fmtScore(value){
+  if (value == null || Number.isNaN(Number(value))) return '-';
+  return Number(value).toFixed(1);
+}
+
+function provenanceLabel(value){
+  const mapping = {
+    direct_2b2b: '真实 2b2b',
+    direct_owner_pool: '真实 2b1b+2b2b',
+    area_proxy: '面积代理 600-849',
+    overall_fallback: '全项目回退',
+    overall_reference: '全项目',
+  };
+  return mapping[value] || value || '-';
+}
+
+function confidenceLabel(meta){
+  if (!meta) return '-';
+  const score = meta.score != null ? fmtScore(meta.score) : '-';
+  return (meta.label || '-') + ' · ' + score;
+}
+
+function currentPsf(metric){
+  return metric?.current?.median_psf != null ? fmtMoney(metric.current.median_psf) : '-';
+}
+
+function cagrPair(metric){
+  const c3 = metric?.cagr_3y != null ? fmtPct(metric.cagr_3y) : '-';
+  const c5 = metric?.cagr_5y != null ? fmtPct(metric.cagr_5y) : '-';
+  return c3 + ' / ' + c5;
+}
+
+function renderPositiveBarCell(value, maxValue, formatter, metaText){
+  if (value == null || Number.isNaN(Number(value))) return '<div class="proxy-bar-empty">-</div>';
+  const safeMax = maxValue > 0 ? maxValue : 1;
+  const width = Math.max(4, Math.min(100, Number(value) / safeMax * 100));
+  return '<div class="proxy-metric">' +
+    '<div class="proxy-metric-top">' +
+      '<div class="proxy-bar-area"><div class="proxy-bar" style="left:0%;width:' + width + '%;background:' + C.bl + 'bb;border-right:2px solid ' + C.bl + ';"></div></div>' +
+      '<div class="proxy-bar-value" style="color:' + C.bl + '">' + formatter(value) + '</div>' +
+    '</div>' +
+    (metaText ? '<div class="proxy-bar-meta">' + metaText + '</div>' : '') +
+  '</div>';
+}
+
+function renderPercentileBarCell(value, labelLow, labelHigh){
+  if (value == null || Number.isNaN(Number(value))) return '<div class="proxy-bar-empty">-</div>';
+  const width = Math.max(4, Math.min(100, Number(value)));
+  const color = value <= 35 ? C.gn : value <= 65 ? C.or : C.rd;
+  const side = value <= 35 ? labelLow : labelHigh;
+  return '<div class="proxy-metric">' +
+    '<div class="proxy-metric-top">' +
+      '<div class="proxy-bar-area"><div class="proxy-bar" style="left:0%;width:' + width + '%;background:' + color + 'bb;border-right:2px solid ' + color + ';"></div></div>' +
+      '<div class="proxy-bar-value" style="color:' + color + '">' + value.toFixed(1) + '%</div>' +
+    '</div>' +
+    '<div class="proxy-bar-meta">' + side + '</div>' +
+  '</div>';
+}
+
+function renderSignedBarCell(value, minValue, maxValue){
+  if (value == null || Number.isNaN(Number(value))) return '<div class="proxy-bar-empty">-</div>';
+  const minC = Math.min(minValue, 0);
+  const maxC = Math.max(maxValue, 0.01);
+  const range = Math.max(maxC - minC, 0.01);
+  const zeroPos = Math.abs(minC) / range * 100;
+  let style = '';
+  let color = C.gn;
+  if (value >= 0) {
+    const width = Math.max(3, Math.min(100 - zeroPos, value / range * 100));
+    style = 'left:' + zeroPos + '%;width:' + width + '%;background:' + C.gn + 'bb;border-right:2px solid ' + C.gn + ';';
+    color = C.gn;
+  } else {
+    const width = Math.max(3, Math.min(zeroPos, Math.abs(value) / range * 100));
+    style = 'left:' + (zeroPos - width) + '%;width:' + width + '%;background:' + C.rd + 'bb;border-left:2px solid ' + C.rd + ';';
+    color = C.rd;
+  }
+  return '<div class="proxy-metric">' +
+    '<div class="proxy-metric-top">' +
+      '<div class="proxy-bar-area"><div class="proxy-bar" style="' + style + '"></div></div>' +
+      '<div class="proxy-bar-value" style="color:' + color + '">' + fmtPct(value) + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
 function renderEmptyState(targetId, message){
   const el = document.getElementById(targetId);
   if (el) {
@@ -1017,6 +1116,13 @@ function renderEmptyState(targetId, message){
 function renderFocusProject(targetId, project){
   const target = document.getElementById(targetId);
   if (!target || !project) return;
+  const ownerPoolCard = project.owner_pool_filled?.current ? (
+    '<div class="ai">' +
+      '<div class="l">自住主口径</div>' +
+      '<div class="v">' + provenanceLabel(project.owner_pool_filled.provenance) + '</div>' +
+      '<div class="l">当前PSF ' + currentPsf(project.owner_pool_filled) + ' · 3y/5y ' + cagrPair(project.owner_pool_filled) + '</div>' +
+    '</div>'
+  ) : '';
   const summaryCards = project.focus_summary.map(item => (
     '<div class="ai">' +
       '<div class="l">' + item.label + '</div>' +
@@ -1025,7 +1131,7 @@ function renderFocusProject(targetId, project){
     '</div>'
   )).join('');
 
-  let html = '<div class="ag">' + summaryCards + '</div>';
+  let html = '<div class="ag">' + ownerPoolCard + summaryCards + '</div>';
 
   project.focus_summary.forEach(item => {
     const rows = project.recent_by_bucket[item.bucket] || [];
@@ -1114,167 +1220,58 @@ function createLegendClickHandler() {
 }
 
 const legendClickHandlerA = createLegendClickHandler();
+const s10ChartInstances = {};
 
-function prepareCAGRTrendData(projects) {
+function prepareMetricTrendData(projects, seriesKey) {
   const allMonths = new Set();
   projects.forEach(project => {
-    Object.keys(project.overall_ttm_monthly || {}).forEach(m => allMonths.add(m));
+    Object.keys(project[seriesKey] || {}).forEach(month => allMonths.add(month));
   });
-  const sortedMonths = Array.from(allMonths).sort();
-
-  const datasets = projects.map((project, idx) => {
-    const ttm = project.overall_ttm_monthly || {};
-    const basePsf = project.overall_base_psf;
-    const baseStart = project.overall_base_start;
-
-    const cumulativeData = sortedMonths.map(month => {
-      if (!baseStart || !basePsf || month <= baseStart) return null;
-      const entry = ttm[month];
-      if (!entry) return null;
-      return calculateBaseTTMCagr(basePsf, entry.median_psf, baseStart, month);
-    });
-
-    const color = chartColors[idx % chartColors.length];
-
-    return {
-      label: project.name,
-      data: cumulativeData,
-      borderColor: color,
-      backgroundColor: color + '33',
-      borderWidth: 2,
-      tension: 0.3,
-      spanGaps: true,
-      pointRadius: 0,
-      pointHitRadius: 6
-    };
-  });
-
-  return {
-    labels: sortedMonths,
-    datasets: datasets
-  };
-}
-
-function renderCAGRTrendCharts(data) {
-  const projects = (data.overall_comparison_projects || [])
-    .filter(p => p.overall_cagr != null && p.overall_base_psf != null && Object.keys(p.overall_ttm_monthly || {}).length >= 2)
-    .sort((a, b) => b.overall_cagr - a.overall_cagr);
-
-  if (projects.length === 0) return;
-
-  const trendData = prepareCAGRTrendData(projects);
-
-  const cumulativeCtx = document.getElementById('cumulative_cagr_chart');
-  if (cumulativeCtx) {
-    new Chart(cumulativeCtx, {
-      type: 'line',
-      data: {
-        labels: trendData.labels,
-        datasets: trendData.datasets
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            title: { display: true, text: '累积CAGR (%)' },
-            grid: { color: '#2d324466' }
-          },
-          x: {
-            title: { display: true, text: '年份' },
-            grid: { display: false },
-            ticks: { callback: monthTickCallback, maxRotation: 0, autoSkip: false, maxTicksLimit: 20 }
-          }
-        },
-        plugins: {
-          legend: { position: 'top', labels: { boxWidth: 12 }, onClick: legendClickHandlerA },
-          tooltip: {
-            callbacks: {
-              title: (items) => items.length ? formatMonthLabel(items[0].label) : '',
-              label: (context) => {
-                return context.dataset.label + ': ' +
-                       (context.parsed.y != null ? context.parsed.y.toFixed(2) + '%' : '-');
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-}
-
-const legendClickHandlerProxy = createLegendClickHandler();
-
-function prepareAreaProxyTrendData(projects) {
-  const buckets = ['2b1b', '2b2b', '3b2b'];
-  const allMonths = new Set();
-  projects.forEach(project => {
-    buckets.forEach(bucket => {
-      const bm = project.area_proxy_bucket_metrics?.[bucket];
-      if (bm?.ttm_monthly) Object.keys(bm.ttm_monthly).forEach(m => allMonths.add(m));
-    });
-  });
-  const sortedMonths = Array.from(allMonths).sort();
-
-  const datasets = projects.map((project, idx) => {
-    const data = sortedMonths.map(month => {
-      const values = [];
-      buckets.forEach(bucket => {
-        const bm = project.area_proxy_bucket_metrics?.[bucket];
-        if (!bm?.base_psf || !bm?.base_start || !bm?.ttm_monthly?.[month]) return;
-        const v = calculateBaseTTMCagr(bm.base_psf, bm.ttm_monthly[month].median_psf, bm.base_start, month);
-        if (v != null) values.push(v);
-      });
-      if (!values.length) return null;
-      return values.reduce((s, v) => s + v, 0) / values.length;
-    });
-    const color = chartColors[idx % chartColors.length];
-    return {
-      label: project.name,
-      data: data,
-      borderColor: color,
-      backgroundColor: color + '33',
-      borderWidth: 2,
-      tension: 0.3,
-      spanGaps: true,
-      pointRadius: 0,
-      pointHitRadius: 6
-    };
-  });
-
-  return { labels: sortedMonths, datasets };
-}
-
-function renderAreaProxyTrendChart(data) {
-  const projects = (data.area_proxy_comparison_projects || [])
-    .filter(p => {
-      const bm = p.area_proxy_bucket_metrics || {};
-      return ['2b1b','2b2b','3b2b'].some(b => bm[b]?.base_psf && Object.keys(bm[b]?.ttm_monthly || {}).length >= 2);
-    })
-    .sort((a, b) => {
-      const score = p => {
-        const vals = ['2b1b','2b2b','3b2b'].map(b => p.area_proxy_bucket_metrics?.[b]?.cagr).filter(v => v != null);
-        return vals.length ? vals.reduce((s,v) => s+v, 0) / vals.length : -Infinity;
+  const labels = Array.from(allMonths).sort();
+  const datasets = projects
+    .filter(project => Object.keys(project[seriesKey] || {}).length)
+    .map((project, idx) => {
+      const series = project[seriesKey] || {};
+      const color = chartColors[idx % chartColors.length];
+      return {
+        label: project.name,
+        hidden: !isFocusComparisonProject(project),
+        data: labels.map(month => (series[month] != null ? series[month] : null)),
+        borderColor: color,
+        backgroundColor: color + '33',
+        borderWidth: 2,
+        tension: 0.25,
+        spanGaps: true,
+        pointRadius: 0,
+        pointHitRadius: 6
       };
-      return score(b) - score(a);
     });
+  return { labels, datasets };
+}
 
-  if (!projects.length) return;
-
-  const trendData = prepareAreaProxyTrendData(projects);
-  const ctx = document.getElementById('area_proxy_cagr_chart');
-  if (!ctx) return;
-
-  new Chart(ctx, {
+function renderHistoricalLineChart(canvasId, projects, seriesKey, yAxisTitle, emptyMessage) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  const trendData = prepareMetricTrendData(projects, seriesKey);
+  if (!trendData.datasets.length) {
+    if (wrap) wrap.innerHTML = '<div class="alert"><p>' + emptyMessage + '</p></div>';
+    return;
+  }
+  if (wrap && wrap.querySelector('canvas') == null) {
+    wrap.innerHTML = '<canvas id="' + canvasId + '"></canvas>';
+  }
+  const chartCanvas = document.getElementById(canvasId);
+  if (s10ChartInstances[canvasId]) s10ChartInstances[canvasId].destroy();
+  s10ChartInstances[canvasId] = new Chart(chartCanvas, {
     type: 'line',
-    data: { labels: trendData.labels, datasets: trendData.datasets },
+    data: trendData,
     options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         y: {
-          title: { display: true, text: '面积近似 CAGR (%)' },
+          title: { display: true, text: yAxisTitle },
           grid: { color: '#2d324466' }
         },
         x: {
@@ -1284,7 +1281,7 @@ function renderAreaProxyTrendChart(data) {
         }
       },
       plugins: {
-        legend: { position: 'top', labels: { boxWidth: 12 }, onClick: legendClickHandlerProxy },
+        legend: { position: 'top', labels: { boxWidth: 12 }, onClick: legendClickHandlerA },
         tooltip: {
           callbacks: {
             title: (items) => items.length ? formatMonthLabel(items[0].label) : '',
@@ -1296,211 +1293,111 @@ function renderAreaProxyTrendChart(data) {
   });
 }
 
+function safeText(value) {
+  return value == null || value === '' ? '-' : value;
+}
+
+function isFocusComparisonProject(project) {
+  return project && (project.slug === 'lakeville' || project.slug === 'lakegrande');
+}
+
 function renderPk(data){
-  const areaProxySortScore = project => {
-    const values = ['2b1b', '2b2b', '3b2b']
-      .map(bucket => project.area_proxy_bucket_metrics?.[bucket]?.cagr)
-      .filter(value => value != null);
-    if (!values.length) return Number.NEGATIVE_INFINITY;
-    return values.reduce((sum, value) => sum + value, 0) / values.length;
-  };
-  const overallProjects = (data.projects || [])
-    .filter(project => project.overall_year_count >= 2 && project.overall_cagr != null)
-    .slice()
-    .sort((a, b) => b.overall_cagr - a.overall_cagr);
-  const propertyforsaleProjects = (data.overall_comparison_projects || []).slice().sort((a, b) => b.overall_cagr - a.overall_cagr);
+  const overallProjects = (data.overall_comparison_projects || []).slice();
   const layoutProjects = (data.layout_comparison_projects || []).slice();
-  const proxyProjects = (data.area_proxy_comparison_projects || []).slice().sort((a, b) => {
-    const diff = areaProxySortScore(b) - areaProxySortScore(a);
-    return diff || a.name.localeCompare(b.name);
-  });
-  const topOverall = overallProjects[0];
-  const totalOverallRows = overallProjects.reduce((sum, project) => {
-    return sum + Object.values(project.overall_annual || {}).reduce((inner, year) => inner + (year.count || 0), 0);
-  }, 0);
+  const areaProxyProjects = (data.area_proxy_comparison_projects || []).slice();
+  const ownerPoolProjects = (data.comparison_projects || []).slice();
+  const directProjectCount = ownerPoolProjects.filter(project => project.owner_pool_filled?.provenance === 'direct_2b2b' || project.owner_pool_filled?.provenance === 'direct_owner_pool').length;
 
   document.getElementById('pk_kpis').innerHTML = [
     '<div class="kpi"><div class="l">当前已爬楼盘</div><div class="v" style="color:var(--g2)">' + (data.meta?.project_count || 0) + '</div><div class="c">来自本地 CSV</div></div>',
-    '<div class="kpi"><div class="l">口径1项目</div><div class="v" style="color:var(--pr)">' + overallProjects.length + '</div><div class="c">全部主源整体 CAGR</div></div>',
-    '<div class="kpi"><div class="l">propertyforsale resale</div><div class="v" style="color:var(--pr)">' + (data.meta?.overall_comparison_project_count || propertyforsaleProjects.length) + '</div><div class="c">主源窗口</div></div>',
-    '<div class="kpi"><div class="l">面积近似项目</div><div class="v" style="color:var(--cy)">' + (data.meta?.area_proxy_comparison_project_count || proxyProjects.length) + '</div><div class="c">口径 3 · 三个 data bar</div></div>',
-    '<div class="kpi"><div class="l">细户型项目</div><div class="v" style="color:var(--or)">' + (data.meta?.layout_comparison_project_count || layoutProjects.length) + '</div><div class="c">口径 2 · 真实户型映射</div></div>',
-    '<div class="kpi"><div class="l">主源窗口成交量</div><div class="v" style="color:var(--bl)">' + totalOverallRows + '</div><div class="c">用于基础口径（前12月基准 vs TTM）</div></div>',
-    topOverall ? '<div class="kpi"><div class="l">主源最高 CAGR</div><div class="v" style="color:var(--ac2)">' + fmtPct(topOverall.overall_cagr) + '</div><div class="c">' + topOverall.name + '</div></div>' : '',
+    '<div class="kpi"><div class="l">口径 1 · 全项目</div><div class="v" style="color:var(--pr)">' + overallProjects.length + '</div><div class="c">全项目 All-time CAGR / YoY</div></div>',
+    '<div class="kpi"><div class="l">口径 2 · 真实映射</div><div class="v" style="color:var(--ac2)">' + layoutProjects.length + '</div><div class="c">正式户型映射项目</div></div>',
+    '<div class="kpi"><div class="l">口径 3 · 面积代理</div><div class="v" style="color:var(--cy)">' + (data.meta?.area_proxy_comparison_project_count || areaProxyProjects.length) + '</div><div class="c">600-849 sqft 自住代理</div></div>',
+    '<div class="kpi"><div class="l">口径 4 · 自住口径</div><div class="v" style="color:var(--pk)">' + ownerPoolProjects.length + '</div><div class="c">2b2b → 2b1b+2b2b → 面积代理 → 全项目</div></div>',
+    '<div class="kpi"><div class="l">真实自住口径</div><div class="v" style="color:var(--or)">' + directProjectCount + '</div><div class="c">真实 2b2b / 真实 2b1b+2b2b</div></div>',
   ].join('');
 
-  const cagrWrap = document.getElementById('overall_cagr_chart');
-  cagrWrap.innerHTML = '';
-  if (overallProjects.length) {
-    const minC = Math.min(...overallProjects.map(project => project.overall_cagr), 0) - 1;
-    const maxC = Math.max(...overallProjects.map(project => project.overall_cagr), 0) + 1;
-    const zeroPos = Math.abs(minC) / (maxC - minC) * 100;
-    overallProjects.forEach((project, index) => {
-      const row = document.createElement('div');
-      row.className = 'cagr-row';
+  renderHistoricalLineChart('overall_cagr_chart', overallProjects, 'cagr_monthly', '全项目累积 CAGR (%)', '当前没有可用于全项目 cumulative CAGR 对比的项目。');
+  renderHistoricalLineChart('overall_yoy_chart', overallProjects, 'yoy_monthly', '全项目 YoY (%)', '当前没有可用于全项目 YoY 对比的项目。');
+  renderHistoricalLineChart('layout_cagr_chart', layoutProjects, 'cagr_monthly', '真实户型累积 CAGR (%)', '当前没有可用于真实户型映射 cumulative CAGR 对比的项目。');
+  renderHistoricalLineChart('layout_yoy_chart', layoutProjects, 'yoy_monthly', '真实户型 YoY (%)', '当前没有可用于真实户型映射 YoY 对比的项目。');
+  renderHistoricalLineChart('area_proxy_cagr_chart', areaProxyProjects, 'cagr_monthly', '面积代理累积 CAGR (%)', '当前没有可用于面积代理 cumulative CAGR 对比的项目。');
+  renderHistoricalLineChart('area_proxy_yoy_chart', areaProxyProjects, 'yoy_monthly', '面积代理 YoY (%)', '当前没有可用于面积代理 YoY 对比的项目。');
+  renderHistoricalLineChart('owner_pool_cagr_chart', ownerPoolProjects, 'cagr_monthly', '自住口径累积 CAGR (%)', '当前没有可用于自住口径 cumulative CAGR 对比的项目。');
+  renderHistoricalLineChart('owner_pool_yoy_chart', ownerPoolProjects, 'yoy_monthly', '自住口径 YoY (%)', '当前没有可用于自住口径 YoY 对比的项目。');
 
-      const label = document.createElement('span');
-      label.className = 'cagr-label';
-      label.textContent = project.name + ' (' + project.region_group + ')';
-
-      const area = document.createElement('div');
-      area.className = 'cagr-bar-area';
-
-      const bar = document.createElement('div');
-      bar.className = 'cagr-bar';
-      const color = DASHBOARD_COLORS[index % DASHBOARD_COLORS.length];
-      if (project.overall_cagr >= 0) {
-        const width = Math.min(project.overall_cagr / (maxC - minC) * 100, 100 - zeroPos);
-        bar.style.left = zeroPos + '%';
-        bar.style.width = width + '%';
-        bar.style.background = color + 'bb';
-        bar.style.borderRight = '2px solid ' + color;
-      } else {
-        const width = Math.min(Math.abs(project.overall_cagr) / (maxC - minC) * 100, zeroPos);
-        bar.style.left = (zeroPos - width) + '%';
-        bar.style.width = width + '%';
-        bar.style.background = '#e17055bb';
-        bar.style.borderLeft = '2px solid #e17055';
-      }
-      area.appendChild(bar);
-
-      const value = document.createElement('span');
-      value.className = 'cagr-val';
-      value.textContent = fmtPct(project.overall_cagr);
-      value.style.color = project.overall_cagr >= 0 ? color : '#e17055';
-
-      row.appendChild(label);
-      row.appendChild(area);
-      row.appendChild(value);
-      cagrWrap.appendChild(row);
-    });
-  } else {
-    cagrWrap.innerHTML = '<div class="l">当前没有可用于主源整体排名的项目。</div>';
-  }
-
-  const overallTableBody = document.querySelector('#overall_projects_table tbody');
-  overallTableBody.innerHTML = overallProjects.map(project => {
-    const latestPsf = project.overall_latest_psf ? fmtMoney(project.overall_latest_psf) : '-';
-    const unitsText = fmtCount(project.units);
+  const overallBody = document.querySelector('#overall_projects_table tbody');
+  overallBody.innerHTML = overallProjects.map(project => {
     const sourceLabel = [project.source_csv, project.source_label || project.source].filter(Boolean).join(' · ') || '-';
-    return '<tr>' +
+    const rowClass = isFocusComparisonProject(project) ? ' class="focus-row"' : '';
+    return '<tr' + rowClass + '>' +
       '<td><strong>' + project.name + '</strong></td>' +
-      '<td>' + project.region_group + '</td>' +
-      '<td>' + (project.top_year || '-') + '</td>' +
-      '<td>' + (project.tenure || '-') + '</td>' +
-      '<td>' + unitsText + '</td>' +
+      '<td>' + safeText(project.region_group) + '</td>' +
+      '<td>' + safeText(project.top_year) + '</td>' +
+      '<td>' + safeText(project.tenure) + '</td>' +
+      '<td>' + fmtCount(project.units) + '</td>' +
       '<td><code>' + sourceLabel + '</code></td>' +
-      '<td>' + (project.overall_period_label || project.year_range || '-') + '</td>' +
-      '<td>' + project.record_count + '笔</td>' +
-      '<td class="hi">' + latestPsf + '</td>' +
-      '<td><strong>' + (project.overall_latest_n || '-') + '笔</strong></td>' +
-      '<td class="' + (project.overall_cagr >= 3 ? 'hi' : project.overall_cagr < 0 ? 'bd' : '') + '">' + fmtPct(project.overall_cagr) + '</td>' +
+      '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
+      '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
+      '<td>' + fmtPct(project.current_yoy) + '</td>' +
+      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.sample_count) + '</td>' +
     '</tr>';
   }).join('');
-
-  const allSourceTableBody = document.querySelector('#all_source_cagr_table tbody');
-  allSourceTableBody.innerHTML = propertyforsaleProjects.map(project => {
-    const latestPsf = project.overall_latest_psf ? fmtMoney(project.overall_latest_psf) : '-';
-    const sourceLabel = [project.source_csv, project.source_label || project.source].filter(Boolean).join(' · ') || '-';
-    return '<tr>' +
-      '<td><strong>' + project.name + '</strong></td>' +
-      '<td>' + project.region_group + '</td>' +
-      '<td><code>' + sourceLabel + '</code></td>' +
-      '<td>' + (project.overall_period_label || project.overall_year_range || project.year_range || '-') + '</td>' +
-      '<td>' + project.record_count + '笔</td>' +
-      '<td>' + latestPsf + '</td>' +
-      '<td><strong>' + (project.overall_latest_n || '-') + '笔</strong></td>' +
-      '<td class="' + (project.overall_cagr >= 3 ? 'hi' : project.overall_cagr < 0 ? 'bd' : '') + '">' + fmtPct(project.overall_cagr) + '</td>' +
-    '</tr>';
-  }).join('');
-
-  const metricUnavailableLabel = metric => {
-    if (!metric || !metric.count) return '-';
-    if ((metric.period_months || 0) < 12) return '窗口<12个月';
-    return '样本不足';
-  };
-  const metricValue = metric => {
-    if (!metric || !metric.count) return '-';
-    return metric.cagr == null ? metricUnavailableLabel(metric) : fmtPct(metric.cagr);
-  };
-  const metricYears = metric => {
-    if (!metric || !metric.count) return '-';
-    return (metric.period_label || metric.year_range || '-') + ' · ' + metric.count + '笔';
-  };
-  const metricClass = metric => {
-    if (!metric || metric.cagr == null) return '';
-    return metric.cagr >= 3 ? 'hi' : metric.cagr < 0 ? 'bd' : '';
-  };
-  const renderProxyMetricCell = (metric, minC, maxC, color) => {
-    if (!metric || !metric.count) {
-      return '<div class="proxy-bar-empty">-</div>';
-    }
-    const meta = (metric.period_label || metric.year_range || '-') + ' · ' + metric.count + '笔';
-    if (metric.cagr == null) {
-      return '<div class="proxy-bar-empty">' + metricUnavailableLabel(metric) + '<div class="proxy-bar-meta">' + meta + '</div></div>';
-    }
-
-    const range = Math.max(maxC - minC, 0.01);
-    const zeroPos = Math.abs(minC) / range * 100;
-    let style = '';
-    let valueColor = color;
-    if (metric.cagr >= 0) {
-      const width = Math.min(metric.cagr / range * 100, 100 - zeroPos);
-      style = 'left:' + zeroPos + '%;width:' + width + '%;background:' + color + 'bb;border-right:2px solid ' + color + ';';
-    } else {
-      const width = Math.min(Math.abs(metric.cagr) / range * 100, zeroPos);
-      style = 'left:' + (zeroPos - width) + '%;width:' + width + '%;background:#e17055bb;border-left:2px solid #e17055;';
-      valueColor = '#e17055';
-    }
-
-    return '<div class="proxy-metric">' +
-      '<div class="proxy-metric-top">' +
-        '<div class="proxy-bar-area"><div class="proxy-bar" style="' + style + '"></div></div>' +
-        '<div class="proxy-bar-value" style="color:' + valueColor + '">' + fmtPct(metric.cagr) + '</div>' +
-      '</div>' +
-      '<div class="proxy-bar-meta">' + meta + '</div>' +
-    '</div>';
-  };
 
   const layoutBody = document.querySelector('#layout_projects_table tbody');
   layoutBody.innerHTML = layoutProjects.map(project => {
-    const b21 = project.typed_bucket_metrics?.['2b1b'];
-    const b22 = project.typed_bucket_metrics?.['2b2b'];
-    const b32 = project.typed_bucket_metrics?.['3b2b'];
-    return '<tr>' +
+    const rowClass = isFocusComparisonProject(project) ? ' class="focus-row"' : '';
+    return '<tr' + rowClass + '>' +
       '<td><strong>' + project.name + '</strong></td>' +
-      '<td>' + project.coverage_pct + '%</td>' +
-      '<td class="' + metricClass(b21) + '">' + metricValue(b21) + '</td>' +
-      '<td>' + metricYears(b21) + '</td>' +
-      '<td class="' + metricClass(b22) + '">' + metricValue(b22) + '</td>' +
-      '<td>' + metricYears(b22) + '</td>' +
-      '<td class="' + metricClass(b32) + '">' + metricValue(b32) + '</td>' +
-      '<td>' + metricYears(b32) + '</td>' +
+      '<td>' + safeText(project.region_group) + '</td>' +
+      '<td>' + safeText(project.coverage_pct != null ? project.coverage_pct + '%' : '-') + '</td>' +
+      '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
+      '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
+      '<td>' + fmtPct(project.current_yoy) + '</td>' +
+      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.sample_count) + '</td>' +
+      '<td>' + currentPsf(project.type_breakout?.['2b1b']) + '</td>' +
+      '<td>' + currentPsf(project.type_breakout?.['2b2b']) + '</td>' +
     '</tr>';
   }).join('');
 
-  const proxyMetricValues = proxyProjects.flatMap(project => (
-    ['2b1b', '2b2b', '3b2b']
-      .map(bucket => project.area_proxy_bucket_metrics?.[bucket]?.cagr)
-      .filter(value => value != null)
-  ));
-  const proxyMinC = proxyMetricValues.length ? Math.min(...proxyMetricValues, 0) - 1 : -1;
-  const proxyMaxC = proxyMetricValues.length ? Math.max(...proxyMetricValues, 0) + 1 : 1;
-  const proxyBody = document.querySelector('#area_proxy_projects_table tbody');
-  proxyBody.innerHTML = proxyProjects.length ? proxyProjects.map(project => {
-    const sourceLabel = [project.source_csv, project.source_label].filter(Boolean).join(' · ') || '-';
-    return '<tr>' +
+  const areaProxyBody = document.querySelector('#area_proxy_projects_table tbody');
+  areaProxyBody.innerHTML = areaProxyProjects.map(project => {
+    const sourceLabel = [project.source_csv, project.source_label || project.source].filter(Boolean).join(' · ') || '-';
+    const rowClass = isFocusComparisonProject(project) ? ' class="focus-row"' : '';
+    return '<tr' + rowClass + '>' +
       '<td><strong>' + project.name + '</strong></td>' +
-      '<td>' + project.region_group + '</td>' +
+      '<td>' + safeText(project.region_group) + '</td>' +
+      '<td>' + safeText(project.top_year) + '</td>' +
+      '<td>' + safeText(project.tenure) + '</td>' +
       '<td><code>' + sourceLabel + '</code></td>' +
-      '<td class="proxy-cell">' + renderProxyMetricCell(project.area_proxy_bucket_metrics?.['2b1b'], proxyMinC, proxyMaxC, C.bl) + '</td>' +
-      '<td class="proxy-cell">' + renderProxyMetricCell(project.area_proxy_bucket_metrics?.['2b2b'], proxyMinC, proxyMaxC, C.or) + '</td>' +
-      '<td class="proxy-cell">' + renderProxyMetricCell(project.area_proxy_bucket_metrics?.['3b2b'], proxyMinC, proxyMaxC, C.g) + '</td>' +
+      '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
+      '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
+      '<td>' + fmtPct(project.current_yoy) + '</td>' +
+      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.sample_count) + '</td>' +
     '</tr>';
-  }).join('') : '<tr><td colspan="6">当前没有可用于面积近似 PK 的项目。</td></tr>';
-  
-  renderCAGRTrendCharts(data);
-  renderAreaProxyTrendChart(data);
+  }).join('');
+
+  const ownerPoolBody = document.querySelector('#owner_pool_projects_table tbody');
+  ownerPoolBody.innerHTML = ownerPoolProjects.map(project => {
+    const rowClass = isFocusComparisonProject(project) ? ' class="focus-row"' : '';
+    return '<tr' + rowClass + '>' +
+      '<td><strong>' + project.name + '</strong></td>' +
+      '<td>' + safeText(project.region_group) + '</td>' +
+      '<td>' + provenanceLabel(project.owner_pool_filled?.provenance) + '</td>' +
+      '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
+      '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
+      '<td>' + fmtPct(project.current_yoy) + '</td>' +
+      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.sample_count) + '</td>' +
+      '<td>' + safeText(project.data_confidence?.coverage_pct != null ? project.data_confidence.coverage_pct + '%' : '-') + '</td>' +
+      '<td>' + currentPsf(project.type_breakout?.['2b1b']) + '</td>' +
+      '<td>' + currentPsf(project.type_breakout?.['2b2b']) + '</td>' +
+      '<td>' + confidenceLabel(project.data_confidence) + '</td>' +
+    '</tr>';
+  }).join('');
 }
 
 function renderScrapedData(data){
@@ -1510,8 +1407,8 @@ function renderScrapedData(data){
     '<div class="kpi"><div class="l">propertyforsale resale</div><div class="v" style="color:var(--pr)">' + (data.meta.propertyforsale_project_count || 0) + '</div><div class="c">默认主源</div></div>',
     '<div class="kpi"><div class="l">URA resale fallback</div><div class="v" style="color:var(--or)">' + (data.meta.ura_resale_project_count || 0) + '</div><div class="c">propertyforsale 不可用时启用</div></div>',
     '<div class="kpi"><div class="l">SRX 历史备份</div><div class="v" style="color:var(--or)">' + (data.meta.srx_backup_project_count || 0) + '</div><div class="c">仅保留 data/srx 备查</div></div>',
-    '<div class="kpi"><div class="l">面积近似项目</div><div class="v" style="color:var(--cy)">' + data.meta.area_proxy_comparison_project_count + '</div><div class="c">口径 3 全量覆盖</div></div>',
-    '<div class="kpi"><div class="l">细户型项目</div><div class="v" style="color:var(--ac2)">' + data.meta.layout_comparison_project_count + '</div><div class="c">Lakeville / Lake Grande</div></div>',
+    '<div class="kpi"><div class="l">自住PK项目</div><div class="v" style="color:var(--cy)">' + data.meta.pk_project_count + '</div><div class="c">参与主排序</div></div>',
+    '<div class="kpi"><div class="l">细户型项目</div><div class="v" style="color:var(--ac2)">' + data.meta.layout_comparison_project_count + '</div><div class="c">已做正式映射</div></div>',
     '<div class="kpi"><div class="l">详细明细 CSV</div><div class="v" style="color:var(--ac2)">' + data.meta.detailed_project_count + '</div><div class="c">已抽详细字段</div></div>',
   ].join('');
 
@@ -1529,10 +1426,9 @@ function renderScrapedData(data){
   const tableBody = document.querySelector('#scraped_projects_table tbody');
   tableBody.innerHTML = (data.projects || []).map(project => {
     const sizes = (project.top_sizes || []).map(size => size.sqft + '(' + size.count + ')').join(', ');
-    const latestOverall = project.overall_latest_psf ? (fmtMoney(project.overall_latest_psf) + ' / ' + project.overall_latest_n + '笔') : '-';
-    const overallPkStatus = project.overall_pk_included ? '已纳入' : '-';
-    const layoutPkStatus = data.focus_projects && data.focus_projects[project.slug] ? '已纳入' : '-';
-    const areaProxyStatus = project.area_proxy_pk_included ? '已纳入' : '-';
+    const latestOverall = project.overall_reference?.current ? (fmtMoney(project.overall_reference.current.median_psf) + ' / ' + project.overall_reference.current.count + '笔') : '-';
+    const overallPair = cagrPair(project.overall_reference);
+    const ownerPoolStatus = project.owner_pool_pk_included ? '已纳入' : '-';
     const layoutMappingStatus = project.has_layout_mapping ? '已覆盖' : '-';
     const sourceText = (project.all_sources && project.all_sources.length)
       ? project.all_sources.map(source => [source.source_csv || '-', source.source_label || ''].filter(Boolean).join(' · ')).join('<br>')
@@ -1545,10 +1441,10 @@ function renderScrapedData(data){
       '<td>' + project.first_date + ' - ' + project.latest_date + '</td>' +
       '<td>' + sizes + '</td>' +
       '<td>' + latestOverall + '</td>' +
-      '<td class="' + (project.overall_cagr >= 3 ? 'hi' : project.overall_cagr < 0 ? 'bd' : '') + '">' + fmtPct(project.overall_cagr) + '</td>' +
-      '<td>' + overallPkStatus + '</td>' +
-      '<td>' + layoutPkStatus + '</td>' +
-      '<td>' + areaProxyStatus + '</td>' +
+      '<td>' + overallPair + '</td>' +
+      '<td>' + ownerPoolStatus + '</td>' +
+      '<td>' + provenanceLabel(project.owner_pool_filled?.provenance) + '</td>' +
+      '<td>' + confidenceLabel(project.data_confidence) + '</td>' +
       '<td>' + (project.has_detailed_csv ? '已生成' : '-') + '</td>' +
       '<td>' + layoutMappingStatus + '</td>' +
     '</tr>';
@@ -2005,20 +1901,20 @@ loadDashboardData()
     activeDashboardData=null;
     renderScenario();
     const message = dashboardLoadErrorMessage(error);
-    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'focus_mapping_cards', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
+    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart', 'area_proxy_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_yoy_chart', 'focus_mapping_cards', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
       renderEmptyState(id, message);
     });
-    const overallPkTable = document.querySelector('#overall_projects_table tbody');
-    const allSourceCagrTable = document.querySelector('#all_source_cagr_table tbody');
+    const overallTable = document.querySelector('#overall_projects_table tbody');
     const layoutPkTable = document.querySelector('#layout_projects_table tbody');
-    const areaProxyPkTable = document.querySelector('#area_proxy_projects_table tbody');
+    const areaProxyTable = document.querySelector('#area_proxy_projects_table tbody');
+    const ownerPoolTable = document.querySelector('#owner_pool_projects_table tbody');
     const scrapedTable = document.querySelector('#scraped_projects_table tbody');
     const uraSelect = document.getElementById('ura_project_select');
     const uraKpis = document.getElementById('ura_project_kpis');
-    if (overallPkTable) overallPkTable.innerHTML = '<tr><td colspan="11">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
-    if (allSourceCagrTable) allSourceCagrTable.innerHTML = '<tr><td colspan="8">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
-    if (layoutPkTable) layoutPkTable.innerHTML = '<tr><td colspan="8">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
-    if (areaProxyPkTable) areaProxyPkTable.innerHTML = '<tr><td colspan="6">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
+    if (overallTable) overallTable.innerHTML = '<tr><td colspan="11">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
+    if (layoutPkTable) layoutPkTable.innerHTML = '<tr><td colspan="10">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
+    if (areaProxyTable) areaProxyTable.innerHTML = '<tr><td colspan="10">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
+    if (ownerPoolTable) ownerPoolTable.innerHTML = '<tr><td colspan="12">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
     if (scrapedTable) scrapedTable.innerHTML = '<tr><td colspan="13">dashboard 数据加载失败，请检查 data/dashboard_data.js 或 data/dashboard_data.json</td></tr>';
     if (uraSelect) uraSelect.innerHTML = '<option>加载失败</option>';
     if (uraKpis) uraKpis.innerHTML = '';

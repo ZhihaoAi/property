@@ -62,9 +62,11 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
     'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
     'i_float_rate', 'i_total_yrs',
-    'lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'focus_mapping_cards', 'ura_project_summary',
+    'lv_focus_content', 'lg_focus_content', 'focus_mapping_cards', 'ura_project_summary',
     'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table',
-    'overall_projects_table', 'all_source_cagr_table', 'layout_projects_table', 'area_proxy_projects_table',
+    'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart',
+    'area_proxy_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_yoy_chart',
+    'overall_projects_table', 'layout_projects_table', 'area_proxy_projects_table', 'owner_pool_projects_table',
     'scrape_kpis', 'scraped_projects_table', 'ura_project_select', 'ura_project_kpis', 'rental_summary_table',
     'c_rent_2b1b', 'c_rent_2b2b', 'c_rent_3b2b', 'c_rent_yield', 'rental_yield_table', 'mrt_table',
   ];

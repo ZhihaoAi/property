@@ -7,8 +7,6 @@ Sources:
 - data/appreciation_analysis.json
 - data/layout_mapping/*_transaction_layout_map.csv (preferred)
 - data/layout_mapping/layout_reference_catalog.csv (preferred)
-- data/poc_layout/*_transactions_layout_poc.csv (legacy fallback)
-- data/poc_layout/layout_reference_poc.csv (legacy fallback)
 """
 
 from __future__ import annotations
@@ -25,12 +23,10 @@ from analyze import PROJECT_INFO
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-LEGACY_LAYOUT_DIR = DATA_DIR / "poc_layout"
 FORMAL_LAYOUT_DIR = DATA_DIR / "layout_mapping"
 OUTPUT_PATH = DATA_DIR / "dashboard_data.json"
 OUTPUT_JS_PATH = DATA_DIR / "dashboard_data.js"
 ANALYSIS_PATH = DATA_DIR / "appreciation_analysis.json"
-LEGACY_REFERENCE_PATH = LEGACY_LAYOUT_DIR / "layout_reference_poc.csv"
 FORMAL_REFERENCE_PATH = FORMAL_LAYOUT_DIR / "layout_reference_catalog.csv"
 REGISTRY_PATH = DATA_DIR / "srx_project_registry.json"
 URA_SUMMARY_PATH = DATA_DIR / "ura" / "projects_summary.json"
@@ -53,6 +49,16 @@ MONTH_TO_NUM = {
 
 MIN_CAGR_MONTH_SPAN = 12
 BASE_MONTHS = 12
+RECENT_WINDOW_MONTHS = 12
+CONFIDENCE_WINDOW_MONTHS = 24
+OWNER_POOL_BUCKETS = ("2b1b", "2b2b")
+OWNER_POOL_DIRECT_2B2B_MIN_COUNT = 18
+OWNER_POOL_DIRECT_MIN_COUNT = 24
+OWNER_POOL_PROXY_MIN_COUNT = 24
+SCORE_WEIGHTS = {
+    "entry": 0.55,
+    "trend": 0.45,
+}
 
 DISPLAY_NAME = {
     "alexis": "Alexis",
@@ -374,6 +380,8 @@ def build_bucket_metrics(
             "annual": annual,
             "monthly": monthly,
             "cagr": cagr,
+            "all_time_cagr": cagr,
+            "current_yoy": compute_current_yoy(ttm_monthly),
             "base_psf": base_psf,
             "base_start": base_start,
             "ttm_monthly": ttm_monthly,
@@ -384,6 +392,229 @@ def build_bucket_metrics(
             "period_label": period_label_for_rows(bucket_rows),
         }
     return metrics
+
+
+def rows_in_last_n_months(
+    rows: list[dict],
+    n_months: int,
+    anchor_ym: tuple[int, int] | None = None,
+) -> list[dict]:
+    if not rows:
+        return []
+    if anchor_ym is None:
+        latest_row = max(rows, key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]))
+        anchor_ym = (latest_row["year"], latest_row["month"])
+    start_ym = _add_months(anchor_ym, -(n_months - 1))
+    return [
+        row for row in rows
+        if start_ym <= (row["year"], row["month"]) <= anchor_ym
+    ]
+
+
+def normalize_metric_key(label: str) -> str:
+    return "".join(ch if ch.isalnum() else "_" for ch in label.lower()).strip("_")
+
+
+def compute_period_cagr(rows: list[dict], period_years: int) -> float | None:
+    if not rows:
+        return None
+    latest_row = max(rows, key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]))
+    anchor_ym = (latest_row["year"], latest_row["month"])
+    subset = rows_in_last_n_months(rows, period_years * 12, anchor_ym)
+    if not subset:
+        return None
+    base_psf, base_start = compute_base_psf(subset)
+    ttm_monthly = compute_ttm_monthly(subset)
+    return compute_cagr_from_base_ttm(base_psf, ttm_monthly, base_start)
+
+
+def compute_current_yoy(ttm_monthly: dict[str, dict]) -> float | None:
+    if not ttm_monthly:
+        return None
+    last_key = max(ttm_monthly.keys())
+    prior_key = _ym_to_key(_add_months(_key_to_ym(last_key), -12))
+    current_entry = ttm_monthly.get(last_key)
+    prior_entry = ttm_monthly.get(prior_key)
+    if not current_entry or not prior_entry:
+        return None
+    current_psf = current_entry.get("median_psf")
+    prior_psf = prior_entry.get("median_psf")
+    if current_psf is None or prior_psf in (None, 0):
+        return None
+    return round((current_psf / prior_psf - 1) * 100, 2)
+
+
+def compute_cagr_monthly(
+    base_psf: float | None,
+    ttm_monthly: dict[str, dict],
+    start_month_key: str | None,
+) -> dict[str, float]:
+    if not ttm_monthly or base_psf is None or base_psf <= 0 or not start_month_key:
+        return {}
+    result: dict[str, float] = {}
+    for month_key in sorted(ttm_monthly.keys()):
+        entry = ttm_monthly.get(month_key)
+        if not entry:
+            continue
+        cagr = compute_cagr_from_base_ttm(base_psf, {month_key: entry}, start_month_key)
+        if cagr is None:
+            month_span = month_span_between(_key_to_ym(start_month_key), _key_to_ym(month_key))
+            span = month_span - BASE_MONTHS
+            if span < MIN_CAGR_MONTH_SPAN:
+                continue
+            current_psf = entry.get("median_psf")
+            if current_psf is None or current_psf <= 0:
+                continue
+            cagr = round(((current_psf / base_psf) ** (12 / span) - 1) * 100, 2)
+        result[month_key] = cagr
+    return result
+
+
+def compute_yoy_monthly(ttm_monthly: dict[str, dict]) -> dict[str, float]:
+    if not ttm_monthly:
+        return {}
+    result: dict[str, float] = {}
+    for month_key in sorted(ttm_monthly.keys()):
+        current_entry = ttm_monthly.get(month_key)
+        prior_key = _ym_to_key(_add_months(_key_to_ym(month_key), -12))
+        prior_entry = ttm_monthly.get(prior_key)
+        if not current_entry or not prior_entry:
+            continue
+        current_psf = current_entry.get("median_psf")
+        prior_psf = prior_entry.get("median_psf")
+        if current_psf is None or prior_psf in (None, 0):
+            continue
+        result[month_key] = round((current_psf / prior_psf - 1) * 100, 2)
+    return result
+
+
+def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
+    annual = compute_annual_stats_from_rows(rows)
+    monthly = compute_monthly_stats_from_rows(rows)
+    years = sorted(annual.keys())
+    latest_year = years[-1] if years else None
+    latest_year_data = annual.get(latest_year, {}) if latest_year else {}
+    first_row, latest_row, month_span = row_period_bounds(rows)
+    base_psf, base_start = compute_base_psf(rows)
+    ttm_monthly = compute_ttm_monthly(rows)
+    lifetime_cagr = compute_cagr_from_base_ttm(base_psf, ttm_monthly, base_start)
+    cagr_monthly = compute_cagr_monthly(base_psf, ttm_monthly, base_start)
+    yoy_monthly = compute_yoy_monthly(ttm_monthly)
+
+    current = None
+    recent_24m_count = 0
+    if latest_row:
+        anchor_ym = (latest_row["year"], latest_row["month"])
+        current_rows = rows_in_last_n_months(rows, RECENT_WINDOW_MONTHS, anchor_ym)
+        recent_24m_rows = rows_in_last_n_months(rows, CONFIDENCE_WINDOW_MONTHS, anchor_ym)
+        recent_24m_count = len(recent_24m_rows)
+        if current_rows:
+            current_prices = [row["price"] for row in current_rows]
+            current_psf = [row["psf"] for row in current_rows]
+            current = {
+                "start_month": current_rows[-1]["date_label"],
+                "end_month": current_rows[0]["date_label"],
+                "median_price": round(float(statistics.median(current_prices)), 2),
+                "median_psf": round(float(statistics.median(current_psf)), 2),
+                "count": len(current_rows),
+            }
+
+    return {
+        "key": normalize_metric_key(label),
+        "label": label,
+        "provenance": provenance,
+        "count": len(rows),
+        "year_count": len(years),
+        "year_range": year_range_label(years),
+        "period_months": month_span,
+        "period_label": period_label_for_rows(rows),
+        "annual": annual,
+        "monthly": monthly,
+        "base_psf": base_psf,
+        "base_start": base_start,
+        "ttm_monthly": ttm_monthly,
+        "cagr_monthly": cagr_monthly,
+        "yoy_monthly": yoy_monthly,
+        "lifetime_cagr": lifetime_cagr,
+        "all_time_cagr": lifetime_cagr,
+        "current_yoy": yoy_monthly[max(yoy_monthly.keys())] if yoy_monthly else compute_current_yoy(ttm_monthly),
+        "cagr_3y": compute_period_cagr(rows, 3),
+        "cagr_5y": compute_period_cagr(rows, 5),
+        "latest_year": latest_year,
+        "latest_year_psf": latest_year_data.get("median_psf"),
+        "latest_year_count": latest_year_data.get("count"),
+        "current": current,
+        "recent_24m_count": recent_24m_count,
+    }
+
+
+def metric_is_qualified(metric: dict, min_count: int) -> bool:
+    return (
+        bool(metric)
+        and metric.get("count", 0) >= min_count
+        and (metric.get("period_months") or 0) >= 24
+        and (metric.get("recent_24m_count") or 0) >= 4
+        and metric.get("current") is not None
+    )
+
+
+def metric_current_psf(metric: dict) -> float | None:
+    current = metric.get("current") if metric else None
+    if not current:
+        return None
+    return current.get("median_psf")
+
+
+def build_metric_snapshot(metric: dict) -> dict:
+    return {
+        "current_psf": metric_current_psf(metric),
+        "all_time_cagr": metric.get("all_time_cagr"),
+        "current_yoy": metric.get("current_yoy"),
+        "recent_24m_count": metric.get("recent_24m_count"),
+        "sample_count": metric.get("count"),
+        "cagr_monthly": metric.get("cagr_monthly", {}),
+        "yoy_monthly": metric.get("yoy_monthly", {}),
+    }
+
+
+def select_owner_pool_metric(
+    direct_2b2b: dict,
+    owner_pool_direct: dict,
+    area_proxy_owner_pool: dict,
+    overall_reference: dict,
+) -> dict:
+    if metric_is_qualified(direct_2b2b, OWNER_POOL_DIRECT_2B2B_MIN_COUNT):
+        return direct_2b2b
+    if metric_is_qualified(owner_pool_direct, OWNER_POOL_DIRECT_MIN_COUNT):
+        return owner_pool_direct
+    if metric_is_qualified(area_proxy_owner_pool, OWNER_POOL_PROXY_MIN_COUNT):
+        return area_proxy_owner_pool
+    return overall_reference
+
+
+def percentile_position(value: float | None, samples: list[float]) -> float | None:
+    clean = sorted(sample for sample in samples if sample is not None)
+    if value is None or not clean:
+        return None
+    if len(clean) == 1:
+        return 0.5
+    less_or_equal = sum(sample <= value for sample in clean)
+    return (less_or_equal - 1) / (len(clean) - 1)
+
+
+def average_or_none(values: list[float | None]) -> float | None:
+    clean = [value for value in values if value is not None]
+    if not clean:
+        return None
+    return round(sum(clean) / len(clean), 2)
+
+
+def confidence_label(score: float) -> str:
+    if score >= 75:
+        return "high"
+    if score >= 45:
+        return "medium"
+    return "low"
 
 
 def year_range_label(years: list[str]) -> str:
@@ -485,8 +716,6 @@ def has_secondary_source_kind(summary: dict, source_kind: str) -> bool:
 def detect_layout_mapping_source() -> str:
     if FORMAL_REFERENCE_PATH.exists():
         return "formal"
-    if LEGACY_REFERENCE_PATH.exists():
-        return "legacy_poc"
     return "missing"
 
 
@@ -500,32 +729,6 @@ def parse_layout_options(value: str) -> list[str]:
     return options
 
 
-def build_legacy_layout_catalogs() -> dict[str, list[dict]]:
-    grouped: dict[str, dict[int, list[dict]]] = defaultdict(lambda: defaultdict(list))
-    with LEGACY_REFERENCE_PATH.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            grouped[row["project_slug"]][int(row["reference_area_sqft"])].append(row)
-
-    catalogs: dict[str, list[dict]] = {}
-    for project_slug, area_map in grouped.items():
-        project_catalog: list[dict] = []
-        for area_sqft in sorted(area_map):
-            refs = area_map[area_sqft]
-            unique_layouts = sorted({ref["normalized_type"] for ref in refs if ref.get("normalized_type")})
-            project_catalog.append(
-                {
-                    "project_slug": project_slug,
-                    "reference_area_sqft": area_sqft,
-                    "catalog_status": "resolved" if len(unique_layouts) == 1 else "conflicting",
-                    "resolved_layout": unique_layouts[0] if len(unique_layouts) == 1 else "",
-                    "layout_options": " | ".join(unique_layouts),
-                }
-            )
-        catalogs[project_slug] = project_catalog
-    return catalogs
-
-
 def load_layout_catalogs() -> dict[str, list[dict]]:
     if FORMAL_REFERENCE_PATH.exists():
         catalogs: dict[str, list[dict]] = {}
@@ -535,8 +738,6 @@ def load_layout_catalogs() -> dict[str, list[dict]]:
                 row["reference_area_sqft"] = int(row["reference_area_sqft"])
                 catalogs.setdefault(row["project_slug"], []).append(row)
         return catalogs
-    if LEGACY_REFERENCE_PATH.exists():
-        return build_legacy_layout_catalogs()
     return {}
 
 
@@ -598,47 +799,15 @@ def infer_area_proxy_bucket(sqft: int) -> str | None:
 
 def load_focus_mapping_rows(slug: str, catalog_rows: list[dict]) -> list[dict]:
     formal_csv_path = FORMAL_LAYOUT_DIR / f"{slug}_transaction_layout_map.csv"
-    legacy_csv_path = LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv"
     rows: list[dict] = []
 
-    if formal_csv_path.exists():
-        with formal_csv_path.open(newline="", encoding="utf-8") as handle:
-            reader = csv.DictReader(handle)
-            for row in reader:
-                bucket, bucket_reason = infer_focus_bucket(row, catalog_rows)
-                rows.append(
-                    {
-                        "date": row["date"],
-                        "date_label": format_monthyear(row["date"]),
-                        "year": parse_monthyear(row["date"])[0],
-                        "month": parse_monthyear(row["date"])[1],
-                        "sqft": int(row["sqft"]),
-                        "psf": int(row["psf"]),
-                        "price": int(row["price"]),
-                        "mapping_status": row["mapping_status"],
-                        "resolved_layout": row["resolved_layout"],
-                        "layout_options": row["layout_options"] or row["resolved_layout"],
-                        "focus_bucket": bucket,
-                        "focus_bucket_label": FOCUS_LABEL[bucket],
-                        "bucket_reason": bucket_reason,
-                        "mapping_confidence": row["mapping_confidence"],
-                        "evidence_urls": row["evidence_urls"],
-                        "evidence_notes": row["evidence_notes"],
-                    }
-                )
-        rows.sort(key=lambda row: (row["year"], row["month"], row["price"], row["sqft"]), reverse=True)
+    if not formal_csv_path.exists():
         return rows
 
-    with legacy_csv_path.open(newline="", encoding="utf-8") as handle:
+    with formal_csv_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            compat_row = {
-                "mapping_status": row["layout_status"],
-                "resolved_layout": row["normalized_type"] if row["layout_status"] == "matched" else "",
-                "layout_options": row["normalized_type"],
-                "sqft": row["sqft"],
-            }
-            bucket, bucket_reason = infer_focus_bucket(compat_row, catalog_rows)
+            bucket, bucket_reason = infer_focus_bucket(row, catalog_rows)
             rows.append(
                 {
                     "date": row["date"],
@@ -648,9 +817,9 @@ def load_focus_mapping_rows(slug: str, catalog_rows: list[dict]) -> list[dict]:
                     "sqft": int(row["sqft"]),
                     "psf": int(row["psf"]),
                     "price": int(row["price"]),
-                    "mapping_status": row["layout_status"],
-                    "resolved_layout": row["normalized_type"] if row["layout_status"] == "matched" else "",
-                    "layout_options": row["normalized_type"],
+                    "mapping_status": row["mapping_status"],
+                    "resolved_layout": row["resolved_layout"],
+                    "layout_options": row["layout_options"] or row["resolved_layout"],
                     "focus_bucket": bucket,
                     "focus_bucket_label": FOCUS_LABEL[bucket],
                     "bucket_reason": bucket_reason,
@@ -665,6 +834,8 @@ def load_focus_mapping_rows(slug: str, catalog_rows: list[dict]) -> list[dict]:
 
 def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) -> dict:
     rows = load_focus_mapping_rows(slug, catalog_by_project.get(slug, []))
+    registry_info = PROJECT_REGISTRY.get(slug, {})
+    info = {**PROJECT_INFO.get(slug, {}), **registry_info}
 
     summary = []
     recent_by_bucket: dict[str, list[dict]] = {}
@@ -709,10 +880,47 @@ def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) ->
 
     mapped_rows = [row for row in rows if row["mapping_status"] == "matched"]
     focus_rows = [row for row in rows if row["focus_bucket"] in {"2b1b", "2b2b", "3b2b"}]
+    owner_pool_direct_rows = [row for row in rows if row["focus_bucket"] in OWNER_POOL_BUCKETS]
+    owner_pool_2b2b_rows = [row for row in rows if row["focus_bucket"] == "2b2b"]
+
+    type_breakout = {
+        bucket: summarize_row_set(
+            [row for row in rows if row["focus_bucket"] == bucket],
+            provenance=f"direct_{bucket}",
+            label=bucket,
+        )
+        for bucket in OWNER_POOL_BUCKETS
+    }
+    owner_pool_direct = summarize_row_set(
+        owner_pool_direct_rows,
+        provenance="direct_owner_pool",
+        label="自住池(2b1b+2b2b)",
+    )
+    owner_pool_area_proxy = owner_pool_direct
+    owner_pool_2b2b = summarize_row_set(
+        owner_pool_2b2b_rows,
+        provenance="direct_2b2b",
+        label="2b2b",
+    )
+
+    provenance = select_owner_pool_metric(
+        owner_pool_2b2b,
+        owner_pool_direct,
+        owner_pool_direct,
+        owner_pool_direct,
+    )
+    confidence_score = round(
+        min(100.0, (len(mapped_rows) / len(rows) * 100 if rows else 0.0) * 0.7 + min(owner_pool_direct.get("recent_24m_count", 0) * 4, 30)),
+        1,
+    )
 
     return {
         "slug": slug,
         "name": slug_to_name(slug),
+        "region_group": registry_info.get("region_group", REGION_GROUP.get(slug, "Other")),
+        "top_year": info.get("top_year"),
+        "tenure": info.get("tenure"),
+        "units": info.get("units"),
         "row_count": len(rows),
         "matched_count": len(mapped_rows),
         "focus_count": len(focus_rows),
@@ -721,6 +929,18 @@ def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) ->
         "annual_by_bucket": annual_by_bucket,
         "typed_bucket_metrics": typed_bucket_metrics,
         "recent_by_bucket": recent_by_bucket,
+        "owner_pool_direct": owner_pool_direct,
+        "owner_pool_area_proxy": owner_pool_area_proxy,
+        "owner_pool_filled": provenance,
+        "type_breakout": type_breakout,
+        "overall_reference": summarize_row_set(rows, provenance="overall_reference", label="全项目"),
+        "data_confidence": {
+            "coverage_pct": round(len(mapped_rows) / len(rows) * 100, 1) if rows else 0.0,
+            "recent_24m_count": owner_pool_direct.get("recent_24m_count", 0),
+            "score": confidence_score,
+            "label": confidence_label(confidence_score),
+            "provenance": provenance.get("provenance"),
+        },
     }
 
 
@@ -765,6 +985,7 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
     overall_pk_included = len(overall_years) >= 2 and overall_cagr is not None
     public_window_pk_included = source_kind == "propertyforsale_csv" and overall_pk_included
     focus_rows = [row for row in rows if infer_area_proxy_bucket(row["sqft"]) is not None]
+    owner_pool_proxy_rows = [row for row in rows if infer_area_proxy_bucket(row["sqft"]) in OWNER_POOL_BUCKETS]
     focus_annual = compute_annual_stats_from_rows(focus_rows)
     focus_years = sorted(focus_annual.keys())
     latest_focus_year = max(focus_annual.keys()) if focus_annual else None
@@ -784,6 +1005,37 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
     )
     area_proxy_pk_included = any(
         metric.get("count") for metric in area_proxy_bucket_metrics.values()
+    )
+    overall_reference = summarize_row_set(rows, provenance="overall_reference", label="全项目")
+    owner_pool_direct = summarize_row_set([], provenance="direct_owner_pool", label="自住池(2b1b+2b2b)")
+    owner_pool_area_proxy = summarize_row_set(
+        owner_pool_proxy_rows,
+        provenance="area_proxy",
+        label="自住池(2b1b+2b2b)",
+    )
+    owner_pool_filled = owner_pool_area_proxy
+    if not metric_is_qualified(owner_pool_filled, OWNER_POOL_PROXY_MIN_COUNT):
+        owner_pool_filled = overall_reference
+
+    type_breakout = {}
+    for bucket in OWNER_POOL_BUCKETS:
+        bucket_rows = [row for row in rows if infer_area_proxy_bucket(row["sqft"]) == bucket]
+        type_breakout[bucket] = summarize_row_set(
+            bucket_rows,
+            provenance="area_proxy",
+            label=bucket,
+        )
+
+    owner_pool_pk_included = owner_pool_filled.get("current") is not None and (
+        owner_pool_filled.get("cagr_3y") is not None or owner_pool_filled.get("cagr_5y") is not None
+    )
+    confidence_score = round(
+        min(
+            100.0,
+            min(owner_pool_filled.get("recent_24m_count", 0) * 4, 60)
+            + (35 if owner_pool_filled.get("provenance") == "area_proxy" else 20),
+        ),
+        1,
     )
 
     return {
@@ -835,12 +1087,21 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         "area_proxy_bucket_metrics": area_proxy_bucket_metrics,
         "area_proxy_pk_included": area_proxy_pk_included,
         "area_proxy_scope": "2b1b 600-699 sqft · 2b2b 700-849 sqft · 3b2b 850-1199 sqft",
+        "owner_pool_direct": owner_pool_direct,
+        "owner_pool_area_proxy": owner_pool_area_proxy,
+        "owner_pool_filled": owner_pool_filled,
+        "type_breakout": type_breakout,
+        "overall_reference": overall_reference,
+        "owner_pool_pk_included": owner_pool_pk_included,
+        "data_confidence": {
+            "coverage_pct": 0.0,
+            "recent_24m_count": owner_pool_filled.get("recent_24m_count", 0),
+            "score": confidence_score,
+            "label": confidence_label(confidence_score),
+            "provenance": owner_pool_filled.get("provenance"),
+        },
         "has_detailed_csv": (DATA_DIR / "detailed" / f"{slug}_transactions_detailed.csv").exists(),
-        "has_layout_mapping": (
-            (FORMAL_LAYOUT_DIR / f"{slug}_transaction_layout_map.csv").exists()
-            or (LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv").exists()
-        ),
-        "has_layout_poc": (LEGACY_LAYOUT_DIR / f"{slug}_transactions_layout_poc.csv").exists(),
+        "has_layout_mapping": (FORMAL_LAYOUT_DIR / f"{slug}_transaction_layout_map.csv").exists(),
     }
 
 
@@ -1094,13 +1355,95 @@ def build_rental_trends(layout_catalogs: dict[str, list[dict]]) -> dict:
     return result
 
 
+def merge_focus_metrics(summary: dict, focus_project: dict | None) -> dict:
+    if not focus_project:
+        return summary
+    merged = dict(summary)
+    merged["owner_pool_direct"] = focus_project["owner_pool_direct"]
+    merged["owner_pool_area_proxy"] = summary["owner_pool_area_proxy"]
+    merged["owner_pool_filled"] = select_owner_pool_metric(
+        focus_project["type_breakout"].get("2b2b", {}),
+        focus_project["owner_pool_direct"],
+        summary["owner_pool_area_proxy"],
+        summary["overall_reference"],
+    )
+    merged["type_breakout"] = {
+        **summary.get("type_breakout", {}),
+        **focus_project.get("type_breakout", {}),
+    }
+    merged["overall_reference"] = focus_project["overall_reference"]
+    merged["data_confidence"] = focus_project["data_confidence"]
+    merged["owner_pool_pk_included"] = merged["owner_pool_filled"].get("current") is not None and (
+        merged["owner_pool_filled"].get("cagr_3y") is not None or merged["owner_pool_filled"].get("cagr_5y") is not None
+    )
+    return merged
+
+
+def build_comparison_scores(projects: list[dict]) -> list[dict]:
+    if not projects:
+        return []
+
+    history_positions: dict[str, float | None] = {}
+    region_peer_positions: dict[str, float | None] = {}
+    region_groups = {project.get("region_group") for project in projects}
+
+    for project in projects:
+        current_psf = metric_current_psf(project["owner_pool_filled"])
+        ttm_series = [
+            item["median_psf"] for key, item in sorted(project["owner_pool_filled"].get("ttm_monthly", {}).items())
+        ]
+        history_positions[project["slug"]] = percentile_position(current_psf, ttm_series)
+
+        peer_samples = [
+            metric_current_psf(peer["owner_pool_filled"])
+            for peer in projects
+            if peer.get("region_group") == project.get("region_group")
+        ]
+        if len([sample for sample in peer_samples if sample is not None]) < 3:
+            peer_samples = [metric_current_psf(peer["owner_pool_filled"]) for peer in projects]
+        region_peer_positions[project["slug"]] = percentile_position(current_psf, peer_samples)
+
+    trend_3y_values = [project["owner_pool_filled"].get("cagr_3y") for project in projects]
+    trend_5y_values = [project["owner_pool_filled"].get("cagr_5y") for project in projects]
+    recent_counts = [project["data_confidence"].get("recent_24m_count") for project in projects]
+    coverage_values = [project["data_confidence"].get("coverage_pct") for project in projects]
+
+    scored = []
+    for project in projects:
+        history_score = history_positions[project["slug"]]
+        peer_score = region_peer_positions[project["slug"]]
+        scored.append(
+            {
+                **project,
+                "history_position_pct": round((history_score or 0) * 100, 1) if history_score is not None else None,
+                "peer_position_pct": round((peer_score or 0) * 100, 1) if peer_score is not None else None,
+                "trend_5y_percentile": round((percentile_position(project["owner_pool_filled"].get("cagr_5y"), trend_5y_values) or 0) * 100, 1)
+                if percentile_position(project["owner_pool_filled"].get("cagr_5y"), trend_5y_values) is not None else None,
+                "trend_all_time_percentile": round((percentile_position(project["owner_pool_filled"].get("lifetime_cagr"), [peer["owner_pool_filled"].get("lifetime_cagr") for peer in projects]) or 0) * 100, 1)
+                if percentile_position(project["owner_pool_filled"].get("lifetime_cagr"), [peer["owner_pool_filled"].get("lifetime_cagr") for peer in projects]) is not None else None,
+                "recent_24m_count_percentile": round((percentile_position(project["data_confidence"].get("recent_24m_count"), recent_counts) or 0) * 100, 1)
+                if percentile_position(project["data_confidence"].get("recent_24m_count"), recent_counts) is not None else None,
+                "coverage_percentile": round((percentile_position(project["data_confidence"].get("coverage_pct"), coverage_values) or 0) * 100, 1)
+                if percentile_position(project["data_confidence"].get("coverage_pct"), coverage_values) is not None else None,
+            }
+        )
+
+    scored.sort(
+        key=lambda item: (
+            item["history_position_pct"] if item["history_position_pct"] is not None else 1000,
+            item["peer_position_pct"] if item["peer_position_pct"] is not None else 1000,
+            item["name"],
+        )
+    )
+    return scored
+
+
 def build_payload() -> dict:
     analysis = load_json(ANALYSIS_PATH)
     layout_catalogs = load_layout_catalogs()
     transaction_paths = sorted(DATA_DIR.glob("*_transactions.csv"))
 
     project_summaries = []
-    comparison_projects = []
     overall_comparison_projects = []
     area_proxy_comparison_projects = []
 
@@ -1115,6 +1458,7 @@ def build_payload() -> dict:
             and summary["overall_year_count"] >= 2
             and summary["overall_cagr"] is not None
         ):
+            overall_metric = summary["overall_reference"]
             overall_comparison_projects.append(
                 {
                     "slug": slug,
@@ -1140,11 +1484,13 @@ def build_payload() -> dict:
                     "source_label": summary["source"],
                     "source_csv": summary["source_csv"],
                     "source_url": summary["source_url"],
+                    **build_metric_snapshot(overall_metric),
                 }
             )
 
-        if summary["focus_year_count"] >= 2 and summary["focus_cagr"] is not None:
-            comparison_projects.append(
+        if summary["area_proxy_pk_included"]:
+            area_proxy_metric = summary["owner_pool_area_proxy"]
+            area_proxy_comparison_projects.append(
                 {
                     "slug": slug,
                     "name": summary["name"],
@@ -1152,29 +1498,6 @@ def build_payload() -> dict:
                     "top_year": summary["top_year"],
                     "tenure": summary["tenure"],
                     "units": summary["units"],
-                    "focus_cagr": summary["focus_cagr"],
-                    "focus_annual": summary["focus_annual"],
-                    "focus_latest_year": summary["focus_latest_year"],
-                    "focus_latest_psf": summary["focus_latest_psf"],
-                    "focus_latest_n": summary["focus_latest_n"],
-                    "record_count": summary["record_count"],
-                    "year_range": summary["year_range"],
-                    "focus_period_label": summary["focus_period_label"],
-                    "focus_period_months": summary["focus_period_months"],
-                    "source_kind": summary["source_kind"],
-                    "source_label": summary["source"],
-                    "source_csv": summary["source_csv"],
-                    "source_url": summary["source_url"],
-                    "pk_scope": summary["pk_scope"],
-                }
-            )
-
-        if summary["area_proxy_pk_included"]:
-            area_proxy_comparison_projects.append(
-                {
-                    "slug": slug,
-                    "name": summary["name"],
-                    "region_group": summary["region_group"],
                     "record_count": summary["record_count"],
                     "source_kind": summary["source_kind"],
                     "source_label": summary["source"],
@@ -1182,29 +1505,60 @@ def build_payload() -> dict:
                     "source_url": summary["source_url"],
                     "area_proxy_scope": summary["area_proxy_scope"],
                     "area_proxy_bucket_metrics": summary["area_proxy_bucket_metrics"],
+                    "owner_pool_area_proxy": area_proxy_metric,
+                    **build_metric_snapshot(area_proxy_metric),
                 }
             )
-
-    project_summaries.sort(key=lambda item: item["record_count"], reverse=True)
-    comparison_projects = sorted(
-        comparison_projects,
-        key=lambda item: item["focus_cagr"],
-        reverse=True,
-    )
-    overall_comparison_projects = sorted(
-        overall_comparison_projects,
-        key=lambda item: item["overall_cagr"],
-        reverse=True,
-    )
-    area_proxy_comparison_projects = sorted(
-        area_proxy_comparison_projects,
-        key=lambda item: item["name"],
-    )
 
     focus_projects = {
         slug: build_focus_project(slug, layout_catalogs)
         for slug in ("lakeville", "lakegrande")
     }
+    project_summaries = [
+        merge_focus_metrics(summary, focus_projects.get(summary["slug"]))
+        for summary in project_summaries
+    ]
+    project_summaries.sort(key=lambda item: item["record_count"], reverse=True)
+    overall_comparison_projects = sorted(
+        overall_comparison_projects,
+        key=lambda item: (item["all_time_cagr"] is not None, item["all_time_cagr"] or float("-inf"), item["name"]),
+        reverse=True,
+    )
+    area_proxy_comparison_projects = sorted(
+        area_proxy_comparison_projects,
+        key=lambda item: (item["all_time_cagr"] is not None, item["all_time_cagr"] or float("-inf"), item["name"]),
+        reverse=True,
+    )
+    comparison_projects = build_comparison_scores(
+        [
+            {
+                "slug": summary["slug"],
+                "name": summary["name"],
+                "region_group": summary["region_group"],
+                "top_year": summary["top_year"],
+                "tenure": summary["tenure"],
+                "units": summary["units"],
+                "record_count": summary["record_count"],
+                "source_kind": summary["source_kind"],
+                "source_label": summary["source"],
+                "source_csv": summary["source_csv"],
+                "source_url": summary["source_url"],
+                "owner_pool_direct": summary["owner_pool_direct"],
+                "owner_pool_filled": summary["owner_pool_filled"],
+                "type_breakout": summary["type_breakout"],
+                "overall_reference": summary["overall_reference"],
+                "data_confidence": summary["data_confidence"],
+                **build_metric_snapshot(summary["owner_pool_filled"]),
+            }
+            for summary in project_summaries
+            if summary["owner_pool_pk_included"]
+        ]
+    )
+    comparison_projects = sorted(
+        comparison_projects,
+        key=lambda item: (item["all_time_cagr"] is not None, item["all_time_cagr"] or float("-inf"), item["name"]),
+        reverse=True,
+    )
     ura_browser_projects = build_ura_browser_projects(project_summaries)
     rental_trends = build_rental_trends(layout_catalogs)
     layout_comparison_projects = sorted(
@@ -1212,14 +1566,21 @@ def build_payload() -> dict:
             {
                 "slug": project["slug"],
                 "name": project["name"],
+                "region_group": project.get("region_group"),
                 "coverage_pct": project["coverage_pct"],
                 "row_count": project["row_count"],
+                "type_breakout": project["type_breakout"],
                 "typed_bucket_metrics": project["typed_bucket_metrics"],
+                "owner_pool_direct": project["owner_pool_direct"],
+                "owner_pool_filled": project["owner_pool_filled"],
+                "data_confidence": project["data_confidence"],
+                **build_metric_snapshot(project["owner_pool_direct"]),
             }
             for project in focus_projects.values()
-            if any(project["typed_bucket_metrics"].get(bucket, {}).get("count") for bucket in ("2b1b", "2b2b", "3b2b"))
+            if project["owner_pool_direct"].get("current") is not None
         ],
-        key=lambda item: item["name"],
+        key=lambda item: (item["all_time_cagr"] is not None, item["all_time_cagr"] or float("-inf"), item["name"]),
+        reverse=True,
     )
 
     total_records = sum(project["record_count"] for project in project_summaries)
@@ -1280,9 +1641,10 @@ def main() -> None:
     print(
         f"dashboard data written to {OUTPUT_PATH} and {OUTPUT_JS_PATH} "
         f"({payload['meta']['project_count']} real CSV projects, "
-        f"{payload['meta']['overall_comparison_project_count']} propertyforsale resale PK projects, "
+        f"{payload['meta']['overall_comparison_project_count']} overall-reference PK projects, "
         f"{payload['meta']['ura_resale_project_count']} URA resale fallback projects, "
         f"{payload['meta']['srx_project_count']} legacy SRX primary projects, "
+        f"{payload['meta']['pk_project_count']} owner-pool PK projects, "
         f"{payload['meta']['area_proxy_comparison_project_count']} area-proxy PK projects, "
         f"{payload['meta']['layout_comparison_project_count']} typed-layout PK projects, "
         f"{payload['meta']['ura_browser_project_count']} URA browser projects, "

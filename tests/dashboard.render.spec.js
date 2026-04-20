@@ -14,50 +14,60 @@ test.describe('dashboard render', () => {
     const data = await page.evaluate(() => window.__DASHBOARD_DATA__);
     const nonPropertyProject = data.projects.find(project => project.source_kind !== 'propertyforsale_csv');
     await expect(page.locator('#pk_kpis .kpi').first()).toBeVisible();
-    await expect(page.locator('#overall_cagr_chart .cagr-row').first()).toBeVisible();
-    
-    await expect(page.locator('#cumulative_cagr_chart')).toBeVisible();
-    await expect(page.locator('#yoy_return_chart')).toBeVisible();
-    await expect(page.locator('#typed_bucket_cagr_chart')).toBeVisible();
-    
-    await page.locator('summary', { hasText: '口径 1 · 全部主源整体 CAGR 汇总' }).click();
-    await page.locator('summary', { hasText: '附加 · propertyforsale resale 主源 CAGR 汇总' }).click();
+    await expect(page.locator('#overall_cagr_chart')).toBeVisible();
+    await expect(page.locator('#overall_yoy_chart')).toBeVisible();
+    await expect(page.locator('#layout_cagr_chart')).toBeVisible();
+    await expect(page.locator('#layout_yoy_chart')).toBeVisible();
+    await expect(page.locator('#area_proxy_cagr_chart')).toBeVisible();
+    await expect(page.locator('#area_proxy_yoy_chart')).toBeVisible();
+    await expect(page.locator('#owner_pool_cagr_chart')).toBeVisible();
+    await expect(page.locator('#owner_pool_yoy_chart')).toBeVisible();
+
+    await page.locator('summary:has-text("口径 1 · 全项目汇总")').click();
+    await page.locator('summary:has-text("口径 2 · 真实户型映射汇总")').click();
+    await page.locator('summary:has-text("口径 3 · 面积代理汇总")').click();
+    await page.locator('summary:has-text("口径 4 · 自住口径汇总")').click();
     await expect(page.locator('#overall_projects_table tbody tr').first()).toBeVisible();
-    await expect(page.locator('#all_source_cagr_table tbody tr').first()).toBeVisible();
     await expect(page.locator('#layout_projects_table tbody tr').first()).toBeVisible();
     await expect(page.locator('#area_proxy_projects_table tbody tr').first()).toBeVisible();
-    await expect(page.locator('#overall_projects_table')).toContainText('_transactions.csv');
+    await expect(page.locator('#owner_pool_projects_table tbody tr').first()).toBeVisible();
+
+    await expect(page.locator('#s10')).toContainText('口径 1 · 全项目');
+    await expect(page.locator('#s10')).toContainText('口径 2 · 真实户型映射');
+    await expect(page.locator('#s10')).toContainText('口径 3 · 面积代理');
+    await expect(page.locator('#s10')).toContainText('口径 4 · 自住口径');
+    await expect(page.locator('#s10')).not.toContainText('当前自住池价格位置');
+    await expect(page.locator('#s10')).not.toContainText('历史位置');
+    await expect(page.locator('#s10 canvas')).toHaveCount(8);
+    const defaultVisible = await page.evaluate(() => {
+      const chart = Chart.getChart(document.getElementById('overall_cagr_chart'));
+      return chart.data.datasets.filter((dataset, index) => chart.isDatasetVisible(index)).map((dataset) => dataset.label).sort();
+    });
+    expect(defaultVisible).toEqual(['Lake Grande', 'Lakeville']);
     if (nonPropertyProject) {
-      await expect(page.locator('#overall_projects_table')).toContainText(nonPropertyProject.source);
-      await expect(page.locator('#overall_projects_table')).toContainText(nonPropertyProject.name);
+      await expect(page.locator('#area_proxy_projects_table')).toContainText(nonPropertyProject.name);
     }
-    await expect(page.locator('#overall_projects_table')).toContainText('Lakeville');
+    await expect(page.locator('#overall_projects_table tbody tr.focus-row')).toHaveCount(2);
+    await expect(page.locator('#area_proxy_projects_table tbody tr.focus-row')).toHaveCount(2);
+    await expect(page.locator('#owner_pool_projects_table tbody tr.focus-row')).toHaveCount(2);
+    await expect(page.locator('#owner_pool_projects_table')).toContainText('Lakeville');
+    await expect(page.locator('#owner_pool_projects_table')).toContainText('Lake Grande');
+    await expect(page.locator('#owner_pool_projects_table')).toContainText('YoY');
     await expect(page.locator('#layout_projects_table')).toContainText('Lake Grande');
-    await expect(page.locator('#layout_projects_table')).toContainText('2b1b');
-    await expect(page.locator('#area_proxy_projects_table')).toContainText('600-699 sqft');
-    await expect(page.locator('#area_proxy_projects_table')).toContainText('Lakeville');
-    await expect(page.locator('#area_proxy_projects_table')).toContainText('Hundred Trees');
-    await expect(page.locator('#area_proxy_projects_table tbody tr').first()).toContainText('笔');
+    await expect(page.locator('#layout_projects_table')).toContainText('映射覆盖率');
   });
 
   test('s12 renders scraped project table and PK inclusion status', async ({ page }) => {
     await page.goto('/?tab=s12');
     const data = await page.evaluate(() => window.__DASHBOARD_DATA__);
     const meta = data.meta;
-    const fallbackProject = data.projects.find(project => (
-      project.source_kind !== 'propertyforsale_csv' && project.overall_pk_included
-    ));
     await expect(page.locator('#scrape_kpis .kpi').first()).toBeVisible();
     await expect(page.locator('#focus_mapping_cards .ai').first()).toBeVisible();
     await expect(page.locator('#scraped_projects_table tbody tr').first()).toBeVisible();
-    await expect(page.locator('#scraped_projects_table thead')).toContainText('口径1 PK');
+    await expect(page.locator('#scraped_projects_table thead')).toContainText('自住PK');
     await expect(page.locator('#scraped_projects_table')).toContainText('已纳入');
-    await expect(page.locator('#scraped_projects_table')).toContainText('面积近似PK');
-    if (fallbackProject) {
-      await expect(page.locator('#scraped_projects_table')).toContainText(fallbackProject.source);
-      const fallbackRow = page.locator('#scraped_projects_table tbody tr', { hasText: fallbackProject.name });
-      await expect(fallbackRow.locator('td').nth(8)).toHaveText('已纳入');
-    }
+    await expect(page.locator('#scraped_projects_table')).toContainText('自住主口径');
+    await expect(page.locator('#scraped_projects_table')).toContainText('confidence');
     expect(meta.propertyforsale_project_count + meta.ura_resale_project_count + meta.srx_project_count).toBe(meta.project_count);
     expect(meta.srx_backup_project_count).toBeGreaterThan(0);
     expect(meta.layout_mapping_source).toBe('formal');
