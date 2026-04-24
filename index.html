@@ -2448,7 +2448,7 @@ function computeDecisionListingValuation(payload,input){
   });
   const widened=!recent.length;
   if(widened) recent=txns;
-  const cagr=bucketData.local_cagr||0.02;
+  const cagr=bucketData.local_cagr??0.02;
   const adjustedPsfs=recent.map(txn=>{
     const parsed=parseMonthYearCompact(txn.date);
     const months=parsed?ref.index-parsed.index:0;

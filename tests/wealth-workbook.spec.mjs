@@ -47,6 +47,14 @@ function buildDefaultScenario() {
   });
 }
 
+function assertClose(actual, expected, label) {
+  const tolerance = 1e-12;
+  assert.ok(
+    Math.abs(actual - expected) <= tolerance,
+    `${label}: expected ${expected}, got ${actual}`
+  );
+}
+
 test("wealth workbook builder exports workbook with visible and support sheets", async () => {
   fs.rmSync(workbookPath, { force: true });
 
@@ -112,7 +120,7 @@ test("wealth workbook default results match wealth-model output on key metrics",
     assert.equal(row[13], scenario.wealth.oaBalance);
     assert.equal(row[14], scenario.wealth.propEquity);
     assert.equal(row[15], scenario.wealth.totalWealth);
-    assert.equal(row[16], scenario.wealth.totalCagr);
+    assertClose(row[16], scenario.wealth.totalCagr, `${scenario.label} totalCagr`);
   });
 });
 

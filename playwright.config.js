@@ -2,6 +2,13 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
+  testIgnore: [
+    '**/tests/dashboard.bootstrap.spec.js',
+    '**/tests/dashboard.owner-pool.spec.js',
+    '**/tests/test-entrypoints.spec.js',
+    '**/tests/wealth-model.spec.js',
+    '**/tests/wealth-workbook.spec.mjs',
+  ],
   timeout: 30_000,
   expect: {
     timeout: 5_000,

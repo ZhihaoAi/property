@@ -46,6 +46,78 @@ function buildElement(id) {
   };
 }
 
+function runDashboardInlineScript({ search = '?tab=s5', dashboardData = loadDashboardData(), initialValues = {} } = {}) {
+  const html = fs.readFileSync('./index.html', 'utf8');
+  const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
+  const inlineScript = scripts[scripts.length - 1];
+  const elements = new Map();
+  const getElement = (id) => {
+    if (!elements.has(id)) {
+      const element = buildElement(id);
+      if (Object.prototype.hasOwnProperty.call(initialValues, id)) element.value = initialValues[id];
+      elements.set(id, element);
+    }
+    return elements.get(id);
+  };
+  const inputIds = [
+    'i_assets', 'i_male_gross', 'i_male_bonus', 'i_male_oa',
+    'i_female_gross', 'i_female_bonus', 'i_female_oa',
+    'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
+    'i_float_rate', 'i_total_yrs',
+  ];
+  const document = {
+    getElementById: getElement,
+    querySelectorAll(selector) {
+      return selector === '.inputs input' ? inputIds.map(getElement) : [];
+    },
+    querySelector() {
+      return buildElement('query');
+    },
+    createElement(tag) {
+      return buildElement(tag);
+    },
+  };
+
+  function ChartMock() {
+    return { destroy() {} };
+  }
+  ChartMock.register = () => {};
+  ChartMock.defaults = { color: '', borderColor: '', font: {}, plugins: { datalabels: {} } };
+
+  const context = {
+    window: {
+      WealthModel: wealthModel,
+      __DASHBOARD_DATA__: dashboardData,
+      location: { protocol: 'file:', search },
+    },
+    document,
+    console,
+    Chart: ChartMock,
+    ChartDataLabels: {},
+    fetch: async () => ({ ok: true, json: async () => dashboardData }),
+    setTimeout,
+    clearTimeout,
+    Promise,
+    URL,
+    URLSearchParams,
+  };
+
+  Object.assign(context.window, {
+    document,
+    console,
+    Chart: ChartMock,
+    ChartDataLabels: {},
+    fetch: context.fetch,
+    setTimeout,
+    clearTimeout,
+    URLSearchParams,
+  });
+
+  vm.createContext(context);
+  vm.runInContext(inlineScript, context);
+  return { context, elements };
+}
+
 test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', async () => {
   const html = fs.readFileSync('./index.html', 'utf8');
   const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
@@ -140,4 +212,40 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
   assert.match(elements.get('cost_detail_table').innerHTML, /实际 CPF OA 支出/);
   assert.doesNotMatch(elements.get('assumptions_box').innerHTML, /1997-06-25/);
   assert.equal(elements.get('i_assets').value, 800);
+});
+
+test('listing valuation preserves explicit zero local CAGR', async () => {
+  const dashboardData = {
+    ...loadDashboardData(),
+    listing_valuation: {
+      default_window_months: 24,
+      projects: {
+        lakegrande: {
+          latest_date: 'Mar2026',
+          latest_date_label: 'Mar 2026',
+          buckets: {
+            '2b2b': {
+              local_cagr: 0,
+              transactions: [
+                { date: 'Mar2025', sqft: 775, psf: 1000, price: 775000 },
+              ],
+            },
+          },
+        },
+      },
+    },
+  };
+  const { elements } = runDashboardInlineScript({
+    search: '?tab=s14',
+    dashboardData,
+    initialValues: {
+      decision_listing_sqft: '775',
+      decision_listing_price: '775000',
+      decision_listing_window: '24',
+    },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.match(elements.get('decision_listing_result').innerHTML, /Time-adjust:\s+0\.00% local CAGR/);
+  assert.match(elements.get('decision_listing_result').innerHTML, /P50 : \$1,000/);
 });
