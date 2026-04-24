@@ -146,6 +146,8 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     <button class="tab" onclick="go('s12',this)">🗂️ 已爬数据</button>
     <button class="tab" onclick="go('s13',this)">🏢 URA项目页</button>
     <button class="tab" onclick="go('s11',this)">🚇 地铁距离</button>
+    <button class="tab" onclick="go('s14',this)">🎯 决策</button>
+    <button class="tab" onclick="go('s15',this)">📉 地契折旧</button>
   </div>
 
   <!-- ===== S1: OVERVIEW ===== -->
@@ -449,7 +451,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S9: RENTAL TRENDS ===== -->
   <div id="s9" class="sec">
     <div class="st">📈 URA 租金走势 · Lakeville vs Lake Grande</div>
-    <p class="sd">数据来源：URA 租赁合同（2021Q1 ~ 2026Q1）。户型分类基于 layout catalog 面积映射。Lake Grande 700-800 sqft 的 2BR 合同中可能混入少量 2B1B（721sqft），已按 2B2B 处理。</p>
+    <p class="sd">项目级样本来自 URA 租赁合同（2021Q1 ~ 2026Q1），户型分类基于 layout catalog 面积映射。长期市场基准另补官方 URA 非有地私宅租金指数（2004Q1 ~ 2025Q4），用于给长期 <code>g</code> 提供锚点。Lake Grande 700-800 sqft 的 2BR 合同中可能混入少量 2B1B（721sqft），已按 2B2B 处理。</p>
 
     <div class="g2" style="margin-top:1.2rem">
       <div class="card">
@@ -480,6 +482,17 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="card">
         <div class="ct"><span class="dot" style="background:var(--cy)"></span>Yield 汇总 · 最新季度</div>
         <div id="rental_yield_table"></div>
+      </div>
+    </div>
+    <div class="g2" style="margin-top:1.2rem">
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--ac2)"></span>官方长期租金基准 · 非有地私宅</div>
+        <p class="sd" style="margin:0.3rem 0 0.6rem;font-size:0.82rem">官方来源：URA / data.gov.sg。Lakeville / Lake Grande 属于 OCR，因此主看 <code>Outside Central Region · Non-Landed</code>；同时附 Whole Island 供参照。这个图回答的是“长期租金年增速 g 应该落在哪个历史分布里”。</p>
+        <div class="cc"><canvas id="c_rent_benchmark"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--cy)"></span>长期 g 锚点</div>
+        <div id="rent_benchmark_note"></div>
       </div>
     </div>
   </div>
@@ -707,6 +720,65 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
   </div>
 
+  <!-- ===== S14: DECISION (sensitivity / rental-yield / listing) ===== -->
+  <div id="s14" class="sec">
+    <div class="st">🎯 决策面板</div>
+    <p class="sd">把当前财富模型暴露给三个决策视角：收益率敏感性、租金收益率价值底、挂牌价公允性。这里的房价增长率 <code>r</code> 统一解释为最终 resale price 的 all-in CAGR，不再额外叠加 lease decay。</p>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="ct"><span class="dot" style="background:var(--ac)"></span>区块 1 · 收益率敏感性（wealth 终值 vs 年化房产增长率）</div>
+      <p class="sd">固定其它假设，把 Lakeville / Lake Grande 的年化增长率同步在 <code>-2%</code> 到 <code>6%</code> 之间扫描，每个买入方案对应一条曲线，与纯租房基线对比。这里的 <code>r</code> 直接代表 4 年后最终 resale price 的 all-in CAGR。两条线交点即该方案的 buy/rent break-even 收益率。</p>
+      <div style="position:relative;height:420px"><canvas id="decision_sensitivity_chart"></canvas></div>
+      <div id="decision_sensitivity_note" class="sd" style="margin-top:12px"></div>
+      <div id="decision_sensitivity_formula" class="sd" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="ct"><span class="dot" style="background:var(--g)"></span>区块 2 · 租金收益率价值底（Gordon growth）</div>
+      <p class="sd">左图：Lakeville / Lake Grande 的 2B2B gross yield 时序与历史均值。右表：在不同 <em>required_yield</em> 与 <em>租金长期增长率 g</em> 假设下，Gordon 模型 <code>fair_price = annual_rent / (required_yield − g)</code> 反推的隐含公允价 vs 当前市场中位价。由于分子当前使用的是 <strong>gross annual rent</strong>，这里的 <em>required_yield</em> 应先读作 <strong>required gross yield proxy</strong>；若要看净值口径，应先把年租改成净租再代入。</p>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start">
+        <div><div style="position:relative;height:320px"><canvas id="decision_yield_chart"></canvas></div></div>
+        <div id="decision_fair_price_tables"></div>
+      </div>
+      <div id="decision_yield_note" class="sd" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><span class="dot" style="background:var(--y)"></span>区块 3 · Listing 公允价计算器（CLI）</div>
+      <p class="sd">浏览器本地复用 <code>listing_valuation.py</code> 口径：同项目同户型最近 12 月成交，用本地 by-type CAGR 做时间归一化，输出 P10/P25/P50/P75/P90 分位和 verdict（BARGAIN / FAIR-CHEAP / FAIR-RICH / RICH / OVERPRICED）。未提供 floor / facing 时，区间宽度自然反映不确定性。</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0">
+        <label class="sd">项目<br><select id="decision_listing_project" style="width:100%;margin-top:6px"></select></label>
+        <label class="sd">面积 sqft<br><input id="decision_listing_sqft" type="number" min="1" step="1" value="775" style="width:100%;margin-top:6px"></label>
+        <label class="sd">挂牌价 SGD<br><input id="decision_listing_price" type="number" min="1" step="1000" value="1480000" style="width:100%;margin-top:6px"></label>
+        <label class="sd">回看窗口（月）<br><input id="decision_listing_window" type="number" min="1" step="1" value="12" style="width:100%;margin-top:6px"></label>
+      </div>
+      <div id="decision_listing_result" class="sd" style="margin-top:12px"></div>
+      <pre style="background:var(--bg2);padding:12px;border-radius:8px;overflow-x:auto;font-size:12px"><code>$ python3 listing_valuation.py --project lakegrande --sqft 775 --price 1480000
+$ python3 listing_valuation.py --project lakeville  --sqft 990 --price 1900000</code></pre>
+      <p class="sd">CLI 仍保留，适合批量试价；上面的表单则适合快速看当前一套挂牌的分位位置。</p>
+    </div>
+  </div>
+
+  <div id="s15" class="sec">
+    <div class="st">📉 Lease Decay 解释</div>
+    <p class="sd">这页单独解释 99 年 leasehold 的理论折旧，不把它再混进主财富模型的 <code>r</code>。主模型里的 <code>r</code> 现在定义为最终 resale price 的 all-in CAGR；这页只回答“如果把 lease decay 单独拆出来，理论上有多大”。</p>
+    <div class="g2">
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--or)"></span>Bala 曲线（剩余年限 → 相对价值）</div>
+        <div class="cc"><canvas id="c_lease_bala"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="dot" style="background:var(--rd)"></span>理论 drag vs 实际 all-in CAGR</div>
+        <div id="lease_decay_table"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px">
+      <div class="ct"><span class="dot" style="background:var(--ac2)"></span>4 年期理论 lease drag</div>
+      <div class="cc"><canvas id="c_lease_drag"></canvas></div>
+      <div id="lease_decay_note" class="sd" style="margin-top:12px"></div>
+    </div>
+  </div>
+
 </div>
 
 <script src="data/dashboard_data.js"></script>
@@ -729,16 +801,47 @@ const SCATTER_DATA={
   lakeville:[{x:560,y:894},{x:635,y:1080},{x:635,y:1168},{x:678,y:1070},{x:678,y:1019},{x:731,y:1260},{x:731,y:1250},{x:775,y:1270},{x:775,y:1370},{x:764,y:1230},{x:721,y:1270},{x:968,y:1795}],
   lakeGrande:[{x:516,y:785},{x:613,y:1275},{x:624,y:1100},{x:721,y:1360},{x:721,y:1285},{x:775,y:1430},{x:775,y:1446},{x:775,y:1468},{x:775,y:1510},{x:818,y:1514},{x:818,y:1495},{x:861,y:1630},{x:904,y:1739},{x:947,y:1600}],
 };
-let psfChart,tpChart,scatterChart,upfrontChart,cashCpfChart,m30Chart,m25Chart,rateJumpChart,wealthChart,breakdownChart,flowChart,leverageChart,loanCapChart,tenureChart;
+let psfChart,tpChart,scatterChart,upfrontChart,cashCpfChart,m30Chart,m25Chart,rateJumpChart,wealthChart,breakdownChart,flowChart,leverageChart,loanCapChart,tenureChart,sensitivityChart,yieldChart,rentBenchmarkChart,leaseBalaChart,leaseDragChart;
 let activeDashboardData=null;
 
 function toK(v){return v/1000}
 function fmtMoney(v){return '$'+Math.round(v).toLocaleString()}
 function fmtK(v){return '$'+(Math.round(v/100)/10).toLocaleString()+'K'}
 function fmtPct(value,digits=1){return (value*100).toFixed(digits)+'%'}
+function fmtSignedPct(value,digits=1){return (value>=0?'+':'')+(value*100).toFixed(digits)+'%'}
 function avg(values){return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0}
+function fmtMaybePct(value,digits=1){return value==null?'—':fmtPct(value,digits)}
 function hiClass(result,index,buyResults){if(result.loan.capped)return'wr';if(index===0)return'hi';if(index===buyResults.length-1)return'bd';return''}
 function wealthYearsLabels(years){return['今天',...Array.from({length:years},(_,i)=>'Y'+(i+1))]}
+function parseMonthYearCompact(label){
+  if(!label||label.length<6) return null;
+  const months={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  const month=months[label.slice(0,3)];
+  const year=Number(label.slice(3));
+  if(!month||!Number.isFinite(year)) return null;
+  return {year,month,index:year*12+month};
+}
+function listingSqftBucket(sqft){
+  if(sqft>=600&&sqft<=699) return '2b1b';
+  if(sqft>=700&&sqft<=849) return '2b2b';
+  if(sqft>=850&&sqft<=1199) return '3b2b';
+  return null;
+}
+function percentileLinear(values,pct){
+  if(!values.length) return NaN;
+  const sorted=[...values].sort((a,b)=>a-b);
+  const k=(sorted.length-1)*pct;
+  const lo=Math.floor(k);
+  const hi=Math.min(lo+1,sorted.length-1);
+  return sorted[lo]+(sorted[hi]-sorted[lo])*(k-lo);
+}
+function buildListingVerdict(targetPsf,quantiles){
+  if(targetPsf<quantiles[25]) return 'BARGAIN (below P25)';
+  if(targetPsf<quantiles[50]) return 'FAIR-CHEAP (P25–P50)';
+  if(targetPsf<quantiles[75]) return 'FAIR-RICH (P50–P75)';
+  if(targetPsf<quantiles[90]) return 'RICH (P75–P90)';
+  return 'OVERPRICED (above P90)';
+}
 
 function setScenarioInputDefaults(){
   const {household}=DEFAULTS;
@@ -1005,6 +1108,7 @@ function renderScenario(){
   loanCapChart=new Chart(document.getElementById('c_loan'),{type:'bar',data:{labels:buyResults.map(r=>r.label+'\n$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M'),datasets:[{label:'75% LTV理论贷款',data:buyResults.map(r=>WM.round1(toK(r.loan.desiredLoan))),backgroundColor:C.pr+'66',borderColor:C.pr,borderWidth:2},{label:'实际可贷(上限$1.1M)',data:buyResults.map(r=>WM.round1(toK(r.loan.actualLoan))),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:600,title:{display:true,text:'贷款额 S$千'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+v+'K'}}}});
   if(tenureChart)tenureChart.destroy();
   tenureChart=new Chart(document.getElementById('c_tenure'),{type:'bar',data:{labels:buyResults.map(r=>r.label),datasets:[{label:'固定期月供',data:buyResults.map(r=>r.wealth.housing.fixedPhase.mortgage),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1},{label:'浮动期月供',data:buyResults.map(r=>r.wealth.housing.floatPhase.mortgage),backgroundColor:C.or+'99',borderColor:C.or,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:false,min:2800,title:{display:true,text:'房贷月供 S$'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{size:11,weight:'bold'},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
+  if(activeDashboardData && typeof renderLeaseDecayAnalysis === 'function') renderLeaseDecayAnalysis(activeDashboardData);
 }
 
 setScenarioInputDefaults();
@@ -2093,6 +2197,405 @@ function renderRentalTrends(data){
     yhtml += '</tbody></table>';
     yieldTableEl.innerHTML = yhtml;
   }
+
+  const benchmark=data.market_rent_benchmarks;
+  const benchmarkCanvas=document.getElementById('c_rent_benchmark');
+  const benchmarkNote=document.getElementById('rent_benchmark_note');
+  if(benchmarkCanvas && benchmark && benchmark.series){
+    const ocr=(benchmark.series.ocr_non_landed||[]);
+    const island=(benchmark.series.whole_island_non_landed||[]);
+    const labels=ocr.map(pt=>pt.quarter);
+    if(rentBenchmarkChart) rentBenchmarkChart.destroy();
+    rentBenchmarkChart=new Chart(benchmarkCanvas,{
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {
+            label:'Official OCR Non-Landed',
+            data:ocr.map(pt=>pt.index),
+            borderColor:C.pr,
+            backgroundColor:'rgba(162,155,254,.18)',
+            borderWidth:2.5,
+            pointRadius:0,
+            tension:0.2,
+          },
+          {
+            label:'Official Whole Island Non-Landed',
+            data:island.map(pt=>pt.index),
+            borderColor:C.cy,
+            backgroundColor:'rgba(129,236,236,.18)',
+            borderWidth:2,
+            pointRadius:0,
+            borderDash:[6,4],
+            tension:0.2,
+          },
+        ],
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        scales:{
+          y:{title:{display:true,text:'Rental Index (2009Q1 = 100)'}},
+          x:{ticks:{maxTicksLimit:10}},
+        },
+        plugins:{legend:{position:'bottom'}},
+      },
+    });
+    if(benchmarkNote){
+      const ocr10=benchmark.stats?.ocr_non_landed?.rolling_10y||{};
+      const ocr5=benchmark.stats?.ocr_non_landed?.rolling_5y||{};
+      benchmarkNote.innerHTML=
+        '<div class="ai" style="margin-bottom:12px"><div class="l">官方长期锚点（OCR 非有地）</div><div class="v">10Y rolling CAGR 中位 '+fmtMaybePct(ocr10.median,2)+' · IQR '+fmtMaybePct(ocr10.p25,2)+' ~ '+fmtMaybePct(ocr10.p75,2)+'</div></div>'+
+        '<div class="ai" style="margin-bottom:12px"><div class="l">最近窗口</div><div class="v">Trailing 10Y '+fmtMaybePct(ocr10.current,2)+' · Trailing 5Y '+fmtMaybePct(ocr5.current,2)+'</div></div>'+
+        '<div class="ai"><div class="l">怎么用在 g</div><div class="v">如果要给长期 <code>g</code> 一个历史锚点，先看 OCR 非有地 10Y rolling CAGR 的中位数，再用项目级 5 年样本判断当前周期是否明显高于/低于长期。</div></div>';
+    }
+  }
+}
+
+function renderDecisionSensitivity(data){
+  const canvas=document.getElementById('decision_sensitivity_chart');
+  if(!canvas) return;
+  const note=document.getElementById('decision_sensitivity_note');
+  const formula=document.getElementById('decision_sensitivity_formula');
+  const sens=data && data.sensitivity;
+  if(!sens || !Array.isArray(sens.points) || !sens.points.length){
+    if(note) note.textContent='暂无敏感性数据。请运行 `python3 build_dashboard_data.py` 生成 sensitivity 字段。';
+    if(formula) formula.textContent='';
+    return;
+  }
+  const xs=sens.points.map(p=>p.growthRate);
+  const planIds=['A','B','C','D','E','F'];
+  const labelById={};
+  (sens.plan_labels||[]).forEach(p=>{labelById[p.id]={label:p.label,color:p.color,isRent:p.isRent};});
+  const datasets=planIds.map(id=>{
+    const meta=labelById[id]||{label:id,color:'#aaa',isRent:id==='F'};
+    return{
+      label:meta.label,
+      data:sens.points.map(p=>Math.round(p.byPlan[id].totalWealth)),
+      borderColor:meta.color,
+      backgroundColor:meta.color,
+      borderWidth:meta.isRent?3:2,
+      borderDash:meta.isRent?[6,4]:[],
+      pointRadius:2,
+      tension:0.15,
+      fill:false,
+    };
+  });
+  if(sensitivityChart) sensitivityChart.destroy();
+  sensitivityChart=new Chart(canvas,{
+    type:'line',
+    data:{labels:xs.map(v=>(v*100).toFixed(1)+'%'),datasets},
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'bottom'},
+        tooltip:{callbacks:{title:(items)=>'年化增长率 '+items[0].label,label:(ctx)=>ctx.dataset.label+': $'+(ctx.parsed.y/1e3).toFixed(1)+'K'}},
+      },
+      scales:{
+        x:{title:{display:true,text:'年化房产增长率'}},
+        y:{title:{display:true,text:'4 年后 totalWealth (SGD)'},ticks:{callback:v=>'$'+(v/1e6).toFixed(2)+'M'}},
+      },
+    },
+  });
+  // Break-even: first rate where best buy >= rent.
+  let be=null;
+  const buyIds=planIds.filter(id=>id!=='F');
+  for(let i=0;i<sens.points.length;i++){
+    const p=sens.points[i];
+    const rent=p.byPlan.F.totalWealth;
+    const bestBuy=Math.max(...buyIds.map(id=>p.byPlan[id].totalWealth));
+    if(bestBuy>=rent){be={rate:p.growthRate,bestBuy,rent};break;}
+  }
+  if(note){
+    const current=sens.points.find(p=>Math.abs(p.growthRate-DEFAULTS.lakevilleAnnualGrowth)<1e-9);
+    const curTxt=current?('当前默认 '+(DEFAULTS.lakevilleAnnualGrowth*100).toFixed(1)+'%：最优买入 $'+(Math.max(...buyIds.map(id=>current.byPlan[id].totalWealth))/1e6).toFixed(2)+'M，租房 $'+(current.byPlan.F.totalWealth/1e6).toFixed(2)+'M'):'';
+    const beTxt=be?('Buy/Rent break-even ≈ '+(be.rate*100).toFixed(1)+'%（在该增长率下最优买入开始超过纯租房）'):'扫描区间内买入方案始终不敌租房，需更高增长率。';
+    note.innerHTML=beTxt+'　·　'+curTxt+'　·　口径：<code>r</code> = 最终 resale price 的 all-in CAGR';
+  }
+  if(formula){
+    const current=sens.points.find(p=>Math.abs(p.growthRate-DEFAULTS.lakevilleAnnualGrowth)<1e-9)||sens.points[0];
+    const currentBuyId=buyIds.sort((a,b)=>current.byPlan[b].totalWealth-current.byPlan[a].totalWealth)[0];
+    const currentResult=buildScenarioModel().buyResults.find(r=>r.id===currentBuyId);
+    const basePrice=currentResult?.transaction?.price||0;
+    formula.innerHTML=
+      '<div style="background:var(--bg2);padding:12px;border-radius:8px;line-height:1.7">'+
+      '<div style="font-weight:600;margin-bottom:6px">公式全过程 + 当前默认值代入</div>'+
+      '<div>1. 对每个扫描点 <code>r</code>，同步设定 <code>lakevilleAnnualGrowth = lakeGrandeAnnualGrowth = r</code>，其它假设保持 <code>DEFAULT_ASSUMPTIONS</code> 不变。</div>'+
+      '<div>2. 每月滚动资金：<code>Stock[t+1] = Stock[t] × (1 + 7%/12) + investableCash[t]</code>；<code>OA[t+1] = OA[t] × (1 + 2.5%/12) + OA_in[t] − OA_housing[t]</code>。</div>'+
+      '<div>3. 年末房产净值：<code>PropertyEquity[t] = Price0 × (1 + r)^t − LoanBalance(t)</code>。</div>'+
+      '<div>4. 当前默认最优买入是 <code>'+((labelById[currentBuyId]||{}).label||currentBuyId)+'</code>，<code>Price0 = '+fmtMoney(basePrice)+'</code>，<code>r = '+fmtPct(DEFAULTS.lakevilleAnnualGrowth,1)+'</code>。这里的 <code>r</code> 已经包含 lease drag、周期、供需、楼龄等所有最终 resale price 结果。</div>'+
+      '<div>5. 最终总财富：<code>TotalWealth[4Y] = Stock[4Y] + OA[4Y] + PropertyEquity[4Y]</code>；租房方案同样跑 48 个月，但 <code>PropertyEquity = 0</code>。</div>'+
+      '<div style="margin-top:6px;color:var(--t2)">主模型不再额外乘 <code>LeaseAdj</code>。地契折旧的理论拆解被单独放到「📉 地契折旧」tab，避免和 all-in CAGR 口径混在一起。</div>'+
+      '</div>';
+  }
+}
+
+function renderDecisionRentalYield(data){
+  const chartEl=document.getElementById('decision_yield_chart');
+  const tablesEl=document.getElementById('decision_fair_price_tables');
+  const noteEl=document.getElementById('decision_yield_note');
+  if(!chartEl||!tablesEl) return;
+  const dry=data && data.decision_rental_yield;
+  if(!dry || !dry.projects){
+    if(noteEl) noteEl.textContent='暂无 decision_rental_yield 数据。';
+    return;
+  }
+  const slugs=['lakeville','lake_grande'];
+  const slugLabels={lakeville:'Lakeville 2B2B',lake_grande:'Lake Grande 2B2B'};
+  const slugColors={lakeville:C.bl,lake_grande:C.pr};
+  const datasets=[],allQuarters=new Set();
+  slugs.forEach(slug=>{
+    const bucket=(dry.projects[slug]||{})['2b2b'];
+    if(!bucket||!Array.isArray(bucket.series)) return;
+    bucket.series.forEach(pt=>{if(pt.gross_yield!=null) allQuarters.add(pt.quarter);});
+  });
+  const qSorted=[...allQuarters].sort();
+  slugs.forEach(slug=>{
+    const bucket=(dry.projects[slug]||{})['2b2b'];
+    if(!bucket) return;
+    const byQ={};(bucket.series||[]).forEach(pt=>{byQ[pt.quarter]=pt.gross_yield;});
+    datasets.push({
+      label:slugLabels[slug],
+      data:qSorted.map(q=>byQ[q]!=null?byQ[q]:null),
+      borderColor:slugColors[slug],backgroundColor:slugColors[slug],
+      borderWidth:2,pointRadius:2,tension:0.2,spanGaps:true,
+    });
+    if(bucket.historical_mean_yield!=null){
+      datasets.push({
+        label:slugLabels[slug]+' 均值',
+        data:qSorted.map(()=>bucket.historical_mean_yield),
+        borderColor:slugColors[slug],borderDash:[4,4],borderWidth:1,pointRadius:0,fill:false,
+      });
+    }
+  });
+  if(yieldChart) yieldChart.destroy();
+  yieldChart=new Chart(chartEl,{
+    type:'line',
+    data:{labels:qSorted,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+(ctx.parsed.y!=null?ctx.parsed.y.toFixed(2)+'%':'—')}}},
+      scales:{y:{title:{display:true,text:'Gross yield (%)'}}},
+    },
+  });
+  const ry=dry.required_yields||[];
+  const gs=dry.rent_growth_rates||[];
+  const marketBench=data && data.market_rent_benchmarks;
+  let html='';
+  const noteParts=[];
+  const lv2b2b=(dry.projects.lakeville||{})['2b2b'];
+  const lg2b2b=(dry.projects.lake_grande||{})['2b2b'];
+  const lakeside2b2bBasketMean=(lv2b2b?.historical_mean_yield!=null&&lg2b2b?.historical_mean_yield!=null)
+    ? ((lv2b2b.historical_mean_yield+lg2b2b.historical_mean_yield)/2)
+    : null;
+  slugs.forEach(slug=>{
+    const bucket=(dry.projects[slug]||{})['2b2b'];
+    if(!bucket||!bucket.fair_price_matrix) return;
+    const rent=bucket.latest_median_rent;
+    const mkt=bucket.latest_median_price;
+    html+='<div style="margin-bottom:14px"><div style="font-weight:600;margin-bottom:6px">'+slugLabels[slug]+'（'+bucket.latest_quarter+'；月租中位 $'+(rent||0).toLocaleString()+'）</div>';
+    html+='<table class="dt" style="font-size:12px"><thead><tr><th style="text-align:left">required gross yield ＼ g</th>';
+    gs.forEach(g=>{html+='<th>g='+(g*100).toFixed(1)+'%</th>';});
+    html+='</tr></thead><tbody>';
+    ry.forEach((y,i)=>{
+      html+='<tr><th style="text-align:left">'+(y*100).toFixed(1)+'%</th>';
+      gs.forEach((g,j)=>{
+        const fp=bucket.fair_price_matrix[i][j];
+        if(fp==null){html+='<td>—</td>';return;}
+        const delta=mkt?((fp-mkt)/mkt*100):null;
+        const tag=delta==null?'':(delta>=0?' +':' ')+delta.toFixed(0)+'%';
+        const color=delta==null?'':(delta>=0?'#55efc4':'#e17055');
+        html+='<td>$'+(fp/1e6).toFixed(2)+'M<span style="color:'+color+';font-size:11px"> '+tag+'</span></td>';
+      });
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+    if(mkt){
+      noteParts.push(slugLabels[slug]+' 当前市场中位价 $'+(mkt/1e6).toFixed(2)+'M，当前 gross yield '+bucket.latest_gross_yield+'% vs 历史均值 '+bucket.historical_mean_yield+'%（偏离 '+bucket.yield_deviation_vs_mean+'pp）');
+    }
+  });
+  tablesEl.innerHTML=html||'<div class="sd">暂无可计算的 fair-price 数据。</div>';
+  if(noteEl){
+    const ocr10=marketBench?.stats?.ocr_non_landed?.rolling_10y||{};
+    const ocr5=marketBench?.stats?.ocr_non_landed?.rolling_5y||{};
+    noteEl.innerHTML=
+      noteParts.join('<br>')+
+      '<br><strong>g 的数据锚点：</strong>官方 OCR 非有地租金指数 rolling 10Y CAGR 中位数 <strong>'+fmtMaybePct(ocr10.median,2)+'</strong>（更接近长期均值）；rolling 5Y CAGR 中位数 <strong>'+fmtMaybePct(ocr5.median,2)+'</strong>。当前 trailing 5Y 虽高达 <strong>'+fmtMaybePct(ocr5.current,2)+'</strong>，但它明显受 2021-2023 租金冲高影响，更适合作为周期上沿，不适合作为长期 base case。'+
+      '<br><strong>required_yield 的数据锚点：</strong>由于公式分子用的是 <strong>gross annual rent</strong>，这里更应读作 <strong>required gross yield proxy</strong>。Lakeville 2B2B 历史 gross-yield 均值 <strong>'+(lv2b2b?.historical_mean_yield!=null?lv2b2b.historical_mean_yield.toFixed(2)+'%':'—')+'</strong>；Lake Grande 2B2B 历史 gross-yield 均值 <strong>'+(lg2b2b?.historical_mean_yield!=null?lg2b2b.historical_mean_yield.toFixed(2)+'%':'—')+'</strong>；Lakeside 2B2B basket 均值 <strong>'+(lakeside2b2bBasketMean!=null?lakeside2b2bBasketMean.toFixed(2)+'%':'—')+'</strong>。'+
+      '<br><strong>怎么落地：</strong>若你看 LG 2B2B，先用 <strong>g ≈ '+fmtMaybePct(ocr10.median,2)+'</strong> 和 <strong>required_yield ≈ '+(lg2b2b?.historical_mean_yield!=null?lg2b2b.historical_mean_yield.toFixed(2)+'%':'—')+'</strong> 做长期中性场景；再用 <strong>g ≈ '+fmtMaybePct(ocr5.median,2)+'</strong> 和 <strong>required_yield ≈ '+(lakeside2b2bBasketMean!=null?lakeside2b2bBasketMean.toFixed(2)+'%':'—')+'</strong> 做偏当前周期场景。若你要净值口径，需要把税费、管理费、空置先从年租里扣掉，或把 required_yield 再往上提一个你自己的 drag spread。'+
+      '<br>表中百分比 = 隐含公允价相对当前市场中位价的溢/折价；正值表示公允价高于市场价（即当前市场低估）。';
+  }
+}
+
+function computeDecisionListingValuation(payload,input){
+  const project=(payload.projects||{})[input.project];
+  if(!project) return {error:'未找到项目数据。'};
+  const bucket=listingSqftBucket(input.sqft);
+  if(!bucket) return {error:'sqft 需落在 2b1b (600-699) / 2b2b (700-849) / 3b2b (850-1199) 范围内。'};
+  const bucketData=(project.buckets||{})[bucket];
+  const txns=(bucketData&&bucketData.transactions)||[];
+  if(!txns.length) return {error:'该项目该户型暂无可比成交。'};
+  const ref=parseMonthYearCompact(project.latest_date);
+  if(!ref) return {error:'项目最新成交日期缺失。'};
+  const cutoffIndex=ref.index-input.windowMonths;
+  let recent=txns.filter(txn=>{
+    const parsed=parseMonthYearCompact(txn.date);
+    return parsed&&parsed.index>=cutoffIndex;
+  });
+  const widened=!recent.length;
+  if(widened) recent=txns;
+  const cagr=bucketData.local_cagr||0.02;
+  const adjustedPsfs=recent.map(txn=>{
+    const parsed=parseMonthYearCompact(txn.date);
+    const months=parsed?ref.index-parsed.index:0;
+    return txn.psf*Math.pow(1+cagr,months/12);
+  });
+  const targetPsf=input.price/input.sqft;
+  const quantiles={10:percentileLinear(adjustedPsfs,0.10),25:percentileLinear(adjustedPsfs,0.25),50:percentileLinear(adjustedPsfs,0.50),75:percentileLinear(adjustedPsfs,0.75),90:percentileLinear(adjustedPsfs,0.90)};
+  const rankPos=adjustedPsfs.filter(v=>v<=targetPsf).length;
+  const rankPct=rankPos/adjustedPsfs.length*100;
+  const vsP50=(targetPsf-quantiles[50])/quantiles[50];
+  return {
+    project:input.project,
+    bucket,
+    refDate:project.latest_date_label||project.latest_date,
+    targetPsf,
+    recentCount:recent.length,
+    cutoffIndex,
+    cagr,
+    quantiles,
+    rankPct,
+    vsP50,
+    verdict:buildListingVerdict(targetPsf,quantiles),
+    widened,
+  };
+}
+
+function renderDecisionListingValuation(data){
+  const select=document.getElementById('decision_listing_project');
+  const sqftEl=document.getElementById('decision_listing_sqft');
+  const priceEl=document.getElementById('decision_listing_price');
+  const windowEl=document.getElementById('decision_listing_window');
+  const resultEl=document.getElementById('decision_listing_result');
+  if(!select||!sqftEl||!priceEl||!windowEl||!resultEl) return;
+  const payload=data&&data.listing_valuation;
+  if(!payload||!payload.projects){
+    resultEl.textContent='暂无 listing_valuation 数据。';
+    return;
+  }
+  if(!select.__populated){
+    const options=[
+      ['lakegrande','Lake Grande'],
+      ['lakeville','Lakeville'],
+    ].filter(([slug])=>payload.projects[slug]);
+    select.innerHTML=options.map(([slug,label])=>'<option value="'+slug+'">'+label+'</option>').join('');
+    if(!select.value&&options.length) select.value=options[0][0];
+    if(!windowEl.value) windowEl.value=payload.default_window_months||12;
+    select.__populated=true;
+  }
+  const run=()=>{
+    const windowMonths=Math.max(1,Number(windowEl.value)||payload.default_window_months||12);
+    const valuation=computeDecisionListingValuation(payload,{
+      project:select.value,
+      sqft:Number(sqftEl.value),
+      price:Number(priceEl.value),
+      windowMonths,
+    });
+    if(valuation.error){
+      resultEl.innerHTML='<div style="color:var(--rd)">'+valuation.error+'</div>';
+      return;
+    }
+    const lines=[
+      'Project:        '+valuation.project,
+      'Listing:        '+Number(sqftEl.value)+' sqft @ $'+Number(priceEl.value).toLocaleString()+' → psf $'+Math.round(valuation.targetPsf).toLocaleString(),
+      'Comp pool:      '+valuation.recentCount+' '+valuation.bucket+' txns in last '+windowMonths+'m'+(valuation.widened?' (window empty → widened to all-time)':''),
+      'Time-adjust:    '+fmtPct(valuation.cagr,2)+' local CAGR, ref date '+valuation.refDate,
+      '',
+      'Adjusted comp PSF distribution (SGD/sqft):',
+      '  P10 : $'+Math.round(valuation.quantiles[10]).toLocaleString(),
+      '  P25 : $'+Math.round(valuation.quantiles[25]).toLocaleString(),
+      '  P50 : $'+Math.round(valuation.quantiles[50]).toLocaleString(),
+      '  P75 : $'+Math.round(valuation.quantiles[75]).toLocaleString(),
+      '  P90 : $'+Math.round(valuation.quantiles[90]).toLocaleString(),
+      '',
+      'Target psf vs pool:',
+      '  Target psf:   $'+Math.round(valuation.targetPsf).toLocaleString(),
+      '  Rank:         ~P'+Math.round(valuation.rankPct),
+      '  vs P50:       '+fmtSignedPct(valuation.vsP50,1),
+      '  Verdict:      '+valuation.verdict,
+    ];
+    resultEl.innerHTML='<pre style="background:var(--bg2);padding:12px;border-radius:8px;overflow-x:auto;font-size:12px;line-height:1.6"><code>'+lines.join('\n')+'</code></pre>';
+  };
+  if(!resultEl.__bound){
+    [select,sqftEl,priceEl,windowEl].forEach(el=>el.addEventListener('input',run));
+    [select,sqftEl,priceEl,windowEl].forEach(el=>el.addEventListener('change',run));
+    resultEl.__bound=true;
+  }
+  run();
+}
+
+function renderLeaseDecayAnalysis(data){
+  const balaCanvas=document.getElementById('c_lease_bala');
+  const dragCanvas=document.getElementById('c_lease_drag');
+  const tableEl=document.getElementById('lease_decay_table');
+  const noteEl=document.getElementById('lease_decay_note');
+  if(!balaCanvas||!dragCanvas||!tableEl||!noteEl) return;
+  const listing=data&&data.listing_valuation;
+  const assumptions=readScenarioInputs();
+  const years=assumptions.simulationYears||4;
+  const xs=Array.from({length:100},(_,i)=>99-i);
+  const balaSeries=xs.map(y=>WM.balaFactor(y));
+  if(leaseBalaChart) leaseBalaChart.destroy();
+  leaseBalaChart=new Chart(balaCanvas,{
+    type:'line',
+    data:{labels:xs,datasets:[{label:"Bala factor",data:balaSeries,borderColor:C.or,backgroundColor:'rgba(253,203,110,.12)',borderWidth:2.5,pointRadius:0,tension:0.15}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'剩余 lease 年限'}},y:{title:{display:true,text:'相对 freehold 价值系数'}}},plugins:{legend:{display:false}}}
+  });
+
+  const rows=BASE_PLANS.filter(p=>!p.isRent).map(plan=>{
+    const remNow=plan.leaseRemainingYears;
+    const remFuture=remNow-years;
+    const factorNow=WM.balaFactor(remNow);
+    const factorFuture=WM.balaFactor(remFuture);
+    const leaseAdj=factorNow>0?factorFuture/factorNow:1;
+    const totalDrag=leaseAdj-1;
+    const annualDrag=Math.pow(leaseAdj,1/years)-1;
+    const observedAllIn=listing?.projects?.[plan.projectSlug]?.buckets?.[plan.bucket]?.local_cagr ?? null;
+    const impliedExLease=observedAllIn!=null ? ((1+observedAllIn)/(1+annualDrag)-1) : null;
+    return {plan,remNow,remFuture,leaseAdj,totalDrag,annualDrag,observedAllIn,impliedExLease};
+  });
+
+  if(leaseDragChart) leaseDragChart.destroy();
+  leaseDragChart=new Chart(dragCanvas,{
+    type:'bar',
+    data:{
+      labels:rows.map(r=>r.plan.label),
+      datasets:[
+        {label:'4Y theoretical drag',data:rows.map(r=>r.totalDrag*100),backgroundColor:rows.map(r=>r.totalDrag<0?C.rd+'99':C.gn+'99'),borderColor:rows.map(r=>r.totalDrag<0?C.rd:C.gn),borderWidth:2},
+        {label:'Observed all-in CAGR',data:rows.map(r=>r.observedAllIn!=null?r.observedAllIn*100:null),backgroundColor:C.pr+'66',borderColor:C.pr,borderWidth:2},
+      ],
+    },
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'%'},ticks:{callback:v=>v+'%'}}},plugins:{legend:{position:'top'}}}
+  });
+
+  tableEl.innerHTML=
+    '<table class="dt"><thead><tr><th>方案</th><th>当前剩余 lease</th><th>'+years+'Y 理论 factor</th><th>'+years+'Y 理论 drag</th><th>年化 drag</th><th>Observed all-in CAGR</th><th>Implied ex-lease CAGR</th></tr></thead><tbody>'+
+    rows.map(r=>
+      '<tr><td><strong>'+r.plan.label+'</strong></td><td>'+r.remNow+' → '+r.remFuture+' 年</td><td>'+r.leaseAdj.toFixed(4)+'</td><td>'+fmtSignedPct(r.totalDrag,2)+'</td><td>'+fmtSignedPct(r.annualDrag,2)+'</td><td>'+(r.observedAllIn!=null?fmtPct(r.observedAllIn,2):'—')+'</td><td>'+(r.impliedExLease!=null?fmtPct(r.impliedExLease,2):'—')+'</td></tr>'
+    ).join('')+
+    '</tbody></table>';
+
+  const lv2b2b=rows.find(r=>r.plan.id==='B');
+  const lg2b2b=rows.find(r=>r.plan.id==='C');
+  noteEl.innerHTML=
+    '解读口径：这里把 lease decay 当成单独拆分项，而不是主模型里的房价增长率输入。'+years+' 年视角下，'+
+    (lv2b2b?'Lakeville 2B2B 理论累计 drag '+fmtSignedPct(lv2b2b.totalDrag,2)+'，年化 '+fmtSignedPct(lv2b2b.annualDrag,2)+'；':'')+
+    (lg2b2b?'Lake Grande 2B2B 理论累计 drag '+fmtSignedPct(lg2b2b.totalDrag,2)+'，年化 '+fmtSignedPct(lg2b2b.annualDrag,2)+'。':'')+
+    '“Observed all-in CAGR” 来自本地成交样本；“Implied ex-lease CAGR” 只是把理论 lease drag 从 observed CAGR 里反推出来，方便你直观看两者量级差异，不代表可直接交易实现的额外收益。';
 }
 
 function loadDashboardData(){
@@ -2124,6 +2627,10 @@ loadDashboardData()
     renderScrapedData(data);
     renderUraProjectBrowser(data);
     renderRentalTrends(data);
+    renderDecisionSensitivity(data);
+    renderDecisionRentalYield(data);
+    renderDecisionListingValuation(data);
+    renderLeaseDecayAnalysis(data);
   })
   .catch(error => {
     console.error(error);

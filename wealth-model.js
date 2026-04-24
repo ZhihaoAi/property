@@ -14,6 +14,31 @@
     [1500000, 0.05],
     [Infinity, 0.06],
   ];
+  // Bala's Table (SLA): leasehold value as fraction of freehold, by remaining years.
+  // Used here purely to compute relative decay between two points in time;
+  // absolute scale cancels out in the ratio balaFactor(remAtT) / balaFactor(remAt0).
+  const BALA_TABLE = [
+    [99, 0.960], [95, 0.946], [90, 0.926], [85, 0.905], [80, 0.884],
+    [75, 0.857], [70, 0.830], [65, 0.800], [60, 0.768], [55, 0.733],
+    [50, 0.694], [45, 0.653], [40, 0.609], [35, 0.560], [30, 0.508],
+    [25, 0.451], [20, 0.389], [15, 0.320], [10, 0.241], [5, 0.147], [0, 0],
+  ];
+
+  function balaFactor(remainingYears) {
+    if (remainingYears == null) return 1;
+    if (remainingYears >= 99) return 0.960;
+    if (remainingYears <= 0) return 0;
+    for (let i = 0; i < BALA_TABLE.length - 1; i += 1) {
+      const [yHi, vHi] = BALA_TABLE[i];
+      const [yLo, vLo] = BALA_TABLE[i + 1];
+      if (remainingYears <= yHi && remainingYears >= yLo) {
+        const t = (remainingYears - yLo) / (yHi - yLo);
+        return vLo + t * (vHi - vLo);
+      }
+    }
+    return 1;
+  }
+
   const CPF_AGE_BANDS = [
     { maxAge: 35, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.6217 },
     { maxAge: 45, totalRate: 0.37, employeeRate: 0.20, employerRate: 0.17, oaRatio: 0.5677 },
@@ -47,6 +72,7 @@
     useAverageBonusFlow: true,
     cpfRulesVersion: 'CPF contribution and allocation rates from 1 Jan 2026; simplified AW handling without AW ceiling.',
     irasRulesVersion: 'Residential BSD progressive tiers and PR first-home ABSD 5% as at 2026 assumptions.',
+    applyLeaseDecay: false,
     household: {
       male: {
         dob: '1997-06-25',
@@ -81,6 +107,7 @@
       address: '3 Gateway Drive',
       topInfo: '2019（7年）',
       leaseInfo: '~94年',
+      leaseRemainingYears: 94,
       mrtInfo: 'Lakeside 7min',
     },
     {
@@ -98,6 +125,7 @@
       address: '13 Jurong Lake Link',
       topInfo: '2018（8年）',
       leaseInfo: '~87年',
+      leaseRemainingYears: 87,
       mrtInfo: 'Lakeside 10min',
     },
     {
@@ -115,6 +143,7 @@
       address: '3 Gateway Drive',
       topInfo: '2019（7年）',
       leaseInfo: '~94年',
+      leaseRemainingYears: 94,
       mrtInfo: 'Lakeside 7min',
     },
     {
@@ -132,6 +161,7 @@
       address: '3 Gateway Drive',
       topInfo: '2019（7年）',
       leaseInfo: '~94年',
+      leaseRemainingYears: 94,
       mrtInfo: 'Lakeside 7min',
     },
     {
@@ -149,6 +179,7 @@
       address: '13 Jurong Lake Link',
       topInfo: '2018（8年）',
       leaseInfo: '~87年',
+      leaseRemainingYears: 87,
       mrtInfo: 'Lakeside 10min',
     },
     {
@@ -443,9 +474,16 @@
 
       if (month % 12 === 0 || month === months) {
         const year = month / 12;
+        let leaseAdj = 1;
+        if (!plan.isRent && assumptions.applyLeaseDecay && plan.leaseRemainingYears != null) {
+          const remNow = plan.leaseRemainingYears;
+          const remFuture = plan.leaseRemainingYears - year;
+          const base = balaFactor(remNow);
+          leaseAdj = base > 0 ? balaFactor(remFuture) / base : 1;
+        }
         const propertyEquity = plan.isRent
           ? 0
-          : transaction.price * Math.pow(1 + propertyGrowthRate, year)
+          : transaction.price * Math.pow(1 + propertyGrowthRate, year) * leaseAdj
               - (year <= assumptions.fixedYears
                 ? loanBalance(loan.actualLoan, assumptions.fixedRate, assumptions.loanTenorYears, year)
                 : loanBalance(
@@ -553,6 +591,59 @@
     };
   }
 
+  function sweepScenarios({
+    focusProjects,
+    assumptions = DEFAULT_ASSUMPTIONS,
+    plans = BASE_PLANS,
+    minRate = -0.02,
+    maxRate = 0.06,
+    step = 0.005,
+  } = {}) {
+    const points = [];
+    // Inclusive upper bound with tolerance to avoid float drift.
+    const steps = Math.round((maxRate - minRate) / step);
+    for (let i = 0; i <= steps; i += 1) {
+      const rate = +(minRate + i * step).toFixed(6);
+      const assumptionsAtRate = {
+        ...assumptions,
+        lakevilleAnnualGrowth: rate,
+        lakeGrandeAnnualGrowth: rate,
+      };
+      const scenario = buildScenario({ assumptions: assumptionsAtRate, plans, focusProjects });
+      const perPlan = {};
+      scenario.buyResults.forEach((r) => {
+        perPlan[r.id] = {
+          totalWealth: r.wealth.totalWealth,
+          propEquity: r.wealth.propEquity,
+          totalCagr: r.wealth.totalCagr,
+          avgCashHousing: r.wealth.avgCashHousing,
+          avgOAHousing: r.wealth.avgOAHousing,
+          avgInvestableCash: r.wealth.avgInvestableCash,
+          totalUpfront: r.upfront ? r.upfront.totalUpfront : null,
+        };
+      });
+      if (scenario.rentResult) {
+        perPlan.F = {
+          totalWealth: scenario.rentResult.wealth.totalWealth,
+          propEquity: 0,
+          totalCagr: scenario.rentResult.wealth.totalCagr,
+          avgCashHousing: scenario.rentResult.wealth.avgCashHousing,
+          avgOAHousing: scenario.rentResult.wealth.avgOAHousing,
+          avgInvestableCash: scenario.rentResult.wealth.avgInvestableCash,
+          totalUpfront: null,
+        };
+      }
+      points.push({ growthRate: rate, byPlan: perPlan });
+    }
+    return {
+      minRate,
+      maxRate,
+      step,
+      appliesTo: ['lakeville', 'lakeGrande'],
+      points,
+    };
+  }
+
   return {
     LOAN_TENOR,
     BASE_PLANS,
@@ -567,8 +658,11 @@
     calcPhaseMonthlyHousing,
     calcTotalWealthCagr,
     buildScenario,
+    sweepScenarios,
     mortgagePmt,
     loanBalance,
     round1,
+    balaFactor,
+    BALA_TABLE,
   };
 });

@@ -30,29 +30,29 @@ test('resolveLatestTransaction uses latest focus bucket transaction for each pla
   const txC = resolveLatestTransaction(planC, data.focus_projects);
   const txE = resolveLatestTransaction(planE, data.focus_projects);
 
-  assert.equal(txC.price, 1513888);
-  assert.equal(txC.dateLabel, 'Feb 2026');
-  assert.equal(txC.sqft, 818);
+  assert.equal(txC.price, 1480000);
+  assert.equal(txC.dateLabel, 'Mar 2026');
+  assert.equal(txC.sqft, 775);
 
-  assert.equal(txE.price, 1795000);
-  assert.equal(txE.dateLabel, 'Aug 2025');
-  assert.equal(txE.sqft, 968);
+  assert.equal(txE.price, 1900000);
+  assert.equal(txE.dateLabel, 'Mar 2026');
+  assert.equal(txE.sqft, 990);
 });
 
 test('calcBSD and calcABSD match current scenario expectations for latest LG 2B2B transaction', () => {
-  const price = 1513888;
+  const price = 1480000;
 
-  assert.equal(calcBSD(price), 45294);
-  assert.equal(calcABSD(price, { absdRate: 0.05 }), 75694);
+  assert.equal(calcBSD(price), 43800);
+  assert.equal(calcABSD(price, { absdRate: 0.05 }), 74000);
 });
 
 test('calcLoan enforces LTV and bank cap', () => {
-  const loan = calcLoan(1513888, 0.75, 1100000);
+  const loan = calcLoan(1480000, 0.75, 1100000);
 
-  assert.equal(loan.desiredLoan, 1135416);
+  assert.equal(loan.desiredLoan, 1110000);
   assert.equal(loan.actualLoan, 1100000);
   assert.equal(loan.capped, true);
-  assert.equal(loan.downPayment, 413888);
+  assert.equal(loan.downPayment, 380000);
 });
 
 test('calcCpfMonthly uses age band allocation and contribution caps', () => {

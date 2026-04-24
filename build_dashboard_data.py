@@ -27,6 +27,7 @@ FORMAL_LAYOUT_DIR = DATA_DIR / "layout_mapping"
 OUTPUT_PATH = DATA_DIR / "dashboard_data.json"
 OUTPUT_JS_PATH = DATA_DIR / "dashboard_data.js"
 ANALYSIS_PATH = DATA_DIR / "appreciation_analysis.json"
+OFFICIAL_INDICES_PATH = DATA_DIR / "official_private_residential_indices.json"
 FORMAL_REFERENCE_PATH = FORMAL_LAYOUT_DIR / "layout_reference_catalog.csv"
 REGISTRY_PATH = DATA_DIR / "srx_project_registry.json"
 URA_SUMMARY_PATH = DATA_DIR / "ura" / "projects_summary.json"
@@ -164,6 +165,11 @@ AREA_PROXY_RANGES = {
     "2b2b": {"min_sqft": 700, "max_sqft": 849},
     "3b2b": {"min_sqft": 850, "max_sqft": 1199},
 }
+LISTING_BUCKET_TO_TYPE_LABEL = {
+    "2b1b": "2BR",
+    "2b2b": "2BR",
+    "3b2b": "3BR",
+}
 
 
 def parse_monthyear(value: str) -> tuple[int, int]:
@@ -190,6 +196,15 @@ def load_optional_json(path: Path) -> dict | None:
     if not path.exists():
         return None
     return load_json(path)
+
+
+def parse_quarter_label(value: str) -> tuple[int, int]:
+    year_str, quarter_str = value.split("-Q", 1)
+    return int(year_str), int(quarter_str)
+
+
+def quarter_sort_key_data_gov(value: str) -> tuple[int, int]:
+    return parse_quarter_label(value)
 
 
 def median_or_none(values: list[int]) -> float | None:
@@ -1292,6 +1307,210 @@ def _trailing_median_price(
     return round(float(statistics.median(prices))), len(prices)
 
 
+def build_decision_rental_yield(rental_trends: dict) -> dict:
+    """Summarise gross-yield series and implied-fair-PSF matrix per focus project/bucket.
+
+    Consumes the rental_trends already computed by build_rental_trends.
+    """
+    required_yields = [0.030, 0.035, 0.040, 0.045]  # net of property tax / mgmt / vacancy
+    rent_growth_rates = [0.000, 0.010, 0.015, 0.020]  # long-run rental growth g
+    buckets = ("2b1b", "2b2b", "3b2b")
+    out: dict = {
+        "required_yields": required_yields,
+        "rent_growth_rates": rent_growth_rates,
+        "assumptions_note": (
+            "Gordon growth: fair_psf = psf_rent_annual / (required_yield - g). "
+            "当前实现分子使用 gross annual rent，因此 required_yield 更应先读作 gross yield proxy；若要看净收益率，需先把年租改成净租。"
+        ),
+        "projects": {},
+    }
+    for project_slug, by_bucket in rental_trends.items():
+        project_out: dict = {}
+        for bucket in buckets:
+            series = by_bucket.get(bucket) or []
+            yields = [pt.get("gross_yield") for pt in series if pt.get("gross_yield") is not None]
+            latest = next((pt for pt in reversed(series) if pt.get("gross_yield") is not None), None)
+            hist_mean = round(sum(yields) / len(yields), 2) if yields else None
+            current_yield = latest.get("gross_yield") if latest else None
+            current_psf_rent = None
+            current_psf_sale = None
+            if latest:
+                # median_rent is monthly SGD; median_price here is a bucket median SGD price,
+                # so we convert via bucket typical sqft if possible. Skip if no sqft anchor.
+                # Simpler: keep raw inputs; frontend or user does the fair-psf maths.
+                current_psf_rent = latest.get("median_rent")
+                current_psf_sale = latest.get("median_price")
+            fair_matrix = None
+            if current_psf_rent:
+                # rental_trends stores monthly rent in SGD per unit, and median_price is per-unit
+                # sale price. Convert to per-sqft yield using implicit sqft ratio via gross_yield
+                # so we can do: rent_annual_psf = gross_yield * psf_sale.
+                # We stick to a simpler formulation: compute fair monthly-rent multiplier
+                # m = annual_rent / (required_yield - g); fair price = m (in SGD per unit),
+                # then fair psf = fair price / implied sqft.
+                annual_rent = current_psf_rent * 12
+                fair_matrix = []
+                for ry in required_yields:
+                    row = []
+                    for g in rent_growth_rates:
+                        if ry - g <= 0:
+                            row.append(None)
+                        else:
+                            fair_price = annual_rent / (ry - g)
+                            row.append(round(fair_price))
+                    fair_matrix.append(row)
+            project_out[bucket] = {
+                "series": series,
+                "latest_quarter": latest.get("quarter") if latest else None,
+                "latest_gross_yield": current_yield,
+                "latest_median_rent": current_psf_rent,
+                "latest_median_price": current_psf_sale,
+                "historical_mean_yield": hist_mean,
+                "yield_deviation_vs_mean": (
+                    round(current_yield - hist_mean, 2)
+                    if current_yield is not None and hist_mean is not None
+                    else None
+                ),
+                "fair_price_matrix": fair_matrix,
+            }
+        out["projects"][project_slug] = project_out
+    return out
+
+
+def _percentile(values: list[float], pct: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    k = (len(ordered) - 1) * pct
+    lo = int(k)
+    hi = min(lo + 1, len(ordered) - 1)
+    return ordered[lo] + (ordered[hi] - ordered[lo]) * (k - lo)
+
+
+def _rolling_cagr_stats(series: list[dict], quarters: int) -> dict:
+    if len(series) <= quarters:
+        return {}
+    values: list[float] = []
+    points: list[dict] = []
+    years = quarters / 4
+    for idx in range(quarters, len(series)):
+        start = series[idx - quarters]["index"]
+        end = series[idx]["index"]
+        if start <= 0 or end <= 0:
+            continue
+        cagr = (end / start) ** (1 / years) - 1
+        values.append(cagr)
+        points.append({
+            "quarter": series[idx]["quarter"],
+            "cagr": round(cagr, 6),
+        })
+    if not values:
+        return {}
+    return {
+        "window_years": years,
+        "current": round(values[-1], 6),
+        "mean": round(sum(values) / len(values), 6),
+        "median": round(statistics.median(values), 6),
+        "p25": round(_percentile(values, 0.25), 6),
+        "p75": round(_percentile(values, 0.75), 6),
+        "min": round(min(values), 6),
+        "max": round(max(values), 6),
+        "points": points,
+    }
+
+
+def build_market_rent_benchmarks() -> dict:
+    payload = load_optional_json(OFFICIAL_INDICES_PATH)
+    if not payload:
+        return {}
+    series_map = payload.get("series") or {}
+    ocr_series = sorted(series_map.get("non_landed_ocr") or [], key=lambda item: quarter_sort_key_data_gov(item["quarter"]))
+    whole_island_series = sorted(
+        series_map.get("non_landed_whole_island") or [],
+        key=lambda item: quarter_sort_key_data_gov(item["quarter"]),
+    )
+    if not ocr_series and not whole_island_series:
+        return {}
+    return {
+        "source": payload.get("source") or {},
+        "series": {
+            "ocr_non_landed": ocr_series,
+            "whole_island_non_landed": whole_island_series,
+        },
+        "stats": {
+            "ocr_non_landed": {
+                "rolling_5y": _rolling_cagr_stats(ocr_series, 20),
+                "rolling_10y": _rolling_cagr_stats(ocr_series, 40),
+            },
+            "whole_island_non_landed": {
+                "rolling_5y": _rolling_cagr_stats(whole_island_series, 20),
+                "rolling_10y": _rolling_cagr_stats(whole_island_series, 40),
+            },
+        },
+        "notes": {
+            "coverage": "Official URA rental index for non-landed private residential; OCR and whole-island series cover 2004Q1 to 2025Q4.",
+            "interpretation": "Use rolling 10Y CAGR as a long-run anchor for g; use project/type gross-yield history as the observable market anchor for required_yield.",
+        },
+    }
+
+
+def resolve_listing_local_cagr(project_analysis: dict, bucket: str) -> float:
+    by_type = project_analysis.get("by_type_cagr") or {}
+    type_label = LISTING_BUCKET_TO_TYPE_LABEL.get(bucket)
+    if type_label and by_type.get(type_label) is not None:
+        return by_type[type_label] / 100
+    overall = project_analysis.get("overall_cagr")
+    return (overall / 100) if overall is not None else 0.02
+
+
+def build_listing_valuation_data(layout_catalogs: dict[str, list[dict]], analysis: dict) -> dict:
+    out = {
+        "default_window_months": RECENT_WINDOW_MONTHS,
+        "projects": {},
+    }
+    for slug in ("lakeville", "lakegrande"):
+        rows = load_focus_mapping_rows(slug, layout_catalogs.get(slug, []))
+        project_analysis = analysis.get(slug, {})
+        project_out = {
+            "latest_date": None,
+            "latest_date_label": None,
+            "buckets": {},
+        }
+        latest_date = None
+        for bucket in AREA_PROXY_ORDER:
+            bucket_rows = [
+                row
+                for row in rows
+                if row["mapping_status"] == "matched" and row["resolved_layout"] == bucket
+            ]
+            transactions = [
+                {
+                    "date": row["date"],
+                    "date_label": row["date_label"],
+                    "sqft": row["sqft"],
+                    "psf": row["psf"],
+                    "price": row["price"],
+                }
+                for row in bucket_rows
+            ]
+            if transactions:
+                bucket_latest = max((row["date"] for row in bucket_rows), key=sort_monthyear_key)
+                latest_date = (
+                    bucket_latest
+                    if latest_date is None or sort_monthyear_key(bucket_latest) > sort_monthyear_key(latest_date)
+                    else latest_date
+                )
+            project_out["buckets"][bucket] = {
+                "local_cagr": resolve_listing_local_cagr(project_analysis, bucket),
+                "transactions": transactions,
+            }
+        if latest_date is not None:
+            project_out["latest_date"] = latest_date
+            project_out["latest_date_label"] = format_monthyear(latest_date)
+        out["projects"][slug] = project_out
+    return out
+
+
 def build_rental_trends(layout_catalogs: dict[str, list[dict]]) -> dict:
     ura_index = load_optional_json(URA_INDEX_PATH)
     if not ura_index:
@@ -1627,11 +1846,45 @@ def build_payload() -> dict:
         "focus_projects": focus_projects,
         "ura_browser_projects": ura_browser_projects,
         "rental_trends": rental_trends,
+        "market_rent_benchmarks": build_market_rent_benchmarks(),
+        "decision_rental_yield": build_decision_rental_yield(rental_trends),
+        "listing_valuation": build_listing_valuation_data(layout_catalogs, analysis),
     }
+
+
+def attach_sensitivity(payload: dict) -> dict:
+    """Shell out to node to compute wealth-model sensitivity sweep and merge."""
+    import subprocess
+
+    # Need dashboard_data.js to exist already with focus_projects for the node script.
+    # Write a stub first if missing; otherwise run against the freshly written file.
+    try:
+        result = subprocess.run(
+            ["node", str(BASE_DIR / "scripts" / "build_sensitivity.mjs")],
+            capture_output=True,
+            text=True,
+            check=True,
+            cwd=str(BASE_DIR),
+        )
+        sensitivity = json.loads(result.stdout).get("sensitivity")
+        if sensitivity:
+            payload["sensitivity"] = sensitivity
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+        print(f"warning: sensitivity sweep failed: {exc}")
+    return payload
 
 
 def main() -> None:
     payload = build_payload()
+    # Write once without sensitivity (so the node script can read focus_projects),
+    # compute sensitivity, then rewrite with it merged in.
+    json_text = json.dumps(payload, indent=2, ensure_ascii=False)
+    OUTPUT_PATH.write_text(json_text, encoding="utf-8")
+    OUTPUT_JS_PATH.write_text(
+        "window.__DASHBOARD_DATA__ = " + json_text + ";\n",
+        encoding="utf-8",
+    )
+    payload = attach_sensitivity(payload)
     json_text = json.dumps(payload, indent=2, ensure_ascii=False)
     OUTPUT_PATH.write_text(json_text, encoding="utf-8")
     OUTPUT_JS_PATH.write_text(

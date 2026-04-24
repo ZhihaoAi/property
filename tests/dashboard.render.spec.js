@@ -3,6 +3,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('dashboard render', () => {
   test('s2 renders focus buckets for Lakeville and Lake Grande', async ({ page }) => {
     await page.goto('/?tab=s2');
+    await page.waitForFunction(() => !!window.__DASHBOARD_DATA__?.focus_projects?.lakeville);
     await expect(page.locator('#lv_focus_content .ai').first()).toBeVisible();
     await expect(page.locator('#lg_focus_content .ai').first()).toBeVisible();
     await expect(page.locator('#lv_focus_content')).toContainText('2b1b');
@@ -159,6 +160,12 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#ura_rental_contracts_table')).toContainText('2026 Q1');
   });
 
+  test('s9 renders long-term rent benchmark with official index note', async ({ page }) => {
+    await page.goto('/?tab=s9');
+    await expect(page.locator('#c_rent_benchmark')).toBeVisible();
+    await expect(page.locator('#rent_benchmark_note')).toContainText(/10Y rolling CAGR|长期锚点/);
+  });
+
   test('s5 renders unified wealth model rows and assumptions', async ({ page }) => {
     await page.goto('/?tab=s5');
     await expect(page.locator('#s5')).not.toContainText('出生日期');
@@ -178,5 +185,48 @@ test.describe('dashboard render', () => {
     await page.goto('/');
     await expect(page.getByRole('button', { name: /决策过程/ })).toHaveCount(0);
     await expect(page.locator('#s7')).toHaveCount(0);
+  });
+
+  test('s14 renders sensitivity sweep with break-even note', async ({ page }) => {
+    await page.goto('/?tab=s14');
+    await page.getByRole('button', { name: /🎯 决策/ }).click();
+    await expect(page.locator('#decision_sensitivity_chart')).toBeVisible();
+    await expect(page.locator('#decision_sensitivity_note')).toContainText(/break-even|更高增长率/);
+    await expect(page.locator('#decision_sensitivity_note')).toContainText(/all-in CAGR/);
+    await expect(page.locator('#decision_sensitivity_formula')).toContainText(/公式全过程/);
+    await expect(page.locator('#decision_sensitivity_formula')).toContainText(/PropertyEquity/);
+    const sensitivity = await page.evaluate(() => window.__DASHBOARD_DATA__.sensitivity);
+    expect(Array.isArray(sensitivity.points)).toBe(true);
+    expect(sensitivity.points.length).toBeGreaterThan(5);
+  });
+
+  test('s14 renders rental-yield block with gross-yield chart and fair-price matrix', async ({ page }) => {
+    await page.goto('/?tab=s14');
+    await page.getByRole('button', { name: /🎯 决策/ }).click();
+    await expect(page.locator('#decision_yield_chart')).toBeVisible();
+    await expect(page.locator('#decision_fair_price_tables')).toContainText(/Lakeville 2B2B|Lake Grande 2B2B/);
+    const dry = await page.evaluate(() => window.__DASHBOARD_DATA__.decision_rental_yield);
+    expect(Array.isArray(dry.required_yields)).toBe(true);
+    expect(dry.projects.lake_grande['2b2b'].fair_price_matrix.length).toBeGreaterThan(0);
+  });
+
+  test('s14 listing valuation form computes percentile band locally', async ({ page }) => {
+    await page.goto('/?tab=s14');
+    await page.getByRole('button', { name: /🎯 决策/ }).click();
+    await expect(page.locator('#decision_listing_project')).toBeVisible();
+    await page.selectOption('#decision_listing_project', 'lakegrande');
+    await page.fill('#decision_listing_sqft', '775');
+    await page.fill('#decision_listing_price', '1480000');
+    await expect(page.locator('#decision_listing_result')).toContainText(/Rank:.*P60|Rank:.*P67/);
+    await expect(page.locator('#decision_listing_result')).toContainText(/Verdict:.*FAIR-RICH|Verdict:.*RICH|Verdict:.*FAIR-CHEAP/);
+    await expect(page.locator('#decision_listing_result')).toContainText(/P50/);
+  });
+
+  test('s15 renders lease decay explanation charts and table', async ({ page }) => {
+    await page.goto('/?tab=s15');
+    await page.getByRole('button', { name: /地契折旧/ }).click();
+    await expect(page.locator('#c_lease_bala')).toBeVisible();
+    await expect(page.locator('#c_lease_drag')).toBeVisible();
+    await expect(page.locator('#lease_decay_table')).toContainText(/Observed all-in CAGR/);
   });
 });
