@@ -500,7 +500,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S10: CONDO COMPARISON ===== -->
   <div id="s10" class="sec on">
     <div class="st">🏘️ 小区PK · 当前已爬数据</div>
-    <p class="sd">当前默认口径是 `resale-only`。S10 同时展示四套 PK lens：`全项目`、`真实户型映射`、`面积代理`、`自住口径`。每套 lens 只看两张图：`All-time CAGR` 和 `YoY`；表格默认折叠，只做小区 agg 汇总。</p>
+    <p class="sd">当前默认口径是 `resale-only`。S10 同时展示四套 PK lens：`全项目`、`真实户型映射`、`面积代理`、`自住口径`。每套 lens 只看三张图：`All-time CAGR`、`Rolling 3Y CAGR` 和 `YoY`；表格默认折叠，只做小区 agg 汇总。</p>
 
     <div class="kpi-r" id="pk_kpis"></div>
 
@@ -509,6 +509,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json`、`data/layout_mapping/*` 自动生成。<br>
       <strong>四套 lens：</strong>口径 1 = `全项目`；口径 2 = `真实户型映射`；口径 3 = `面积代理`；口径 4 = `自住口径`。<br>
       <strong>All-time CAGR：</strong>起点是最早可用的 `12个月 median PSF`，终点是最新 `12个月 median PSF`，按真实月份跨度年化。<br>
+      <strong>Rolling 3Y CAGR：</strong>当前滚动 `12个月 median PSF` 相对 `36个月前` 对应滚动窗口的 3 年年化 CAGR；若缺少 36 个月前窗口则不出点。<br>
       <strong>YoY：</strong>最新滚动 `12个月 median PSF` 相对 `12个月前` 对应滚动窗口的同比；若缺少去年同期窗口则留空。<br>
       <strong>自住口径：</strong>`自住池 = 2b1b + 2b2b`，优先顺序固定为：真实 `2b2b` → 真实 `2b1b + 2b2b` → `600-849 sqft` 面积代理 → 全项目。<br>
       <strong>注意：</strong>默认不再把 `New Sale / Sub Sale` 混进主 CSV。历史 `SRX` 窗口只保留在 `data/srx/*` 作为备份，不再进入主排序。</p>
@@ -524,6 +525,8 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="lens-note" id="overall_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="overall_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--cy)"></span>Rolling 3Y CAGR</div>
+      <div class="cc t"><canvas id="overall_rolling_3y_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="overall_yoy_chart"></canvas></div>
     </details>
@@ -547,6 +550,8 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="lens-note" id="layout_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="layout_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--cy)"></span>Rolling 3Y CAGR</div>
+      <div class="cc t"><canvas id="layout_rolling_3y_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="layout_yoy_chart"></canvas></div>
       <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--bl)"></span>Lakeville / Lake Grande 细分线</div>
@@ -573,6 +578,8 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="lens-note" id="area_proxy_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="area_proxy_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--cy)"></span>Rolling 3Y CAGR</div>
+      <div class="cc t"><canvas id="area_proxy_rolling_3y_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="area_proxy_yoy_chart"></canvas></div>
     </details>
@@ -596,6 +603,8 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="lens-note" id="owner_pool_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
       <div class="cc t"><canvas id="owner_pool_cagr_chart"></canvas></div>
+      <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--cy)"></span>Rolling 3Y CAGR</div>
+      <div class="cc t"><canvas id="owner_pool_rolling_3y_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="owner_pool_yoy_chart"></canvas></div>
       <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--pk)"></span>Lakeville / Lake Grande 细分线</div>
@@ -1124,6 +1133,7 @@ const DASHBOARD_COLORS = [
 const PK_FOCUS_PROJECT_SLUGS = ['lakeville', 'lakegrande'];
 const PK_METRIC_TOGGLE_OPTIONS = {
   cagr_monthly: { label: 'All-time CAGR', axisText: 'All-time CAGR (%)' },
+  rolling_3y_cagr_monthly: { label: 'Rolling 3Y CAGR', axisText: 'Rolling 3Y CAGR (%)' },
   yoy_monthly: { label: 'YoY', axisText: 'YoY (%)' },
 };
 const PK_DETAIL_LINE_STYLES = {
@@ -1141,6 +1151,11 @@ const PK_LENS_CONFIG = {
       yAxisTitle: '全项目累积 CAGR (%)',
       emptyMessage: '当前没有可用于全项目 cumulative CAGR 对比的项目。'
     },
+    rolling3y: {
+      canvasId: 'overall_rolling_3y_cagr_chart',
+      yAxisTitle: '全项目 Rolling 3Y CAGR (%)',
+      emptyMessage: '当前没有可用于全项目 rolling 3Y CAGR 对比的项目。'
+    },
     yoy: {
       canvasId: 'overall_yoy_chart',
       yAxisTitle: '全项目 YoY (%)',
@@ -1155,6 +1170,11 @@ const PK_LENS_CONFIG = {
       canvasId: 'layout_cagr_chart',
       yAxisTitle: '真实户型累积 CAGR (%)',
       emptyMessage: '当前没有可用于真实户型映射 cumulative CAGR 对比的项目。'
+    },
+    rolling3y: {
+      canvasId: 'layout_rolling_3y_cagr_chart',
+      yAxisTitle: '真实户型 Rolling 3Y CAGR (%)',
+      emptyMessage: '当前没有可用于真实户型映射 rolling 3Y CAGR 对比的项目。'
     },
     yoy: {
       canvasId: 'layout_yoy_chart',
@@ -1182,6 +1202,11 @@ const PK_LENS_CONFIG = {
       yAxisTitle: '面积代理累积 CAGR (%)',
       emptyMessage: '当前没有可用于面积代理 cumulative CAGR 对比的项目。'
     },
+    rolling3y: {
+      canvasId: 'area_proxy_rolling_3y_cagr_chart',
+      yAxisTitle: '面积代理 Rolling 3Y CAGR (%)',
+      emptyMessage: '当前没有可用于面积代理 rolling 3Y CAGR 对比的项目。'
+    },
     yoy: {
       canvasId: 'area_proxy_yoy_chart',
       yAxisTitle: '面积代理 YoY (%)',
@@ -1196,6 +1221,11 @@ const PK_LENS_CONFIG = {
       canvasId: 'owner_pool_cagr_chart',
       yAxisTitle: '自住口径累积 CAGR (%)',
       emptyMessage: '当前没有可用于自住口径 cumulative CAGR 对比的项目。'
+    },
+    rolling3y: {
+      canvasId: 'owner_pool_rolling_3y_cagr_chart',
+      yAxisTitle: '自住口径 Rolling 3Y CAGR (%)',
+      emptyMessage: '当前没有可用于自住口径 rolling 3Y CAGR 对比的项目。'
     },
     yoy: {
       canvasId: 'owner_pool_yoy_chart',
@@ -1653,6 +1683,7 @@ function renderPk(data){
     const projects = lensProjects[config.projectsKey.replace('_comparison_projects', '')] || lensProjects[config.projectsKey] || data[config.projectsKey] || [];
     renderLensNote(config.noteId, config.describe(data, projects));
     renderHistoricalLineChart(config.cagr.canvasId, projects, 'cagr_monthly', config.cagr.yAxisTitle, config.cagr.emptyMessage);
+    renderHistoricalLineChart(config.rolling3y.canvasId, projects, 'rolling_3y_cagr_monthly', config.rolling3y.yAxisTitle, config.rolling3y.emptyMessage);
     renderHistoricalLineChart(config.yoy.canvasId, projects, 'yoy_monthly', config.yoy.yAxisTitle, config.yoy.emptyMessage);
     if (config.focusDetail) {
       renderFocusDetailChart(config, projects);
@@ -2637,7 +2668,7 @@ loadDashboardData()
     activeDashboardData=null;
     renderScenario();
     const message = dashboardLoadErrorMessage(error);
-    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart', 'layout_focus_detail_chart', 'area_proxy_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_yoy_chart', 'owner_pool_focus_detail_chart', 'focus_mapping_cards', 'overall_lens_note', 'layout_lens_note', 'area_proxy_lens_note', 'owner_pool_lens_note', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
+    ['lv_focus_content', 'lg_focus_content', 'overall_cagr_chart', 'overall_rolling_3y_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_rolling_3y_cagr_chart', 'layout_yoy_chart', 'layout_focus_detail_chart', 'area_proxy_cagr_chart', 'area_proxy_rolling_3y_cagr_chart', 'area_proxy_yoy_chart', 'owner_pool_cagr_chart', 'owner_pool_rolling_3y_cagr_chart', 'owner_pool_yoy_chart', 'owner_pool_focus_detail_chart', 'focus_mapping_cards', 'overall_lens_note', 'layout_lens_note', 'area_proxy_lens_note', 'owner_pool_lens_note', 'ura_project_summary', 'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table'].forEach(id => {
       renderEmptyState(id, message);
     });
     const overallTable = document.querySelector('#overall_projects_table tbody');

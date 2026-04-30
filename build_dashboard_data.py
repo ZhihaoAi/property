@@ -388,6 +388,9 @@ def build_bucket_metrics(
         base_psf, base_start = compute_base_psf(bucket_rows)
         ttm_monthly = compute_ttm_monthly(bucket_rows)
         cagr = compute_cagr_from_base_ttm(base_psf, ttm_monthly, base_start)
+        cagr_monthly = compute_cagr_monthly(base_psf, ttm_monthly, base_start)
+        rolling_3y_cagr_monthly = compute_rolling_3y_cagr_monthly(ttm_monthly)
+        yoy_monthly = compute_yoy_monthly(ttm_monthly)
         metrics[bucket] = {
             "count": len(bucket_rows),
             "year_count": len(years),
@@ -396,10 +399,13 @@ def build_bucket_metrics(
             "monthly": monthly,
             "cagr": cagr,
             "all_time_cagr": cagr,
-            "current_yoy": compute_current_yoy(ttm_monthly),
+            "current_yoy": yoy_monthly[max(yoy_monthly.keys())] if yoy_monthly else compute_current_yoy(ttm_monthly),
             "base_psf": base_psf,
             "base_start": base_start,
             "ttm_monthly": ttm_monthly,
+            "cagr_monthly": cagr_monthly,
+            "rolling_3y_cagr_monthly": rolling_3y_cagr_monthly,
+            "yoy_monthly": yoy_monthly,
             "latest_year": latest_year,
             "latest_psf": latest_data.get("median_psf"),
             "latest_n": latest_data.get("count"),
@@ -503,6 +509,24 @@ def compute_yoy_monthly(ttm_monthly: dict[str, dict]) -> dict[str, float]:
     return result
 
 
+def compute_rolling_3y_cagr_monthly(ttm_monthly: dict[str, dict]) -> dict[str, float]:
+    if not ttm_monthly:
+        return {}
+    result: dict[str, float] = {}
+    for month_key in sorted(ttm_monthly.keys()):
+        current_entry = ttm_monthly.get(month_key)
+        prior_key = _ym_to_key(_add_months(_key_to_ym(month_key), -36))
+        prior_entry = ttm_monthly.get(prior_key)
+        if not current_entry or not prior_entry:
+            continue
+        current_psf = current_entry.get("median_psf")
+        prior_psf = prior_entry.get("median_psf")
+        if current_psf is None or current_psf <= 0 or prior_psf is None or prior_psf <= 0:
+            continue
+        result[month_key] = round(((current_psf / prior_psf) ** (1 / 3) - 1) * 100, 2)
+    return result
+
+
 def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
     annual = compute_annual_stats_from_rows(rows)
     monthly = compute_monthly_stats_from_rows(rows)
@@ -514,6 +538,7 @@ def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
     ttm_monthly = compute_ttm_monthly(rows)
     lifetime_cagr = compute_cagr_from_base_ttm(base_psf, ttm_monthly, base_start)
     cagr_monthly = compute_cagr_monthly(base_psf, ttm_monthly, base_start)
+    rolling_3y_cagr_monthly = compute_rolling_3y_cagr_monthly(ttm_monthly)
     yoy_monthly = compute_yoy_monthly(ttm_monthly)
 
     current = None
@@ -549,6 +574,7 @@ def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
         "base_start": base_start,
         "ttm_monthly": ttm_monthly,
         "cagr_monthly": cagr_monthly,
+        "rolling_3y_cagr_monthly": rolling_3y_cagr_monthly,
         "yoy_monthly": yoy_monthly,
         "lifetime_cagr": lifetime_cagr,
         "all_time_cagr": lifetime_cagr,
@@ -588,6 +614,7 @@ def build_metric_snapshot(metric: dict) -> dict:
         "recent_24m_count": metric.get("recent_24m_count"),
         "sample_count": metric.get("count"),
         "cagr_monthly": metric.get("cagr_monthly", {}),
+        "rolling_3y_cagr_monthly": metric.get("rolling_3y_cagr_monthly", {}),
         "yoy_monthly": metric.get("yoy_monthly", {}),
     }
 

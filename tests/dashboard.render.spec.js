@@ -16,18 +16,24 @@ test.describe('dashboard render', () => {
     const nonPropertyProject = data.projects.find(project => project.source_kind !== 'propertyforsale_csv');
     await expect(page.locator('#pk_kpis .kpi').first()).toBeVisible();
     await expect(page.locator('#overall_cagr_chart')).toBeVisible();
+    await expect(page.locator('#overall_rolling_3y_cagr_chart')).toBeVisible();
     await expect(page.locator('#overall_yoy_chart')).toBeVisible();
     await expect(page.locator('#layout_cagr_chart')).toBeVisible();
+    await expect(page.locator('#layout_rolling_3y_cagr_chart')).toBeVisible();
     await expect(page.locator('#layout_yoy_chart')).toBeVisible();
     await expect(page.locator('#area_proxy_cagr_chart')).toBeVisible();
+    await expect(page.locator('#area_proxy_rolling_3y_cagr_chart')).toBeVisible();
     await expect(page.locator('#area_proxy_yoy_chart')).toBeVisible();
     await expect(page.locator('#owner_pool_cagr_chart')).toBeVisible();
+    await expect(page.locator('#owner_pool_rolling_3y_cagr_chart')).toBeVisible();
     await expect(page.locator('#owner_pool_yoy_chart')).toBeVisible();
     await expect(page.locator('#layout_focus_detail_chart')).toBeVisible();
     await expect(page.locator('#owner_pool_focus_detail_chart')).toBeVisible();
     await expect(page.locator('#layout_focus_metric_toggle')).toContainText('All-time CAGR');
+    await expect(page.locator('#layout_focus_metric_toggle')).toContainText('Rolling 3Y CAGR');
     await expect(page.locator('#layout_focus_metric_toggle')).toContainText('YoY');
     await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('All-time CAGR');
+    await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('Rolling 3Y CAGR');
     await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('YoY');
 
     await page.locator('summary:has-text("口径 1 · 全项目汇总")').click();
@@ -48,7 +54,7 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#s10')).toContainText('真实 2b2b -> 真实 2b1b+2b2b -> 面积代理 -> 全项目');
     await expect(page.locator('#s10')).not.toContainText('当前自住池价格位置');
     await expect(page.locator('#s10')).not.toContainText('历史位置');
-    await expect(page.locator('#s10 canvas')).toHaveCount(10);
+    await expect(page.locator('#s10 canvas')).toHaveCount(14);
     const defaultVisible = await page.evaluate(() => {
       const chart = Chart.getChart(document.getElementById('overall_cagr_chart'));
       return chart.data.datasets.filter((dataset, index) => chart.isDatasetVisible(index)).map((dataset) => dataset.label).sort();
@@ -109,7 +115,7 @@ test.describe('dashboard render', () => {
     expect(beforeToggle.layoutLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
     expect(beforeToggle.ownerLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
 
-    await page.getByRole('button', { name: 'YoY' }).nth(0).click();
+    await page.getByRole('button', { name: 'Rolling 3Y CAGR' }).nth(0).click();
 
     const afterToggle = await page.evaluate(() => {
       const layoutDetail = Chart.getChart(document.getElementById('layout_focus_detail_chart'));
