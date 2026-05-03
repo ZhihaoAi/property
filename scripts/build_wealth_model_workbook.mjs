@@ -79,6 +79,9 @@ const mainCells = {
   loanTenorYears: "E19",
   oaInterestRate: "E20",
   cpfOwCeiling: "E21",
+  sellerAgentCommissionRate: "E22",
+  gstRate: "E23",
+  sellerLegalFees: "E24",
 };
 
 const calcCells = {
@@ -251,18 +254,36 @@ function monthlyEmployeeShareFormula(grossExpr, ageExpr) {
   return `ROUNDDOWN(MIN(${grossExpr},${mainRef(mainCells.cpfOwCeiling)})*${employeeRateFormula(ageExpr)},0)`;
 }
 
+function monthlyEmployeeShareFormulaWithRate(grossExpr, employeeRateExpr) {
+  return `ROUNDDOWN(MIN(${grossExpr},${mainRef(mainCells.cpfOwCeiling)})*(${employeeRateExpr}),0)`;
+}
+
 function monthlyOaCreditFormula(grossExpr, ageExpr) {
   const total = `ROUND(MIN(${grossExpr},${mainRef(mainCells.cpfOwCeiling)})*${totalRateFormula(ageExpr)},0)`;
   return `ROUND(${total}*${oaRatioFormula(ageExpr)},0)`;
+}
+
+function monthlyOaCreditFormulaWithRates(grossExpr, totalRateExpr, oaRatioExpr) {
+  const total = `ROUND(MIN(${grossExpr},${mainRef(mainCells.cpfOwCeiling)})*(${totalRateExpr}),0)`;
+  return `ROUND(${total}*(${oaRatioExpr}),0)`;
 }
 
 function bonusEmployeeShareFormula(grossExpr, bonusExpr, ageExpr) {
   return `ROUNDDOWN((${grossExpr}*${bonusExpr})*${employeeRateFormula(ageExpr)},0)`;
 }
 
+function bonusEmployeeShareFormulaWithRate(grossExpr, bonusExpr, employeeRateExpr) {
+  return `ROUNDDOWN((${grossExpr}*${bonusExpr})*(${employeeRateExpr}),0)`;
+}
+
 function bonusOaCreditFormula(grossExpr, bonusExpr, ageExpr) {
   const bonusTotal = `ROUND((${grossExpr}*${bonusExpr})*${totalRateFormula(ageExpr)},0)`;
   return `ROUND(${bonusTotal}*${oaRatioFormula(ageExpr)},0)`;
+}
+
+function bonusOaCreditFormulaWithRates(grossExpr, bonusExpr, totalRateExpr, oaRatioExpr) {
+  const bonusTotal = `ROUND((${grossExpr}*${bonusExpr})*(${totalRateExpr}),0)`;
+  return `ROUND(${bonusTotal}*(${oaRatioExpr}),0)`;
 }
 
 function cashMonthlyFormula(grossExpr, bonusExpr, ageExpr) {
@@ -271,6 +292,49 @@ function cashMonthlyFormula(grossExpr, bonusExpr, ageExpr) {
 
 function oaMonthlyFormula(grossExpr, bonusExpr, ageExpr) {
   return `${monthlyOaCreditFormula(grossExpr, ageExpr)}+${bonusOaCreditFormula(grossExpr, bonusExpr, ageExpr)}/12`;
+}
+
+function cashMonthlyFormulaWithRates(grossExpr, bonusExpr, totalRateExpr, employeeRateExpr) {
+  return `${grossExpr}-${monthlyEmployeeShareFormulaWithRate(grossExpr, employeeRateExpr)}+((${grossExpr}*${bonusExpr})-${bonusEmployeeShareFormulaWithRate(grossExpr, bonusExpr, employeeRateExpr)})/12`;
+}
+
+function oaMonthlyFormulaWithRates(grossExpr, bonusExpr, totalRateExpr, employeeRateExpr, oaRatioExpr) {
+  return `${monthlyOaCreditFormulaWithRates(grossExpr, totalRateExpr, oaRatioExpr)}+${bonusOaCreditFormulaWithRates(grossExpr, bonusExpr, totalRateExpr, oaRatioExpr)}/12`;
+}
+
+function sprYear1TotalRateFormula(ageExpr) {
+  return `IF(${ageExpr}<=60,0.09,0.085)`;
+}
+
+function sprYear1EmployeeRateFormula() {
+  return "0.05";
+}
+
+function sprYear2TotalRateFormula(ageExpr) {
+  return `IF(${ageExpr}<=55,0.24,IF(${ageExpr}<=60,0.185,IF(${ageExpr}<=65,0.11,0.085)))`;
+}
+
+function sprYear2EmployeeRateFormula(ageExpr) {
+  return `IF(${ageExpr}<=55,0.15,IF(${ageExpr}<=60,0.125,IF(${ageExpr}<=65,0.075,0.05)))`;
+}
+
+function maleTotalRateForMonthFormula(monthExpr) {
+  const ageExpr = mainRef(mainCells.maleAge);
+  return `IF(${monthExpr}<=12,${sprYear1TotalRateFormula(ageExpr)},IF(${monthExpr}<=24,${sprYear2TotalRateFormula(ageExpr)},${totalRateFormula(ageExpr)}))`;
+}
+
+function maleEmployeeRateForMonthFormula(monthExpr) {
+  const ageExpr = mainRef(mainCells.maleAge);
+  return `IF(${monthExpr}<=12,${sprYear1EmployeeRateFormula(ageExpr)},IF(${monthExpr}<=24,${sprYear2EmployeeRateFormula(ageExpr)},${employeeRateFormula(ageExpr)}))`;
+}
+
+function sellerStampDutyFormula(salePriceExpr, holdingYearsExpr) {
+  return `IF(${holdingYearsExpr}>=4,0,ROUND(${salePriceExpr}*IF(${holdingYearsExpr}<1,0.16,IF(${holdingYearsExpr}<2,0.12,IF(${holdingYearsExpr}<3,0.08,0.04))),0))`;
+}
+
+function sellingCostsFormula(salePriceExpr, holdingYearsExpr) {
+  const commission = `ROUND(${salePriceExpr}*${mainRef(mainCells.sellerAgentCommissionRate)},0)`;
+  return `${commission}+ROUND(${commission}*${mainRef(mainCells.gstRate)},0)+${mainRef(mainCells.sellerLegalFees)}+${sellerStampDutyFormula(salePriceExpr, holdingYearsExpr)}`;
 }
 
 function bsdFormula(priceExpr) {
@@ -503,7 +567,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ["", ""],
   ];
 
-  sheet.getRange("D3:E21").values = [
+  sheet.getRange("D3:E24").values = [
     ["全局输入", "值"],
     ["起始投入资金（K）", defaults.assetsK],
     ["月生活费", defaults.livingMonthly],
@@ -523,6 +587,9 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ["贷款年限", defaults.loanTenorYears],
     ["OA 利率", defaults.oaInterestRate],
     ["CPF OW Ceiling", defaults.cpfOwCeilingMonthly],
+    ["卖房中介费率", defaults.sellerAgentCommissionRate],
+    ["GST", defaults.gstRate],
+    ["卖方律师费", defaults.sellerLegalFees],
   ];
 
   sheet.getRange("H3:N9").values = [
@@ -603,7 +670,8 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
       const stockRange = `${CALC_SHEET}!$${block.stockCol}$${monthlyStartRow}:$${block.stockCol}$${monthlyEndRow}`;
       const oaRange = `${CALC_SHEET}!$${block.oaCol}$${monthlyStartRow}:$${block.oaCol}$${monthlyEndRow}`;
       const loanRange = `${CALC_SHEET}!$${block.loanCol}$${monthlyStartRow}:$${block.loanCol}$${monthlyEndRow}`;
-      const propertyAtYear = `IF(${helperRef(calcCols.isRent, helperRow)}=1,0,${helperRef(calcCols.price, helperRow)}*(1+${helperRef(calcCols.growthRate, helperRow)})^${yearCell}-INDEX(${loanRange},${yearCell}*12+1))`;
+      const futurePriceAtYear = `${helperRef(calcCols.price, helperRow)}*(1+${helperRef(calcCols.growthRate, helperRow)})^${yearCell}`;
+      const propertyAtYear = `IF(${helperRef(calcCols.isRent, helperRow)}=1,0,${futurePriceAtYear}-INDEX(${loanRange},${yearCell}*12+1)-${sellingCostsFormula(futurePriceAtYear, yearCell)})`;
       formulas.push(`=IF(${yearCell}=0,${calcRef(calcCells.initialWealth)},IF(${yearCell}>${mainRef(mainCells.simulationYears)},"",INDEX(${stockRange},${yearCell}*12+1)+INDEX(${oaRange},${yearCell}*12+1)+${propertyAtYear}))`);
     }
     sheet.getRange(`S${row}:Y${row}`).formulas = [formulas];
@@ -631,7 +699,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("S70:V70").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
 
   sheet.getRange("B4:B11").format.fill = "#FFF2CC";
-  sheet.getRange("E4:E21").format.fill = "#FFF2CC";
+  sheet.getRange("E4:E24").format.fill = "#FFF2CC";
   sheet.getRange("K4:M10").format.fill = "#FFF2CC";
 
   sheet.getRange("B3:B10").format.numberFormat = "0";
@@ -654,6 +722,8 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("E19:E19").format.numberFormat = "0";
   sheet.getRange("E20:E20").format.numberFormat = "0.00%";
   sheet.getRange("E21:E21").format.numberFormat = "$#,##0";
+  sheet.getRange("E22:E23").format.numberFormat = "0.00%";
+  sheet.getRange("E24:E24").format.numberFormat = "$#,##0";
   sheet.getRange("N5:N10").format.numberFormat = "0.00%";
   sheet.getRange("A24:P30").format.numberFormat = "$#,##0";
   sheet.getRange("Q24:Q30").format.numberFormat = "0.00%";
@@ -692,17 +762,17 @@ function buildCalcSheet(sheet, scenarioRows) {
     ["float_start", null],
   ];
 
-  sheet.getRange("C1").formulas = [[`=${totalRateFormula(mainRef(mainCells.maleAge))}`]];
-  sheet.getRange("D1").formulas = [[`=${employeeRateFormula(mainRef(mainCells.maleAge))}`]];
+  sheet.getRange("C1").formulas = [[`=${sprYear1TotalRateFormula(mainRef(mainCells.maleAge))}`]];
+  sheet.getRange("D1").formulas = [[`=${sprYear1EmployeeRateFormula(mainRef(mainCells.maleAge))}`]];
   sheet.getRange("E1").formulas = [[`=${oaRatioFormula(mainRef(mainCells.maleAge))}`]];
   sheet.getRange("C2").formulas = [[`=${totalRateFormula(mainRef(mainCells.femaleAge))}`]];
   sheet.getRange("D2").formulas = [[`=${employeeRateFormula(mainRef(mainCells.femaleAge))}`]];
   sheet.getRange("E2").formulas = [[`=${oaRatioFormula(mainRef(mainCells.femaleAge))}`]];
 
-  sheet.getRange("B1").formulas = [[`=${mainRef(mainCells.maleGross)}-ROUNDDOWN(MIN(${mainRef(mainCells.maleGross)},${mainRef(mainCells.cpfOwCeiling)})*${calcRef("D1")},0)+((${mainRef(mainCells.maleGross)}*${mainRef(mainCells.maleBonus)})-ROUNDDOWN((${mainRef(mainCells.maleGross)}*${mainRef(mainCells.maleBonus)})*${calcRef("D1")},0))/12`]];
-  sheet.getRange("B2").formulas = [[`=ROUND(ROUND(MIN(${mainRef(mainCells.maleGross)},${mainRef(mainCells.cpfOwCeiling)})*${calcRef("C1")},0)*${calcRef("E1")},0)+ROUND(ROUND((${mainRef(mainCells.maleGross)}*${mainRef(mainCells.maleBonus)})*${calcRef("C1")},0)*${calcRef("E1")},0)/12`]];
-  sheet.getRange("B3").formulas = [[`=${mainRef(mainCells.femaleGross)}-ROUNDDOWN(MIN(${mainRef(mainCells.femaleGross)},${mainRef(mainCells.cpfOwCeiling)})*${calcRef("D2")},0)+((${mainRef(mainCells.femaleGross)}*${mainRef(mainCells.femaleBonus)})-ROUNDDOWN((${mainRef(mainCells.femaleGross)}*${mainRef(mainCells.femaleBonus)})*${calcRef("D2")},0))/12`]];
-  sheet.getRange("B4").formulas = [[`=ROUND(ROUND(MIN(${mainRef(mainCells.femaleGross)},${mainRef(mainCells.cpfOwCeiling)})*${calcRef("C2")},0)*${calcRef("E2")},0)+ROUND(ROUND((${mainRef(mainCells.femaleGross)}*${mainRef(mainCells.femaleBonus)})*${calcRef("C2")},0)*${calcRef("E2")},0)/12`]];
+  sheet.getRange("B1").formulas = [[`=${cashMonthlyFormulaWithRates(mainRef(mainCells.maleGross), mainRef(mainCells.maleBonus), calcRef("C1"), calcRef("D1"))}`]];
+  sheet.getRange("B2").formulas = [[`=${oaMonthlyFormulaWithRates(mainRef(mainCells.maleGross), mainRef(mainCells.maleBonus), calcRef("C1"), calcRef("D1"), calcRef("E1"))}`]];
+  sheet.getRange("B3").formulas = [[`=${cashMonthlyFormulaWithRates(mainRef(mainCells.femaleGross), mainRef(mainCells.femaleBonus), calcRef("C2"), calcRef("D2"))}`]];
+  sheet.getRange("B4").formulas = [[`=${oaMonthlyFormulaWithRates(mainRef(mainCells.femaleGross), mainRef(mainCells.femaleBonus), calcRef("C2"), calcRef("D2"), calcRef("E2"))}`]];
   sheet.getRange("B5").formulas = [[`=${calcRef(calcCells.maleCash)}+${calcRef(calcCells.femaleCash)}`]];
   sheet.getRange("B6").formulas = [[`=${calcRef(calcCells.maleOA)}+${calcRef(calcCells.femaleOA)}`]];
   sheet.getRange("B7").formulas = [[`=${mainRef(mainCells.assetsK)}*1000+${mainRef(mainCells.maleInitialOA)}+${mainRef(mainCells.femaleInitialOA)}`]];
@@ -730,6 +800,9 @@ function buildCalcSheet(sheet, scenarioRows) {
     const stockRange = `${CALC_SHEET}!$${block.stockCol}$${monthlyStartRow}:$${block.stockCol}$${monthlyEndRow}`;
     const oaRange = `${CALC_SHEET}!$${block.oaCol}$${monthlyStartRow}:$${block.oaCol}$${monthlyEndRow}`;
 
+    const futurePriceAtEnd = `${scenarioValueRef(calcCols.price, helperRow)}*(1+${scenarioValueRef(calcCols.growthRate, helperRow)})^${mainRef(mainCells.simulationYears)}`;
+    const loanAtEnd = `IF(${mainRef(mainCells.simulationYears)}<=${mainRef(mainCells.fixedYears)},${loanBalanceFormula(scenarioValueRef(calcCols.actualLoan, helperRow), mainRef(mainCells.fixedRate), mainRef(mainCells.loanTenorYears), mainRef(mainCells.simulationYears))},${loanBalanceFormula(scenarioValueRef(calcCols.balanceAfterFixed, helperRow), mainRef(mainCells.floatRate), `MAX(${mainRef(mainCells.loanTenorYears)}-${mainRef(mainCells.fixedYears)},1)`, `${mainRef(mainCells.simulationYears)}-${mainRef(mainCells.fixedYears)}`)})`;
+
     sheet.getRange(`D${helperRow}:AK${helperRow}`).formulas = [[
       `=${mainRef(`H${mainRow}`)}`,
       `=--(${mainRef(`J${mainRow}`)}="rent")`,
@@ -753,7 +826,7 @@ function buildCalcSheet(sheet, scenarioRows) {
       `=IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${mortgagePaymentFormula(scenarioValueRef(calcCols.actualLoan, helperRow), mainRef(mainCells.fixedRate), mainRef(mainCells.loanTenorYears))})`,
       `=IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${loanBalanceFormula(scenarioValueRef(calcCols.actualLoan, helperRow), mainRef(mainCells.fixedRate), mainRef(mainCells.loanTenorYears), mainRef(mainCells.fixedYears))})`,
       `=IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${mortgagePaymentFormula(scenarioValueRef(calcCols.balanceAfterFixed, helperRow), mainRef(mainCells.floatRate), `MAX(${mainRef(mainCells.loanTenorYears)}-${mainRef(mainCells.fixedYears)},1)`)})`,
-      `=IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${scenarioValueRef(calcCols.price, helperRow)}*(1+${scenarioValueRef(calcCols.growthRate, helperRow)})^${mainRef(mainCells.simulationYears)}-IF(${mainRef(mainCells.simulationYears)}<=${mainRef(mainCells.fixedYears)},${loanBalanceFormula(scenarioValueRef(calcCols.actualLoan, helperRow), mainRef(mainCells.fixedRate), mainRef(mainCells.loanTenorYears), mainRef(mainCells.simulationYears))},${loanBalanceFormula(scenarioValueRef(calcCols.balanceAfterFixed, helperRow), mainRef(mainCells.floatRate), `MAX(${mainRef(mainCells.loanTenorYears)}-${mainRef(mainCells.fixedYears)},1)`, `${mainRef(mainCells.simulationYears)}-${mainRef(mainCells.fixedYears)}`)}))`,
+      `=IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${futurePriceAtEnd}-(${loanAtEnd})-${sellingCostsFormula(futurePriceAtEnd, mainRef(mainCells.simulationYears))})`,
       `=${scenarioValueRef(calcCols.stockFinal, helperRow)}+${scenarioValueRef(calcCols.oaFinal, helperRow)}+${scenarioValueRef(calcCols.propertyEquity, helperRow)}`,
       `=IF(OR(${calcRef(calcCells.initialWealth)}<=0,${scenarioValueRef(calcCols.totalWealth, helperRow)}<=0,${mainRef(mainCells.simulationYears)}<=0),"",(${scenarioValueRef(calcCols.totalWealth, helperRow)}/${calcRef(calcCells.initialWealth)})^(1/${mainRef(mainCells.simulationYears)})-1)`,
       `=${sumProductAverageFormula(block.cashCol, "1", calcRef(calcCells.fixedMonthsUsed))}`,
@@ -811,11 +884,17 @@ function buildCalcSheet(sheet, scenarioRows) {
       const oaCellPrev = `${CALC_SHEET}!$${block.oaCol}$${prevRow}`;
       const loanPrevCell = `${CALC_SHEET}!$${block.loanCol}$${prevRow}`;
       const currentMortgage = `IF(${monthCell}<=${mainRef(mainCells.fixedYears)}*12,${scenarioValueRef(calcCols.fixedMortgage, helperRow)},${scenarioValueRef(calcCols.floatMortgage, helperRow)})`;
-      const oaAvailable = `${oaCellPrev}*(1+${mainRef(mainCells.oaInterestRate)}/12)+${calcRef(calcCells.combinedOA)}`;
+      const maleTotalRate = maleTotalRateForMonthFormula(monthCell);
+      const maleEmployeeRate = maleEmployeeRateForMonthFormula(monthCell);
+      const maleCashAtMonth = cashMonthlyFormulaWithRates(mainRef(mainCells.maleGross), mainRef(mainCells.maleBonus), maleTotalRate, maleEmployeeRate);
+      const maleOaAtMonth = oaMonthlyFormulaWithRates(mainRef(mainCells.maleGross), mainRef(mainCells.maleBonus), maleTotalRate, maleEmployeeRate, calcRef("E1"));
+      const combinedCashAtMonth = `(${maleCashAtMonth})+${calcRef(calcCells.femaleCash)}`;
+      const combinedOaAtMonth = `(${maleOaAtMonth})+${calcRef(calcCells.femaleOA)}`;
+      const oaAvailable = `${oaCellPrev}*(1+${mainRef(mainCells.oaInterestRate)}/12)+(${combinedOaAtMonth})`;
       const currentRate = `IF(${monthCell}<=${mainRef(mainCells.fixedYears)}*12,${mainRef(mainCells.fixedRate)},${mainRef(mainCells.floatRate)})`;
       const housingOaFormula = `IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,MIN(${oaAvailable},${currentMortgage}))`;
       const housingCashFormula = `IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,${mainRef(mainCells.rentMonthly)},${mainRef(`M${mainRow}`)}+${currentMortgage}-(${housingOaFormula}))`;
-      const investableFormula = `${calcRef(calcCells.combinedCash)}-${mainRef(mainCells.livingMonthly)}-(${housingCashFormula})`;
+      const investableFormula = `(${combinedCashAtMonth})-${mainRef(mainCells.livingMonthly)}-(${housingCashFormula})`;
       const nextLoanBalance = `${loanPrevCell}*(1+${currentRate}/12)-IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${currentMortgage})`;
 
       stockFormulas.push([`=IF(${monthCell}>${calcRef(calcCells.simMonths)},"",MAX(${stockCellPrev}*(1+${mainRef(mainCells.stockAnnualReturn)}/12)+(${investableFormula}),0))`]);

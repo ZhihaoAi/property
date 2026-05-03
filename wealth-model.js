@@ -49,6 +49,18 @@
     { maxAge: 70, totalRate: 0.165, employeeRate: 0.075, employerRate: 0.09, oaRatio: 0.0607 },
     { maxAge: Infinity, totalRate: 0.125, employeeRate: 0.05, employerRate: 0.075, oaRatio: 0.08 },
   ];
+  const CPF_SPR_GG_RATE_BANDS = {
+    spr_gg_year1: [
+      { maxAge: 60, totalRate: 0.09, employeeRate: 0.05 },
+      { maxAge: Infinity, totalRate: 0.085, employeeRate: 0.05 },
+    ],
+    spr_gg_year2: [
+      { maxAge: 55, totalRate: 0.24, employeeRate: 0.15 },
+      { maxAge: 60, totalRate: 0.185, employeeRate: 0.125 },
+      { maxAge: 65, totalRate: 0.11, employeeRate: 0.075 },
+      { maxAge: Infinity, totalRate: 0.085, employeeRate: 0.05 },
+    ],
+  };
 
   const DEFAULT_ASSUMPTIONS = {
     assetsK: 800,
@@ -65,12 +77,16 @@
     ltv: 0.75,
     absdRate: 0.05,
     legalFees: 5000,
+    sellerAgentCommissionRate: 0.02,
+    gstRate: 0.09,
+    sellerLegalFees: 3000,
+    includeSellingCosts: true,
     mandatoryCashDownPaymentRate: 0.05,
     loanTenorYears: LOAN_TENOR,
     oaInterestRate: 0.025,
     cpfOwCeilingMonthly: 8000,
     useAverageBonusFlow: true,
-    cpfRulesVersion: 'CPF contribution and allocation rates from 1 Jan 2026; simplified AW handling without AW ceiling.',
+    cpfRulesVersion: 'CPF contribution and allocation rates from 1 Jan 2026; male uses default SPR G/G rates in Y1-Y2 then full rates; simplified AW handling without AW ceiling.',
     irasRulesVersion: 'Residential BSD progressive tiers and PR first-home ABSD 5% as at 2026 assumptions.',
     applyLeaseDecay: false,
     household: {
@@ -80,13 +96,16 @@
         grossMonthly: 8750,
         annualBonusMonths: 1,
         initialOA: 0,
+        cpfProfile: 'spr_gg',
+        sprYearAtPurchase: 1,
       },
       female: {
         dob: '1986-04-22',
         purchaseAge: 40,
         grossMonthly: 4000,
         annualBonusMonths: 0,
-        initialOA: 0,
+        initialOA: 8000,
+        cpfProfile: 'full',
       },
     },
   };
@@ -208,6 +227,41 @@
     return CPF_AGE_BANDS.find((band) => age <= band.maxAge) || CPF_AGE_BANDS[CPF_AGE_BANDS.length - 1];
   }
 
+  function getCpfSprRateBand(profile, age) {
+    const bands = CPF_SPR_GG_RATE_BANDS[profile];
+    return bands?.find((band) => age <= band.maxAge) || null;
+  }
+
+  function getCpfContributionProfile(age, cpfProfile = 'full') {
+    const ageBand = getCpfAgeBand(age);
+    const sprBand = getCpfSprRateBand(cpfProfile, age);
+    if (sprBand) {
+      return {
+        cpfProfile,
+        totalRate: sprBand.totalRate,
+        employeeRate: sprBand.employeeRate,
+        employerRate: sprBand.totalRate - sprBand.employeeRate,
+        oaRatio: ageBand.oaRatio,
+      };
+    }
+    return {
+      cpfProfile: 'full',
+      totalRate: ageBand.totalRate,
+      employeeRate: ageBand.employeeRate,
+      employerRate: ageBand.employerRate,
+      oaRatio: ageBand.oaRatio,
+    };
+  }
+
+  function resolveCpfProfileForMonth(person, month) {
+    if (person?.cpfProfile !== 'spr_gg') return person?.cpfProfile || 'full';
+    const startYear = Math.max(Number(person.sprYearAtPurchase || 1), 1);
+    const sprYear = startYear + Math.floor((Math.max(month, 1) - 1) / 12);
+    if (sprYear <= 1) return 'spr_gg_year1';
+    if (sprYear === 2) return 'spr_gg_year2';
+    return 'full';
+  }
+
   function getProjectGrowthRate(plan, assumptions) {
     return plan.projectKey === 'lakeville' ? assumptions.lakevilleAnnualGrowth : assumptions.lakeGrandeAnnualGrowth;
   }
@@ -268,8 +322,8 @@
     };
   }
 
-  function calcCpfForWage({ wage, ageAtPurchase, owCeilingMonthly, isBonus }) {
-    const band = getCpfAgeBand(ageAtPurchase);
+  function calcCpfForWage({ wage, ageAtPurchase, owCeilingMonthly, isBonus, cpfProfile = 'full' }) {
+    const band = getCpfContributionProfile(ageAtPurchase, cpfProfile);
     const contributionBase = isBonus ? wage : Math.min(wage, owCeilingMonthly);
     const totalContribution = roundNearestDollar(contributionBase * band.totalRate);
     const employeeShare = floorDollar(contributionBase * band.employeeRate);
@@ -281,17 +335,27 @@
       employeeShare,
       employerShare,
       oaCredit,
+      cpfProfile: band.cpfProfile,
+      totalRate: band.totalRate,
+      employeeRate: band.employeeRate,
+      employerRate: band.employerRate,
+      oaRatio: band.oaRatio,
     };
   }
 
-  function calcCpfMonthly({ grossMonthly, annualBonusMonths = 0, ageAtPurchase, owCeilingMonthly = DEFAULT_ASSUMPTIONS.cpfOwCeilingMonthly }) {
-    const monthly = calcCpfForWage({ wage: grossMonthly, ageAtPurchase, owCeilingMonthly, isBonus: false });
+  function calcCpfMonthly({ grossMonthly, annualBonusMonths = 0, ageAtPurchase, owCeilingMonthly = DEFAULT_ASSUMPTIONS.cpfOwCeilingMonthly, cpfProfile = 'full' }) {
+    const monthly = calcCpfForWage({ wage: grossMonthly, ageAtPurchase, owCeilingMonthly, isBonus: false, cpfProfile });
     const annualBonusGross = grossMonthly * annualBonusMonths;
-    const bonus = calcCpfForWage({ wage: annualBonusGross, ageAtPurchase, owCeilingMonthly, isBonus: true });
+    const bonus = calcCpfForWage({ wage: annualBonusGross, ageAtPurchase, owCeilingMonthly, isBonus: true, cpfProfile });
     return {
       ageAtPurchase,
       grossMonthly,
       annualBonusMonths,
+      cpfProfile: monthly.cpfProfile,
+      totalRate: monthly.totalRate,
+      employeeRate: monthly.employeeRate,
+      employerRate: monthly.employerRate,
+      oaRatio: monthly.oaRatio,
       annualBonusGross,
       employeeShareMonthly: monthly.employeeShare,
       employerShareMonthly: monthly.employerShare,
@@ -306,6 +370,16 @@
       monthlyCashIncludingBonus: grossMonthly - monthly.employeeShare + (annualBonusGross - bonus.employeeShare) / 12,
       monthlyOAIncludingBonus: monthly.oaCredit + bonus.oaCredit / 12,
     };
+  }
+
+  function calcPersonCpfForMonth(person, month, assumptions) {
+    return calcCpfMonthly({
+      grossMonthly: person.grossMonthly,
+      annualBonusMonths: person.annualBonusMonths,
+      ageAtPurchase: person.purchaseAge,
+      owCeilingMonthly: assumptions.cpfOwCeilingMonthly,
+      cpfProfile: resolveCpfProfileForMonth(person, month),
+    });
   }
 
   function calcUpfrontFunding({ price, loan, bsd, absd, legalFees, household, mandatoryCashDownPaymentRate = DEFAULT_ASSUMPTIONS.mandatoryCashDownPaymentRate }) {
@@ -382,24 +456,62 @@
     return Math.pow(totalWealth / initialWealth, 1 / years) - 1;
   }
 
-  function combineHouseholdCpf(assumptions) {
-    const male = calcCpfMonthly({
-      grossMonthly: assumptions.household.male.grossMonthly,
-      annualBonusMonths: assumptions.household.male.annualBonusMonths,
-      ageAtPurchase: assumptions.household.male.purchaseAge,
-      owCeilingMonthly: assumptions.cpfOwCeilingMonthly,
-    });
-    const female = calcCpfMonthly({
-      grossMonthly: assumptions.household.female.grossMonthly,
-      annualBonusMonths: assumptions.household.female.annualBonusMonths,
-      ageAtPurchase: assumptions.household.female.purchaseAge,
-      owCeilingMonthly: assumptions.cpfOwCeilingMonthly,
-    });
+  function calcResidentialSSD(salePrice, holdingYears, marketValue = salePrice) {
+    const dutiableValue = Math.max(Number(salePrice) || 0, Number(marketValue) || 0);
+    const years = Number(holdingYears);
+    if (!dutiableValue || !Number.isFinite(years) || years >= 4) return 0;
+    let rate = 0;
+    if (years < 1) rate = 0.16;
+    else if (years < 2) rate = 0.12;
+    else if (years < 3) rate = 0.08;
+    else if (years < 4) rate = 0.04;
+    return roundNearestDollar(dutiableValue * rate);
+  }
+
+  function calcSellingCosts({ salePrice, holdingYears, assumptions = DEFAULT_ASSUMPTIONS, marketValue = salePrice }) {
+    if (!assumptions.includeSellingCosts || !salePrice) {
+      return {
+        agentCommission: 0,
+        agentCommissionGst: 0,
+        legalFees: 0,
+        ssd: 0,
+        totalSellingCosts: 0,
+      };
+    }
+    const agentCommission = roundNearestDollar(salePrice * (assumptions.sellerAgentCommissionRate || 0));
+    const agentCommissionGst = roundNearestDollar(agentCommission * (assumptions.gstRate || 0));
+    const legalFees = roundNearestDollar(assumptions.sellerLegalFees || 0);
+    const ssd = calcResidentialSSD(salePrice, holdingYears, marketValue);
     return {
-      male,
-      female,
-      combinedCashMonthly: male.monthlyCashIncludingBonus + female.monthlyCashIncludingBonus,
-      combinedOAMonthly: male.monthlyOAIncludingBonus + female.monthlyOAIncludingBonus,
+      agentCommission,
+      agentCommissionGst,
+      legalFees,
+      ssd,
+      totalSellingCosts: agentCommission + agentCommissionGst + legalFees + ssd,
+    };
+  }
+
+  function combineHouseholdCpf(assumptions) {
+    const months = Math.max(Math.round((assumptions.simulationYears || 1) * 12), 1);
+    const monthlySchedule = Array.from({ length: months }, (_, index) => {
+      const month = index + 1;
+      const male = calcPersonCpfForMonth(assumptions.household.male, month, assumptions);
+      const female = calcPersonCpfForMonth(assumptions.household.female, month, assumptions);
+      return {
+        month,
+        male,
+        female,
+        combinedCash: male.monthlyCashIncludingBonus + female.monthlyCashIncludingBonus,
+        combinedOA: male.monthlyOAIncludingBonus + female.monthlyOAIncludingBonus,
+      };
+    });
+    const firstMonth = monthlySchedule[0];
+    return {
+      male: firstMonth.male,
+      female: firstMonth.female,
+      combinedCashMonthly: firstMonth.combinedCash,
+      combinedOAMonthly: firstMonth.combinedOA,
+      monthlySchedule,
     };
   }
 
@@ -440,12 +552,17 @@
     const floatOAFlows = [];
     const fixedInvestmentFlows = [];
     const floatInvestmentFlows = [];
+    const monthlyFlows = [];
     const trajectory = [];
 
     for (let month = 1; month <= months; month += 1) {
+      const monthCpf = householdCpf.monthlySchedule?.[month - 1] || {
+        combinedCash: householdCpf.combinedCashMonthly,
+        combinedOA: householdCpf.combinedOAMonthly,
+      };
       stockBalance *= 1 + monthlyStockRate;
       oaBalance *= 1 + monthlyOARate;
-      oaBalance += householdCpf.combinedOAMonthly;
+      oaBalance += monthCpf.combinedOA;
 
       let housingCash = 0;
       let housingOA = 0;
@@ -458,8 +575,18 @@
         housingCash = phase.fixedCost + (phase.mortgage - housingOA);
       }
 
-      const investableCash = householdCpf.combinedCashMonthly - assumptions.livingMonthly - housingCash;
+      const investableCash = monthCpf.combinedCash - assumptions.livingMonthly - housingCash;
       stockBalance = Math.max(stockBalance + investableCash, 0);
+      monthlyFlows.push({
+        month,
+        cpfCash: monthCpf.combinedCash,
+        cpfOA: monthCpf.combinedOA,
+        housingCash,
+        housingOA,
+        investableCash,
+        stockBalance,
+        oaBalance,
+      });
 
       const inFixed = month <= fixedMonths;
       if (inFixed) {
@@ -481,10 +608,12 @@
           const base = balaFactor(remNow);
           leaseAdj = base > 0 ? balaFactor(remFuture) / base : 1;
         }
-        const propertyEquity = plan.isRent
+        const futurePrice = plan.isRent
           ? 0
-          : transaction.price * Math.pow(1 + propertyGrowthRate, year) * leaseAdj
-              - (year <= assumptions.fixedYears
+          : transaction.price * Math.pow(1 + propertyGrowthRate, year) * leaseAdj;
+        const outstandingLoan = plan.isRent
+          ? 0
+          : (year <= assumptions.fixedYears
                 ? loanBalance(loan.actualLoan, assumptions.fixedRate, assumptions.loanTenorYears, year)
                 : loanBalance(
                     housing.balanceAfterFixed,
@@ -492,17 +621,35 @@
                     Math.max(assumptions.loanTenorYears - assumptions.fixedYears, 1),
                     year - assumptions.fixedYears
                   ));
+        const sellingCosts = plan.isRent
+          ? calcSellingCosts({ salePrice: 0, holdingYears: year, assumptions })
+          : calcSellingCosts({ salePrice: futurePrice, holdingYears: year, assumptions });
+        const grossPropertyEquity = futurePrice - outstandingLoan;
+        const propertyEquity = grossPropertyEquity - sellingCosts.totalSellingCosts;
         trajectory.push({
           year,
           stockBalance,
           oaBalance,
+          futurePrice,
+          outstandingLoan,
+          grossPropertyEquity,
+          sellingCosts,
           propertyEquity,
           totalWealth: stockBalance + oaBalance + propertyEquity,
         });
       }
     }
 
-    const finalPoint = trajectory[trajectory.length - 1] || { stockBalance, oaBalance, propertyEquity: 0, totalWealth: stockBalance + oaBalance };
+    const finalPoint = trajectory[trajectory.length - 1] || {
+      stockBalance,
+      oaBalance,
+      futurePrice: 0,
+      outstandingLoan: 0,
+      grossPropertyEquity: 0,
+      sellingCosts: calcSellingCosts({ salePrice: 0, holdingYears: 0, assumptions }),
+      propertyEquity: 0,
+      totalWealth: stockBalance + oaBalance,
+    };
     const totalWealth = finalPoint.totalWealth;
     return {
       initialStock,
@@ -510,9 +657,14 @@
       stockFV: finalPoint.stockBalance,
       oaBalance: finalPoint.oaBalance,
       propEquity: finalPoint.propertyEquity,
+      grossPropEquity: finalPoint.grossPropertyEquity,
+      futurePrice: finalPoint.futurePrice,
+      outstandingLoan: finalPoint.outstandingLoan,
+      sellingCosts: finalPoint.sellingCosts,
       totalWealth,
       totalCagr: calcTotalWealthCagr(totalWealth, initialWealth, assumptions.simulationYears),
       trajectory,
+      monthlyFlows,
       fixedPhaseCashHousing: fixedCashFlows.length ? fixedCashFlows.reduce((sum, value) => sum + value, 0) / fixedCashFlows.length : 0,
       floatPhaseCashHousing: floatCashFlows.length ? floatCashFlows.reduce((sum, value) => sum + value, 0) / floatCashFlows.length : 0,
       fixedPhaseOAHousing: fixedOAFlows.length ? fixedOAFlows.reduce((sum, value) => sum + value, 0) / fixedOAFlows.length : 0,
@@ -559,6 +711,7 @@
         absd,
         loan,
         upfront,
+        sellingCosts: wealth.sellingCosts,
         propertyGrowthRate,
         householdCpf,
         wealth,
@@ -655,6 +808,8 @@
     calcLoan,
     calcCpfMonthly,
     calcUpfrontFunding,
+    calcResidentialSSD,
+    calcSellingCosts,
     calcPhaseMonthlyHousing,
     calcTotalWealthCagr,
     buildScenario,

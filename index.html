@@ -71,6 +71,9 @@ table.dt th{background:var(--s2);padding:11px 13px;text-align:left;font-weight:6
 table.dt td{padding:9px 13px;border-bottom:1px solid var(--bdr)}
 table.dt tr:hover td{background:rgba(108,92,231,.05)}
 table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoration:underline}
+table.dt tr.metric-parent td{background:rgba(108,92,231,.08);font-weight:700}
+table.dt tr.metric-sub td:first-child{padding-left:28px;color:var(--t)}
+table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-size:.82rem}
 .hi{color:var(--g2);font-weight:600}.wr{color:var(--or)}.bd{color:var(--rd)}
 .focus-row{background:rgba(85,239,196,.08)}
 .focus-row td:first-child,.focus-row td:first-child strong{color:var(--g2)}
@@ -225,7 +228,7 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     <div class="card" style="margin-top:20px">
       <div class="ct"><span class="dot" style="background:var(--cy)"></span>五方案购房成本明细表</div>
       <div style="overflow-x:auto" id="cost_detail_table"></div>
-      <p style="color:var(--rd);font-size:.82rem;margin-top:12px" id="cost_detail_note">* 默认假设双方初始 OA 为 0，CPF 可支付部分会自动转为现金补差。</p>
+      <p style="color:var(--rd);font-size:.82rem;margin-top:12px" id="cost_detail_note">* 默认女方初始 OA 为 8000，CPF 可支付部分会先吃 OA，不足再转现金。</p>
     </div>
   </div>
 
@@ -267,11 +270,11 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
   <!-- ===== S5: 5-YEAR ===== -->
   <div id="s5" class="sec">
     <div class="st">💎 完整财富模型 — 房产 + 股票投资综合模拟</div>
-    <p class="sd">基于统一默认假设：起始投入资金 $800K · 双方 CPF OA 默认 0 · 前 2 年 1.5% / 后续 2.5% · 贷款上限 $1.1M</p>
+    <p class="sd">基于统一默认假设：起始投入资金 80万 · 女方初始 CPF OA 8000 · 男方按 1st-year SPR G/G CPF 阶梯 · 前 2 年 1.5% / 后续 2.5% · 贷款上限 110万</p>
 
     <div class="alert info">
       <h4>🔧 调整下方参数，所有图表和数据会实时更新</h4>
-      <p>默认假设男方税前工资 $8,750 + 1 个月年终奖、女方税前工资 $4,000、月生活费 $3,000。模型会按内置 CPF 年龄档估算每月现金流和 OA，并将 OA 不足部分自动转现金。</p>
+      <p>默认假设男方税前工资 $8,750 + 1 个月年终奖、女方税前工资 $4,000、月生活费 $3,000。男方 CPF 按 PR 第 1 年 G/G、第 2 年 G/G、第 3 年起 full CPF 逐月切换；OA 不足部分自动转现金。</p>
     </div>
 
     <div class="inputs">
@@ -293,10 +296,12 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
       <div class="inp"><label>模拟年限</label><input type="number" id="i_total_yrs" step="1" min="1" max="30"><div class="unit">年</div></div>
     </div>
 
-    <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>默认假设与口径</div>
+    <details class="card collapsible-card" style="margin-top:20px" id="assumptions_card">
+      <summary class="ct collapsible-toggle">
+        <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>默认假设与口径</span>
+      </summary>
       <div id="assumptions_box"></div>
-    </div>
+    </details>
 
     <div class="kpi-r" id="kpi_wealth"></div>
 
@@ -311,6 +316,9 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
     </div>
 
     <div class="card" style="margin-top:20px" id="wealth_table_card">
+    </div>
+
+    <div class="card" style="margin-top:20px" id="lg_2b2b_explain">
     </div>
 
     <div class="insight" id="insight_box"></div>
@@ -816,6 +824,21 @@ let activeDashboardData=null;
 function toK(v){return v/1000}
 function fmtMoney(v){return '$'+Math.round(v).toLocaleString()}
 function fmtK(v){return '$'+(Math.round(v/100)/10).toLocaleString()+'K'}
+function fmtCompactNumber(value,digits=1){
+  return Number(value).toFixed(digits).replace(/\.0+$/,'').replace(/(\.\d*[1-9])0+$/,'$1');
+}
+function fmtCnAmount(value){
+  const num=Number(value)||0;
+  const sign=num<0?'-':'';
+  const abs=Math.abs(num);
+  if(abs>=1000000)return sign+fmtCompactNumber(abs/1000000,2)+'百万';
+  if(abs>=10000)return sign+fmtCompactNumber(abs/10000,1)+'万';
+  return sign+String(Math.round(abs));
+}
+function fmtCnMoney(value){
+  const num=Number(value)||0;
+  return (num<0?'-':'')+'$'+fmtCnAmount(Math.abs(num));
+}
 function fmtPct(value,digits=1){return (value*100).toFixed(digits)+'%'}
 function fmtSignedPct(value,digits=1){return (value>=0?'+':'')+(value*100).toFixed(digits)+'%'}
 function avg(values){return values.length?values.reduce((sum,value)=>sum+value,0)/values.length:0}
@@ -875,22 +898,32 @@ function setScenarioInputDefaults(){
   Object.entries(values).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.value=value;});
 }
 
+function readNumericInput(id,fallback){
+  const el=document.getElementById(id);
+  const value=el?Number.parseFloat(el.value):NaN;
+  return Number.isFinite(value)?value:fallback;
+}
+
 function readScenarioInputs(){
   return {
-    assetsK:parseFloat(document.getElementById('i_assets').value)||DEFAULTS.assetsK,
-    livingMonthly:parseFloat(document.getElementById('i_living').value)||DEFAULTS.livingMonthly,
-    stockAnnualReturn:(parseFloat(document.getElementById('i_stock').value)||DEFAULTS.stockAnnualReturn*100)/100,
-    lakevilleAnnualGrowth:(parseFloat(document.getElementById('i_rate_lv').value)||DEFAULTS.lakevilleAnnualGrowth*100)/100,
-    lakeGrandeAnnualGrowth:(parseFloat(document.getElementById('i_rate_lg').value)||DEFAULTS.lakeGrandeAnnualGrowth*100)/100,
-    rentMonthly:parseFloat(document.getElementById('i_rent').value)||DEFAULTS.rentMonthly,
-    fixedRate:(parseFloat(document.getElementById('i_fixed_rate').value)||DEFAULTS.fixedRate*100)/100,
-    fixedYears:Math.max(parseInt(document.getElementById('i_fixed_yrs').value,10)||DEFAULTS.fixedYears,1),
-    floatRate:(parseFloat(document.getElementById('i_float_rate').value)||DEFAULTS.floatRate*100)/100,
-    simulationYears:Math.max(parseInt(document.getElementById('i_total_yrs').value,10)||DEFAULTS.simulationYears,1),
+    assetsK:readNumericInput('i_assets',DEFAULTS.assetsK),
+    livingMonthly:readNumericInput('i_living',DEFAULTS.livingMonthly),
+    stockAnnualReturn:readNumericInput('i_stock',DEFAULTS.stockAnnualReturn*100)/100,
+    lakevilleAnnualGrowth:readNumericInput('i_rate_lv',DEFAULTS.lakevilleAnnualGrowth*100)/100,
+    lakeGrandeAnnualGrowth:readNumericInput('i_rate_lg',DEFAULTS.lakeGrandeAnnualGrowth*100)/100,
+    rentMonthly:readNumericInput('i_rent',DEFAULTS.rentMonthly),
+    fixedRate:readNumericInput('i_fixed_rate',DEFAULTS.fixedRate*100)/100,
+    fixedYears:Math.max(Math.round(readNumericInput('i_fixed_yrs',DEFAULTS.fixedYears)),1),
+    floatRate:readNumericInput('i_float_rate',DEFAULTS.floatRate*100)/100,
+    simulationYears:Math.max(Math.round(readNumericInput('i_total_yrs',DEFAULTS.simulationYears)),1),
     loanCap:DEFAULTS.loanCap,
     ltv:DEFAULTS.ltv,
     absdRate:DEFAULTS.absdRate,
     legalFees:DEFAULTS.legalFees,
+    sellerAgentCommissionRate:DEFAULTS.sellerAgentCommissionRate,
+    gstRate:DEFAULTS.gstRate,
+    sellerLegalFees:DEFAULTS.sellerLegalFees,
+    includeSellingCosts:DEFAULTS.includeSellingCosts,
     mandatoryCashDownPaymentRate:DEFAULTS.mandatoryCashDownPaymentRate,
     loanTenorYears:DEFAULTS.loanTenorYears,
     oaInterestRate:DEFAULTS.oaInterestRate,
@@ -901,16 +934,19 @@ function readScenarioInputs(){
       male:{
         dob:DEFAULTS.household.male.dob,
         purchaseAge:DEFAULTS.household.male.purchaseAge,
-        grossMonthly:parseFloat(document.getElementById('i_male_gross').value)||DEFAULTS.household.male.grossMonthly,
-        annualBonusMonths:parseFloat(document.getElementById('i_male_bonus').value)||DEFAULTS.household.male.annualBonusMonths,
-        initialOA:parseFloat(document.getElementById('i_male_oa').value)||DEFAULTS.household.male.initialOA,
+        grossMonthly:readNumericInput('i_male_gross',DEFAULTS.household.male.grossMonthly),
+        annualBonusMonths:readNumericInput('i_male_bonus',DEFAULTS.household.male.annualBonusMonths),
+        initialOA:readNumericInput('i_male_oa',DEFAULTS.household.male.initialOA),
+        cpfProfile:DEFAULTS.household.male.cpfProfile,
+        sprYearAtPurchase:DEFAULTS.household.male.sprYearAtPurchase,
       },
       female:{
         dob:DEFAULTS.household.female.dob,
         purchaseAge:DEFAULTS.household.female.purchaseAge,
-        grossMonthly:parseFloat(document.getElementById('i_female_gross').value)||DEFAULTS.household.female.grossMonthly,
-        annualBonusMonths:parseFloat(document.getElementById('i_female_bonus').value)||DEFAULTS.household.female.annualBonusMonths,
-        initialOA:parseFloat(document.getElementById('i_female_oa').value)||DEFAULTS.household.female.initialOA,
+        grossMonthly:readNumericInput('i_female_gross',DEFAULTS.household.female.grossMonthly),
+        annualBonusMonths:readNumericInput('i_female_bonus',DEFAULTS.household.female.annualBonusMonths),
+        initialOA:readNumericInput('i_female_oa',DEFAULTS.household.female.initialOA),
+        cpfProfile:DEFAULTS.household.female.cpfProfile,
       },
     },
   };
@@ -925,15 +961,22 @@ function buildScenarioModel(){
 }
 
 function renderAssumptionsBox(assumptions,householdCpf){
+  const schedule=householdCpf.monthlySchedule||[];
+  const y1=schedule[0]||{male:householdCpf.male,female:householdCpf.female,combinedCash:householdCpf.combinedCashMonthly,combinedOA:householdCpf.combinedOAMonthly};
+  const y2=schedule[12]||y1;
+  const y3=schedule[24]||schedule[schedule.length-1]||y2;
+  const bonusCashMonthly=person=>(person.takeHomeAnnualBonus||0)/12;
+  const cpfLine=(label,flow)=>label+' 男方月均现金 '+fmtCnMoney(flow.male.monthlyCashIncludingBonus)+' = 薪资到手 '+fmtCnMoney(flow.male.takeHomeMonthly)+' + 奖金摊销 '+fmtCnMoney(bonusCashMonthly(flow.male))+' / OA '+fmtCnMoney(flow.male.monthlyOAIncludingBonus)+'；家庭月均现金 '+fmtCnMoney(flow.combinedCash)+' / OA '+fmtCnMoney(flow.combinedOA);
   document.getElementById('assumptions_box').innerHTML=
     '<div class="ag">'+
-      '<div class="ai"><div class="l">起始投入资金</div><div class="v">$'+(assumptions.assetsK*1000).toLocaleString()+'（现金+股票）</div></div>'+
-      '<div class="ai"><div class="l">男方默认收入</div><div class="v">$'+assumptions.household.male.grossMonthly.toLocaleString()+'/月 + '+assumptions.household.male.annualBonusMonths+' 薪 · 初始 OA $'+assumptions.household.male.initialOA.toLocaleString()+'</div></div>'+
-      '<div class="ai"><div class="l">女方默认收入</div><div class="v">$'+assumptions.household.female.grossMonthly.toLocaleString()+'/月 + '+assumptions.household.female.annualBonusMonths+' 薪 · 初始 OA $'+assumptions.household.female.initialOA.toLocaleString()+'</div></div>'+
-      '<div class="ai"><div class="l">生活费 / 租金</div><div class="v">$'+assumptions.livingMonthly.toLocaleString()+'/月 · 纯租房基准 $'+assumptions.rentMonthly.toLocaleString()+'/月</div></div>'+
+      '<div class="ai"><div class="l">起始投入资金</div><div class="v">'+fmtCnMoney(assumptions.assetsK*1000)+'（现金+股票）</div></div>'+
+      '<div class="ai"><div class="l">男方默认收入</div><div class="v">'+fmtCnMoney(assumptions.household.male.grossMonthly)+'/月 + '+assumptions.household.male.annualBonusMonths+' 薪 · 初始 OA '+fmtCnMoney(assumptions.household.male.initialOA)+'</div></div>'+
+      '<div class="ai"><div class="l">女方默认收入</div><div class="v">'+fmtCnMoney(assumptions.household.female.grossMonthly)+'/月 + '+assumptions.household.female.annualBonusMonths+' 薪 · 初始 OA '+fmtCnMoney(assumptions.household.female.initialOA)+'</div></div>'+
+      '<div class="ai"><div class="l">生活费 / 租金</div><div class="v">'+fmtCnMoney(assumptions.livingMonthly)+'/月 · 纯租房基准 '+fmtCnMoney(assumptions.rentMonthly)+'/月</div></div>'+
       '<div class="ai"><div class="l">CPF 规则</div><div class="v">'+assumptions.cpfRulesVersion+'</div></div>'+
-      '<div class="ai"><div class="l">税费规则</div><div class="v">'+assumptions.irasRulesVersion+'</div></div>'+
-      '<div class="ai"><div class="l">每月到手 / OA</div><div class="v">男方现金 $'+Math.round(householdCpf.male.monthlyCashIncludingBonus).toLocaleString()+' · OA $'+Math.round(householdCpf.male.monthlyOAIncludingBonus).toLocaleString()+'；女方现金 $'+Math.round(householdCpf.female.monthlyCashIncludingBonus).toLocaleString()+' · OA $'+Math.round(householdCpf.female.monthlyOAIncludingBonus).toLocaleString()+'</div></div>'+
+      '<div class="ai"><div class="l">税费 / 卖房规则</div><div class="v">'+assumptions.irasRulesVersion+' · 期末卖房扣中介 '+fmtPct(assumptions.sellerAgentCommissionRate)+' + GST '+fmtPct(assumptions.gstRate)+' + 卖方律师费 '+fmtCnMoney(assumptions.sellerLegalFees)+'</div></div>'+
+      '<div class="ai"><div class="l">男方 CPF 修正</div><div class="v">旧口径误按 full CPF；现改为 Y1 员工5%/总9%，Y2 员工15%/总24%，Y3+ full CPF。</div></div>'+
+      '<div class="ai"><div class="l">月均现金(含年终奖摊销) / OA</div><div class="v">'+cpfLine('Y1',y1)+'<br>'+cpfLine('Y2',y2)+'<br>'+cpfLine('Y3+',y3)+'</div></div>'+
     '</div>';
 }
 
@@ -1037,24 +1080,24 @@ function renderWealthSection(scenario){
     if(result.isRent){
       return Object.assign({},result,{displayLabel:result.label,cagr:result.wealth.totalCagr});
     }
-    return Object.assign({},result,{displayLabel:result.label+' $'+(result.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M',cagr:result.wealth.totalCagr});
+    return Object.assign({},result,{displayLabel:result.label+' '+fmtCnMoney(result.transaction.price),cagr:result.wealth.totalCagr});
   });
   const best=results.reduce((a,b)=>a.wealth.totalWealth>b.wealth.totalWealth?a:b);
   const worst=results.reduce((a,b)=>a.wealth.totalWealth<b.wealth.totalWealth?a:b);
 
-  document.getElementById('kpi_wealth').innerHTML=results.slice().sort((a,b)=>b.wealth.totalWealth-a.wealth.totalWealth).map(r=>'<div class="kpi"><div class="l">'+r.displayLabel+'</div><div class="v" style="color:'+(r===best?'var(--g2)':r.color)+'">'+fmtK(r.wealth.totalWealth)+'</div><div class="c">股票 '+fmtK(r.wealth.stockFV)+' + 房产 '+fmtK(r.wealth.propEquity)+' + OA '+fmtK(r.wealth.oaBalance)+' · CAGR '+(r.cagr!=null?fmtPct(r.cagr,2):'-')+'</div></div>').join('');
+  document.getElementById('kpi_wealth').innerHTML=results.slice().sort((a,b)=>b.wealth.totalWealth-a.wealth.totalWealth).map(r=>'<div class="kpi"><div class="l">'+r.displayLabel+'</div><div class="v" style="color:'+(r===best?'var(--g2)':r.color)+'">'+fmtCnMoney(r.wealth.totalWealth)+'</div><div class="c">股票 '+fmtCnMoney(r.wealth.stockFV)+' + 卖房后房产净值 '+fmtCnMoney(r.wealth.propEquity)+' + OA '+fmtCnMoney(r.wealth.oaBalance)+' · CAGR '+(r.cagr!=null?fmtPct(r.cagr,2):'-')+'</div></div>').join('');
 
   const labels=wealthYearsLabels(assumptions.simulationYears);
   if(wealthChart)wealthChart.destroy();
-  wealthChart=new Chart(document.getElementById('c_wealth'),{type:'line',data:{labels,datasets:results.map(r=>({label:r.displayLabel,data:[(assumptions.assetsK*1000+assumptions.household.male.initialOA+assumptions.household.female.initialOA)/1000,...r.wealth.trajectory.map(pt=>Math.round(pt.totalWealth/1000))],borderColor:r.color,tension:.3,borderWidth:3,borderDash:r.dash||[]}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'总财富 S$千 = 房产净权益 + 股票组合 + CPF OA'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'}}}});
+  wealthChart=new Chart(document.getElementById('c_wealth'),{type:'line',data:{labels,datasets:results.map(r=>({label:r.displayLabel,data:[(assumptions.assetsK*1000+assumptions.household.male.initialOA+assumptions.household.female.initialOA)/10000,...r.wealth.trajectory.map(pt=>pt.totalWealth/10000)],borderColor:r.color,tension:.3,borderWidth:3,borderDash:r.dash||[]}))},options:{responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'总财富 S$万 = 卖房后房产净值 + 股票组合 + CPF OA'},ticks:{callback:v=>v+'万'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{position:'top'}}}});
 
   if(breakdownChart)breakdownChart.destroy();
-  breakdownChart=new Chart(document.getElementById('c_breakdown'),{type:'bar',data:{labels:results.map(r=>r.label),datasets:[{label:'房产净权益',data:results.map(r=>Math.round(toK(r.wealth.propEquity))),backgroundColor:results.map(r=>r.color+'99'),borderColor:results.map(r=>r.color),borderWidth:2},{label:'股票组合',data:results.map(r=>Math.round(toK(r.wealth.stockFV))),backgroundColor:results.map(()=>C.gn+'66'),borderColor:results.map(()=>C.gn),borderWidth:2},{label:'CPF OA',data:results.map(r=>Math.round(toK(r.wealth.oaBalance))),backgroundColor:results.map(()=>C.cy+'66'),borderColor:results.map(()=>C.cy),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ (千)'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>v>=50?'$'+v+'K':''}}}});
+  breakdownChart=new Chart(document.getElementById('c_breakdown'),{type:'bar',data:{labels:results.map(r=>r.label),datasets:[{label:'卖房后房产净值',data:results.map(r=>r.wealth.propEquity/10000),backgroundColor:results.map(r=>r.color+'99'),borderColor:results.map(r=>r.color),borderWidth:2},{label:'股票组合',data:results.map(r=>r.wealth.stockFV/10000),backgroundColor:results.map(()=>C.gn+'66'),borderColor:results.map(()=>C.gn),borderWidth:2},{label:'CPF OA',data:results.map(r=>r.wealth.oaBalance/10000),backgroundColor:results.map(()=>C.cy+'66'),borderColor:results.map(()=>C.cy),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$ 万'},ticks:{callback:v=>v+'万'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>v>=5?fmtCnMoney(v*10000):''}}}});
 
   if(flowChart)flowChart.destroy();
   flowChart=new Chart(document.getElementById('c_flow'),{type:'bar',data:{labels:results.map(r=>r.label),datasets:[{label:'月住房现金支出',data:results.map(r=>Math.round(r.wealth.avgCashHousing)),backgroundColor:C.rd+'99',borderColor:C.rd,borderWidth:1},{label:'月住房 OA 支出',data:results.map(r=>Math.round(r.wealth.avgOAHousing)),backgroundColor:C.cy+'99',borderColor:C.cy,borderWidth:1},{label:'月均结余→股票',data:results.map(r=>Math.round(Math.max(r.wealth.avgInvestableCash,0))),backgroundColor:C.gn+'99',borderColor:C.gn,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,title:{display:true,text:'S$/月'},grid:{color:'#2d324466'}},x:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'top'},datalabels:{display:true,color:'#e4e6f0',font:{weight:'bold',size:11},formatter:v=>'$'+Math.round(v).toLocaleString()}}}});
 
-  document.getElementById('ct_wealth').innerHTML='<span class="dot" style="background:var(--ac)"></span>'+assumptions.simulationYears+'年总财富轨迹（房产净权益 + 股票组合 + CPF OA）';
+  document.getElementById('ct_wealth').innerHTML='<span class="dot" style="background:var(--ac)"></span>'+assumptions.simulationYears+'年总财富轨迹（卖房后房产净值 + 股票组合 + CPF OA）';
   document.getElementById('ct_breakdown').innerHTML='<span class="dot" style="background:var(--g)"></span>第'+assumptions.simulationYears+'年末财富构成拆解';
 
   if(leverageChart)leverageChart.destroy();
@@ -1063,36 +1106,52 @@ function renderWealthSection(scenario){
   leverageChart=new Chart(document.getElementById('c_leverage'),{type:'bar',data:{labels:[...buyResults.map(r=>r.id+':房产杠杆'),'股票(无杠杆)'],datasets:[{label:'年化权益回报率 %',data:[...leverageData,parseFloat((assumptions.stockAnnualReturn*100).toFixed(1))],backgroundColor:[...buyResults.map(r=>r.color+'99'),C.gn+'99'],borderColor:[...buyResults.map(r=>r.color),C.gn],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'年化回报率 %'},grid:{color:'#2d324466'}},x:{grid:{display:false}}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',color:'#e4e6f0',font:{weight:'bold',size:13},formatter:v=>v+'%'}}}});
 
   document.getElementById('wealth_table_card').innerHTML=
-    '<div class="ct"><span class="dot" style="background:var(--or)"></span>完整财富模型数据表（起始$'+assumptions.assetsK+'K，月生活费$'+assumptions.livingMonthly.toLocaleString()+'，利率'+(assumptions.fixedRate*100).toFixed(1)+'%→'+(assumptions.floatRate*100).toFixed(1)+'%）</div>'+
+    '<div class="ct"><span class="dot" style="background:var(--or)"></span>完整财富模型数据表（起始'+fmtCnAmount(assumptions.assetsK*1000)+'，月生活费'+fmtCnMoney(assumptions.livingMonthly)+'，利率'+(assumptions.fixedRate*100).toFixed(1)+'%→'+(assumptions.floatRate*100).toFixed(1)+'%）</div>'+
     '<div style="overflow-x:auto"><table class="dt"><thead><tr><th>指标</th>'+results.map(r=>'<th>'+r.displayLabel+'</th>').join('')+'</tr></thead><tbody>'+
-    '<tr><td>最新成交价</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td><a href="'+r.transaction.url+'" target="_blank" style="color:var(--ac)">$'+(r.transaction.price/1000000).toFixed(3).replace(/\.?0+$/,'')+'M</a><br><span style="font-size:.75rem;color:var(--t2)">'+r.transaction.dateLabel+' · '+r.transaction.sqft+'sqft</span></td>').join('')+'</tr>'+
-    '<tr><td>前期现金支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.totalCashUsed)+'</td>').join('')+'</tr>'+
-    '<tr><td>前期 CPF OA 支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.totalCpfUsed)+'</td>').join('')+'</tr>'+
-    '<tr><td>OA 不足转现金</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.upfront.oaShortfallToCash)+'</td>').join('')+'</tr>'+
-    '<tr><td>购房后剩余现金→股票初始</td>'+results.map(r=>'<td>'+fmtK(r.wealth.initialStock)+'</td>').join('')+'</tr>'+
-    '<tr><td>购房后剩余 OA</td>'+results.map(r=>'<td>'+fmtK(r.wealth.initialOA)+'</td>').join('')+'</tr>'+
+    '<tr><td>最新成交价</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td><a href="'+r.transaction.url+'" target="_blank" style="color:var(--ac)">'+fmtCnMoney(r.transaction.price)+'</a><br><span style="font-size:.75rem;color:var(--t2)">'+r.transaction.dateLabel+' · '+r.transaction.sqft+'sqft</span></td>').join('')+'</tr>'+
+    '<tr class="metric-parent"><td>前期总资金支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.upfront.totalUpfront)+'</td>').join('')+'</tr>'+
+    '<tr class="metric-sub"><td>现金支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.upfront.totalCashUsed)+'</td>').join('')+'</tr>'+
+    '<tr class="metric-sub"><td>CPF OA 支出</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.upfront.totalCpfUsed)+'</td>').join('')+'</tr>'+
+    '<tr class="metric-sub2"><td>其中 OA 不足转现金</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.upfront.oaShortfallToCash)+'</td>').join('')+'</tr>'+
+    '<tr><td>购房后剩余现金→股票初始</td>'+results.map(r=>'<td>'+fmtCnMoney(r.wealth.initialStock)+'</td>').join('')+'</tr>'+
+    '<tr><td>购房后剩余 OA</td>'+results.map(r=>'<td>'+fmtCnMoney(r.wealth.initialOA)+'</td>').join('')+'</tr>'+
     '<tr><td>月住房现金支出(Y1-'+assumptions.fixedYears+')</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.fixedPhaseCashHousing).toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')+'</tr>'+
     '<tr><td>月住房 OA 支出(Y1-'+assumptions.fixedYears+')</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.fixedPhaseOAHousing).toLocaleString()+'</td>').join('')+'</tr>'+
     '<tr><td>月住房现金支出(Y'+(assumptions.fixedYears+1)+'+)</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.floatPhaseCashHousing).toLocaleString()+(r.isRent?' (租金)':'')+'</td>').join('')+'</tr>'+
     '<tr><td>月住房 OA 支出(Y'+(assumptions.fixedYears+1)+'+)</td>'+results.map(r=>'<td>$'+Math.round(r.wealth.floatPhaseOAHousing).toLocaleString()+'</td>').join('')+'</tr>'+
-    '<tr><td>贷款额</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.loan.actualLoan)+(r.loan.capped?' (封顶)':'')+'</td>').join('')+'</tr>'+
+    '<tr><td>贷款额</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.loan.actualLoan)+(r.loan.capped?' (封顶)':'')+'</td>').join('')+'</tr>'+
     '<tr style="background:var(--s2)"><td>房产年增值假设</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td style="color:var(--ac)">'+fmtPct(r.propertyGrowthRate)+'/年</td>').join('')+'</tr>'+
-    '<tr><td>'+assumptions.simulationYears+'年后股票组合</td>'+results.map(r=>'<td>'+fmtK(r.wealth.stockFV)+'</td>').join('')+'</tr>'+
-    '<tr><td>'+assumptions.simulationYears+'年后房产净权益</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtK(r.wealth.propEquity)+'</td>').join('')+'</tr>'+
-    '<tr><td>'+assumptions.simulationYears+'年后 CPF OA</td>'+results.map(r=>'<td>'+fmtK(r.wealth.oaBalance)+'</td>').join('')+'</tr>'+
-    '<tr style="font-weight:700;background:var(--s2)"><td>'+assumptions.simulationYears+'年后总财富</td>'+results.map(r=>'<td style="color:'+(r===best?'var(--g2)':r.color)+'"><span class="wealth-num">'+fmtK(r.wealth.totalWealth)+'</span></td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后股票组合</td>'+results.map(r=>'<td>'+fmtCnMoney(r.wealth.stockFV)+'</td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后房产毛权益</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.wealth.grossPropEquity)+'</td>').join('')+'</tr>'+
+    '<tr><td>卖房成本</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.wealth.sellingCosts.totalSellingCosts)+'<br><span style="font-size:.75rem;color:var(--t2)">中介 '+fmtCnMoney(r.wealth.sellingCosts.agentCommission)+' + GST '+fmtCnMoney(r.wealth.sellingCosts.agentCommissionGst)+' + 律师 '+fmtCnMoney(r.wealth.sellingCosts.legalFees)+' + SSD '+fmtCnMoney(r.wealth.sellingCosts.ssd)+'</span></td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后房产净权益</td>'+results.map(r=>r.isRent?'<td>—</td>':'<td>'+fmtCnMoney(r.wealth.propEquity)+'</td>').join('')+'</tr>'+
+    '<tr><td>'+assumptions.simulationYears+'年后 CPF OA</td>'+results.map(r=>'<td>'+fmtCnMoney(r.wealth.oaBalance)+'</td>').join('')+'</tr>'+
+    '<tr style="font-weight:700;background:var(--s2)"><td>'+assumptions.simulationYears+'年后总财富</td>'+results.map(r=>'<td style="color:'+(r===best?'var(--g2)':r.color)+'"><span class="wealth-num">'+fmtCnMoney(r.wealth.totalWealth)+'</span></td>').join('')+'</tr>'+
     '<tr><td>总财富 CAGR</td>'+results.map(r=>'<td>'+(r.wealth.totalCagr!=null?fmtPct(r.wealth.totalCagr,2):'-')+'</td>').join('')+'</tr>'+
     '</tbody></table></div>';
+
+  const lg2b2b=scenario.buyResults.find(r=>r.id==='C');
+  if(lg2b2b){
+    document.getElementById('lg_2b2b_explain').innerHTML=
+      '<div class="ct"><span class="dot" style="background:var(--ac2)"></span>LG 2B2B 计算过程说明</div>'+
+      '<div class="insight" style="margin:0"><h3>LG 2B2B 前期资金与期末净值</h3>'+
+      '<p><strong>前期现金支出 = 强制现金首付 + BSD + ABSD + 买方律师费 + OA不足转现金</strong>。所以“前期现金支出”已经包含 OA 不足转现金；“前期 CPF OA 支出”只代表实际从 OA 扣掉的钱。</p>'+
+      '<p style="margin-top:10px">购买价 '+fmtCnMoney(lg2b2b.transaction.price)+'，贷款 '+fmtCnMoney(lg2b2b.loan.actualLoan)+'，首付 '+fmtCnMoney(lg2b2b.loan.downPayment)+'。首付里强制现金 '+fmtCnMoney(lg2b2b.upfront.mandatoryCash)+'，CPF 可支付 '+fmtCnMoney(lg2b2b.upfront.cpfEligible)+'；默认初始 OA '+fmtCnMoney(lg2b2b.upfront.totalOAAvailable)+'，实际 OA 支出 '+fmtCnMoney(lg2b2b.upfront.totalCpfUsed)+'，OA 不足转现金 '+fmtCnMoney(lg2b2b.upfront.oaShortfallToCash)+'。</p>'+
+      '<p style="margin-top:10px">代入：前期现金'+fmtCnAmount(lg2b2b.upfront.totalCashUsed)+' = 强制现金 '+fmtCnAmount(lg2b2b.upfront.mandatoryCash)+' + BSD '+fmtCnAmount(lg2b2b.bsd)+' + ABSD '+fmtCnAmount(lg2b2b.absd)+' + 买方律师费 '+fmtCnAmount(lg2b2b.upfront.legalFees)+' + OA不足 '+fmtCnAmount(lg2b2b.upfront.oaShortfallToCash)+'；前期 OA'+fmtCnAmount(lg2b2b.upfront.totalCpfUsed)+'。</p>'+
+      '<p style="margin-top:10px">期末卖房净值：未来售价 '+fmtCnMoney(lg2b2b.wealth.futurePrice)+' - 剩余贷款 '+fmtCnMoney(lg2b2b.wealth.outstandingLoan)+' - 卖房成本 '+fmtCnMoney(lg2b2b.wealth.sellingCosts.totalSellingCosts)+' = 房产净权益 '+fmtCnMoney(lg2b2b.wealth.propEquity)+'。</p>'+
+      '<p style="margin-top:10px"><code>TotalWealth = Stock + OA + NetPropertyEquity</code>，当前 LG 2B2B 为 '+fmtCnMoney(lg2b2b.wealth.stockFV)+' + '+fmtCnMoney(lg2b2b.wealth.oaBalance)+' + '+fmtCnMoney(lg2b2b.wealth.propEquity)+' = '+fmtCnMoney(lg2b2b.wealth.totalWealth)+'。</p>'+
+      '</div>';
+  }
 
   const buyBest=scenario.buyResults.reduce((a,b)=>a.wealth.totalWealth>b.wealth.totalWealth?a:b);
   const rentResult=scenario.rentResult;
   const rentDelta=rentResult?buyBest.wealth.totalWealth-rentResult.wealth.totalWealth:0;
   document.getElementById('insight_box').innerHTML=
     '<h3>🔍 关键发现</h3>'+
-    '<p><strong>1. 买 vs 租：</strong>'+(rentDelta>=0?'最优购房方案 <strong style="color:'+buyBest.color+'">'+buyBest.label+'</strong> 比纯租房高 '+fmtK(rentDelta)+'。':'纯租房当前高于最佳购房方案 '+fmtK(Math.abs(rentDelta))+'。')+' 这里的总财富已经包含股票、房产净权益和 CPF OA。</p>'+
-    '<p style="margin-top:10px"><strong>2. 现金口径已修正：</strong>前期资金分为“实际现金支出”“实际 CPF OA 支出”和“OA 不足转现金”。默认 OA 为 0 时，原本可由 CPF 支付的部分会完整转成现金压力。</p>'+
-    '<p style="margin-top:10px"><strong>3. CAGR 口径：</strong>总 CAGR 采用净资产 CAGR，分母是起始投入资金与起始 OA，分子是期末股票 + 房产净权益 + OA。</p>'+
-    '<p style="margin-top:10px"><strong>4. 当前排名：</strong><strong style="color:'+best.color+'">'+best.displayLabel+'</strong> 以 '+fmtK(best.wealth.totalWealth)+' 排名第一；最低为 '+worst.displayLabel+' '+fmtK(worst.wealth.totalWealth)+'。</p>';
+    '<p><strong>1. 买 vs 租：</strong>'+(rentDelta>=0?'最优购房方案 <strong style="color:'+buyBest.color+'">'+buyBest.label+'</strong> 比纯租房高 '+fmtCnMoney(rentDelta)+'。':'纯租房当前高于最佳购房方案 '+fmtCnMoney(Math.abs(rentDelta))+'。')+' 这里的总财富已经包含股票、卖房后房产净权益和 CPF OA。</p>'+
+    '<p style="margin-top:10px"><strong>2. CPF 口径：</strong>男方不再按 full CPF 估算，Y1/Y2 使用 SPR G/G 阶梯，女方默认初始 OA 为 '+fmtCnMoney(assumptions.household.female.initialOA)+'。</p>'+
+    '<p style="margin-top:10px"><strong>3. CAGR 口径：</strong>总 CAGR 采用净资产 CAGR，分母是起始投入资金与起始 OA，分子是期末股票 + 卖房后房产净权益 + OA。</p>'+
+    '<p style="margin-top:10px"><strong>4. 当前排名：</strong><strong style="color:'+best.color+'">'+best.displayLabel+'</strong> 以 '+fmtCnMoney(best.wealth.totalWealth)+' 排名第一；最低为 '+worst.displayLabel+' '+fmtCnMoney(worst.wealth.totalWealth)+'。</p>';
 }
 
 function renderScenario(){
@@ -2324,11 +2383,11 @@ function renderDecisionSensitivity(data){
       interaction:{mode:'index',intersect:false},
       plugins:{
         legend:{position:'bottom'},
-        tooltip:{callbacks:{title:(items)=>'年化增长率 '+items[0].label,label:(ctx)=>ctx.dataset.label+': $'+(ctx.parsed.y/1e3).toFixed(1)+'K'}},
+        tooltip:{callbacks:{title:(items)=>'年化增长率 '+items[0].label,label:(ctx)=>ctx.dataset.label+': '+fmtCnMoney(ctx.parsed.y)}},
       },
       scales:{
         x:{title:{display:true,text:'年化房产增长率'}},
-        y:{title:{display:true,text:'4 年后 totalWealth (SGD)'},ticks:{callback:v=>'$'+(v/1e6).toFixed(2)+'M'}},
+        y:{title:{display:true,text:'4 年后 totalWealth (SGD)'},ticks:{callback:v=>fmtCnMoney(v)}},
       },
     },
   });
@@ -2343,7 +2402,7 @@ function renderDecisionSensitivity(data){
   }
   if(note){
     const current=sens.points.find(p=>Math.abs(p.growthRate-DEFAULTS.lakevilleAnnualGrowth)<1e-9);
-    const curTxt=current?('当前默认 '+(DEFAULTS.lakevilleAnnualGrowth*100).toFixed(1)+'%：最优买入 $'+(Math.max(...buyIds.map(id=>current.byPlan[id].totalWealth))/1e6).toFixed(2)+'M，租房 $'+(current.byPlan.F.totalWealth/1e6).toFixed(2)+'M'):'';
+    const curTxt=current?('当前默认 '+(DEFAULTS.lakevilleAnnualGrowth*100).toFixed(1)+'%：最优买入 '+fmtCnMoney(Math.max(...buyIds.map(id=>current.byPlan[id].totalWealth)))+'，租房 '+fmtCnMoney(current.byPlan.F.totalWealth)):'';
     const beTxt=be?('Buy/Rent break-even ≈ '+(be.rate*100).toFixed(1)+'%（在该增长率下最优买入开始超过纯租房）'):'扫描区间内买入方案始终不敌租房，需更高增长率。';
     note.innerHTML=beTxt+'　·　'+curTxt+'　·　口径：<code>r</code> = 最终 resale price 的 all-in CAGR';
   }
@@ -2357,9 +2416,9 @@ function renderDecisionSensitivity(data){
       '<div style="font-weight:600;margin-bottom:6px">公式全过程 + 当前默认值代入</div>'+
       '<div>1. 对每个扫描点 <code>r</code>，同步设定 <code>lakevilleAnnualGrowth = lakeGrandeAnnualGrowth = r</code>，其它假设保持 <code>DEFAULT_ASSUMPTIONS</code> 不变。</div>'+
       '<div>2. 每月滚动资金：<code>Stock[t+1] = Stock[t] × (1 + 7%/12) + investableCash[t]</code>；<code>OA[t+1] = OA[t] × (1 + 2.5%/12) + OA_in[t] − OA_housing[t]</code>。</div>'+
-      '<div>3. 年末房产净值：<code>PropertyEquity[t] = Price0 × (1 + r)^t − LoanBalance(t)</code>。</div>'+
+      '<div>3. 年末房产净值：<code>PropertyEquity[t] = Price0 × (1 + r)^t − LoanBalance(t) − SellingCosts(t)</code>。</div>'+
       '<div>4. 当前默认最优买入是 <code>'+((labelById[currentBuyId]||{}).label||currentBuyId)+'</code>，<code>Price0 = '+fmtMoney(basePrice)+'</code>，<code>r = '+fmtPct(DEFAULTS.lakevilleAnnualGrowth,1)+'</code>。这里的 <code>r</code> 已经包含 lease drag、周期、供需、楼龄等所有最终 resale price 结果。</div>'+
-      '<div>5. 最终总财富：<code>TotalWealth[4Y] = Stock[4Y] + OA[4Y] + PropertyEquity[4Y]</code>；租房方案同样跑 48 个月，但 <code>PropertyEquity = 0</code>。</div>'+
+      '<div>5. 最终总财富：<code>TotalWealth[4Y] = Stock[4Y] + OA[4Y] + NetPropertyEquity[4Y]</code>；租房方案同样跑 48 个月，但 <code>NetPropertyEquity = 0</code>。</div>'+
       '<div style="margin-top:6px;color:var(--t2)">主模型不再额外乘 <code>LeaseAdj</code>。地契折旧的理论拆解被单独放到「📉 地契折旧」tab，避免和 all-in CAGR 口径混在一起。</div>'+
       '</div>';
   }

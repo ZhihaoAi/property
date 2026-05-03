@@ -120,6 +120,7 @@ function runDashboardInlineScript({ search = '?tab=s5', dashboardData = loadDash
 
 test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', async () => {
   const html = fs.readFileSync('./index.html', 'utf8');
+  assert.match(html, /<details class="card collapsible-card" style="margin-top:20px" id="assumptions_card">/);
   const scripts = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1]);
   const inlineScript = scripts[scripts.length - 1];
   const dashboardData = loadDashboardData();
@@ -128,7 +129,7 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
     'c_psf', 'c_tp', 'c_scatter', 'c_upfront', 'c_cashcpf', 'c_m30', 'c_m25', 'c_rate_jump',
     'c_wealth', 'c_breakdown', 'c_flow', 'c_leverage', 'c_loan', 'c_tenure',
     'core_plan_table', 'loan_cap_table', 'cost_alert_text', 'cost_detail_table', 'cost_detail_note',
-    'monthly_kpis', 'monthly_detail_table', 'monthly_detail_note', 'wealth_table_card', 'assumptions_box',
+    'monthly_kpis', 'monthly_detail_table', 'monthly_detail_note', 'wealth_table_card', 'lg_2b2b_explain', 'assumptions_box',
     'kpi_wealth', 'ct_wealth', 'ct_breakdown', 'insight_box',
     'i_assets', 'i_male_gross', 'i_male_bonus', 'i_male_oa',
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
@@ -208,7 +209,14 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
   await new Promise((resolve) => setTimeout(resolve, 50));
 
   assert.match(elements.get('wealth_table_card').innerHTML, /总财富 CAGR/);
-  assert.match(elements.get('wealth_table_card').innerHTML, /起始\$800K/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /起始80万/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /前期总资金支出/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub"[^>]*><td>现金支出/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub"[^>]*><td>CPF OA 支出/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub2"[^>]*><td>其中 OA 不足转现金/);
+  assert.match(elements.get('lg_2b2b_explain').innerHTML, /LG 2B2B/);
+  assert.match(elements.get('assumptions_box').innerHTML, /月均现金\(含年终奖摊销\)/);
+  assert.match(elements.get('assumptions_box').innerHTML, /Y1 男方月均现金 \$9043 = 薪资到手 \$8350 \+ 奖金摊销 \$693/);
   assert.match(elements.get('cost_detail_table').innerHTML, /实际 CPF OA 支出/);
   assert.doesNotMatch(elements.get('assumptions_box').innerHTML, /1997-06-25/);
   assert.equal(elements.get('i_assets').value, 800);

@@ -12,6 +12,8 @@ const {
   calcLoan,
   calcCpfMonthly,
   calcUpfrontFunding,
+  buildScenario,
+  calcResidentialSSD,
 } = require('../wealth-model.js');
 
 function loadDashboardData() {
@@ -77,6 +79,88 @@ test('calcCpfMonthly uses age band allocation and contribution caps', () => {
   assert.equal(female.employerShareMonthly, 680);
   assert.equal(female.oaCreditMonthly, 840);
   assert.equal(female.takeHomeMonthly, 3200);
+});
+
+test('male default CPF schedule uses first-year SPR G/G then second-year SPR then full rates', () => {
+  const data = loadDashboardData();
+  const scenario = buildScenario({
+    assumptions: DEFAULT_ASSUMPTIONS,
+    plans: BASE_PLANS,
+    focusProjects: data.focus_projects,
+  });
+
+  const y1 = scenario.householdCpf.monthlySchedule[0].male;
+  const y2 = scenario.householdCpf.monthlySchedule[12].male;
+  const y3 = scenario.householdCpf.monthlySchedule[24].male;
+
+  assert.equal(y1.employeeShareMonthly, 400);
+  assert.equal(y1.employerShareMonthly, 320);
+  assert.equal(y1.oaCreditMonthly, 448);
+  assert.equal(Math.round(y1.monthlyCashIncludingBonus), 9043);
+  assert.equal(Math.round(y1.monthlyOAIncludingBonus), 489);
+
+  assert.equal(y2.employeeShareMonthly, 1200);
+  assert.equal(y2.employerShareMonthly, 720);
+  assert.equal(y2.oaCreditMonthly, 1194);
+  assert.equal(Math.round(y2.monthlyCashIncludingBonus), 8170);
+  assert.equal(Math.round(y2.monthlyOAIncludingBonus), 1303);
+
+  assert.equal(y3.employeeShareMonthly, 1600);
+  assert.equal(y3.employerShareMonthly, 1360);
+  assert.equal(y3.oaCreditMonthly, 1840);
+  assert.equal(Math.round(y3.monthlyCashIncludingBonus), 7733);
+  assert.equal(Math.round(y3.monthlyOAIncludingBonus), 2008);
+});
+
+test('default female initial OA is 8000 and offsets LG 2B2B CPF-eligible down payment', () => {
+  const data = loadDashboardData();
+  const scenario = buildScenario({
+    assumptions: DEFAULT_ASSUMPTIONS,
+    plans: BASE_PLANS,
+    focusProjects: data.focus_projects,
+  });
+  const result = scenario.buyResults.find(plan => plan.id === 'C');
+
+  assert.equal(DEFAULT_ASSUMPTIONS.household.female.initialOA, 8000);
+  assert.equal(result.transaction.price, 1480000);
+  assert.equal(result.loan.actualLoan, 1100000);
+  assert.equal(result.loan.downPayment, 380000);
+  assert.equal(result.upfront.bsd, 43800);
+  assert.equal(result.upfront.absd, 74000);
+  assert.equal(result.upfront.legalFees, 5000);
+  assert.equal(result.upfront.mandatoryCash, 74000);
+  assert.equal(result.upfront.cpfEligible, 306000);
+  assert.equal(result.upfront.totalCpfUsed, 8000);
+  assert.equal(result.upfront.oaUsedFemale, 8000);
+  assert.equal(result.upfront.oaShortfallToCash, 298000);
+  assert.equal(result.upfront.totalCashUsed, 494800);
+  assert.equal(result.upfront.totalUpfront, 502800);
+});
+
+test('default property equity deducts seller commission GST legal fees and SSD when selling at simulation end', () => {
+  const data = loadDashboardData();
+  const scenario = buildScenario({
+    assumptions: DEFAULT_ASSUMPTIONS,
+    plans: BASE_PLANS,
+    focusProjects: data.focus_projects,
+  });
+  const result = scenario.buyResults.find(plan => plan.id === 'C');
+  const finalPoint = result.wealth.trajectory[result.wealth.trajectory.length - 1];
+
+  assert.equal(result.sellingCosts.ssd, 0);
+  assert.equal(calcResidentialSSD(1000000, 0.5), 160000);
+  assert.equal(calcResidentialSSD(1000000, 1.5), 120000);
+  assert.equal(calcResidentialSSD(1000000, 2.5), 80000);
+  assert.equal(calcResidentialSSD(1000000, 3.5), 40000);
+  assert.equal(calcResidentialSSD(1000000, 4), 0);
+
+  const expectedCommission = Math.round(finalPoint.futurePrice * 0.02);
+  const expectedGst = Math.round(expectedCommission * 0.09);
+  assert.equal(result.sellingCosts.agentCommission, expectedCommission);
+  assert.equal(result.sellingCosts.agentCommissionGst, expectedGst);
+  assert.equal(result.sellingCosts.legalFees, 3000);
+  assert.equal(result.wealth.propEquity, result.wealth.grossPropEquity - result.sellingCosts.totalSellingCosts);
+  assert.equal(result.wealth.totalWealth, result.wealth.stockFV + result.wealth.oaBalance + result.wealth.propEquity);
 });
 
 test('calcUpfrontFunding converts CPF shortfall into cash when OA is zero', () => {
