@@ -163,6 +163,46 @@ test('default property equity deducts seller commission GST legal fees and SSD w
   assert.equal(result.wealth.totalWealth, result.wealth.stockFV + result.wealth.oaBalance + result.wealth.propEquity);
 });
 
+test('LG 2B2B monthly housing cost separates mortgage cash, CPF OA, and MCST maintenance', () => {
+  const data = loadDashboardData();
+  const scenario = buildScenario({
+    assumptions: DEFAULT_ASSUMPTIONS,
+    plans: BASE_PLANS,
+    focusProjects: data.focus_projects,
+  });
+  const result = scenario.buyResults.find(plan => plan.id === 'C');
+  const firstMonth = result.wealth.monthlyFlows[0];
+
+  assert.equal(result.fixedCostMonthly, 330);
+  assert.equal(result.maintenanceMonthly, 330);
+  assert.equal(result.wealth.housing.fixedPhase.maintenance, 330);
+  assert.equal(result.wealth.housing.fixedPhase.total, result.wealth.housing.fixedPhase.mortgage + 330);
+  assert.equal(firstMonth.housingMaintenanceCash, 330);
+  assert.equal(firstMonth.housingMortgageCash + firstMonth.housingOA, result.wealth.housing.fixedPhase.mortgage);
+  assert.equal(firstMonth.housingCash, firstMonth.housingMortgageCash + firstMonth.housingMaintenanceCash);
+});
+
+test('monthly investable cash includes tax GIRO and after-tax RSU cashflow', () => {
+  const data = loadDashboardData();
+  const scenario = buildScenario({
+    assumptions: DEFAULT_ASSUMPTIONS,
+    plans: BASE_PLANS,
+    focusProjects: data.focus_projects,
+  });
+  const result = scenario.buyResults.find(plan => plan.id === 'C');
+  const firstMonth = result.wealth.monthlyFlows[0];
+
+  assert.equal(DEFAULT_ASSUMPTIONS.simulationYears, 5);
+  assert.equal(DEFAULT_ASSUMPTIONS.monthlyTaxGiro, 700);
+  assert.equal(DEFAULT_ASSUMPTIONS.monthlyRsuAfterTax, 1100);
+  assert.equal(firstMonth.monthlyTaxGiro, 700);
+  assert.equal(firstMonth.monthlyRsuAfterTax, 1100);
+  assert.equal(
+    firstMonth.investableCash,
+    firstMonth.cpfCash + firstMonth.monthlyRsuAfterTax - firstMonth.monthlyTaxGiro - DEFAULT_ASSUMPTIONS.livingMonthly - firstMonth.housingCash
+  );
+});
+
 test('calcUpfrontFunding converts CPF shortfall into cash when OA is zero', () => {
   const data = loadDashboardData();
   const planC = BASE_PLANS.find(plan => plan.id === 'C');

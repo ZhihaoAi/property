@@ -63,25 +63,27 @@ const mainCells = {
   femaleInitialOA: "B10",
   assetsK: "E4",
   livingMonthly: "E5",
-  stockAnnualReturn: "E6",
-  lakevilleGrowth: "E7",
-  lakeGrandeGrowth: "E8",
-  rentMonthly: "E9",
-  fixedRate: "E10",
-  fixedYears: "E11",
-  floatRate: "E12",
-  simulationYears: "E13",
-  loanCap: "E14",
-  ltv: "E15",
-  absdRate: "E16",
-  legalFees: "E17",
-  mandatoryCashRate: "E18",
-  loanTenorYears: "E19",
-  oaInterestRate: "E20",
-  cpfOwCeiling: "E21",
-  sellerAgentCommissionRate: "E22",
-  gstRate: "E23",
-  sellerLegalFees: "E24",
+  monthlyTaxGiro: "E6",
+  monthlyRsuAfterTax: "E7",
+  stockAnnualReturn: "E8",
+  lakevilleGrowth: "E9",
+  lakeGrandeGrowth: "E10",
+  rentMonthly: "E11",
+  fixedRate: "E12",
+  fixedYears: "E13",
+  floatRate: "E14",
+  simulationYears: "E15",
+  loanCap: "E16",
+  ltv: "E17",
+  absdRate: "E18",
+  legalFees: "E19",
+  mandatoryCashRate: "E20",
+  loanTenorYears: "E21",
+  oaInterestRate: "E22",
+  cpfOwCeiling: "E23",
+  sellerAgentCommissionRate: "E24",
+  gstRate: "E25",
+  sellerLegalFees: "E26",
 };
 
 const calcCells = {
@@ -567,10 +569,12 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ["", ""],
   ];
 
-  sheet.getRange("D3:E24").values = [
+  sheet.getRange("D3:E26").values = [
     ["全局输入", "值"],
     ["起始投入资金（K）", defaults.assetsK],
     ["月生活费", defaults.livingMonthly],
+    ["月税款 GIRO", defaults.monthlyTaxGiro],
+    ["RSU 税后月现金", defaults.monthlyRsuAfterTax],
     ["股票年化回报", defaults.stockAnnualReturn],
     ["Lakeville 年增值", defaults.lakevilleAnnualGrowth],
     ["Lake Grande 年增值", defaults.lakeGrandeAnnualGrowth],
@@ -593,7 +597,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   ];
 
   sheet.getRange("H3:N9").values = [
-    ["方案", "项目", "类型", "价格", "面积 sqft", "固定月成本", "年增值"],
+    ["方案", "项目", "类型", "价格", "面积 sqft", "MCST/maintenance", "年增值"],
     ...scenarioRows.map((row) => [
       row.label,
       row.projectName,
@@ -699,7 +703,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("S70:V70").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
 
   sheet.getRange("B4:B11").format.fill = "#FFF2CC";
-  sheet.getRange("E4:E24").format.fill = "#FFF2CC";
+  sheet.getRange("E4:E26").format.fill = "#FFF2CC";
   sheet.getRange("K4:M10").format.fill = "#FFF2CC";
 
   sheet.getRange("B3:B10").format.numberFormat = "0";
@@ -708,22 +712,22 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("B8:B8").format.numberFormat = "$#,##0";
   sheet.getRange("B10:B10").format.numberFormat = "$#,##0";
   sheet.getRange("E4:E4").format.numberFormat = "0";
-  sheet.getRange("E5:E5").format.numberFormat = "$#,##0";
-  sheet.getRange("E6:E8").format.numberFormat = "0.00%";
-  sheet.getRange("E9:E9").format.numberFormat = "$#,##0";
-  sheet.getRange("E10:E10").format.numberFormat = "0.00%";
-  sheet.getRange("E11:E11").format.numberFormat = "0";
+  sheet.getRange("E5:E7").format.numberFormat = "$#,##0";
+  sheet.getRange("E8:E10").format.numberFormat = "0.00%";
+  sheet.getRange("E11:E11").format.numberFormat = "$#,##0";
   sheet.getRange("E12:E12").format.numberFormat = "0.00%";
-  sheet.getRange("E13:E14").format.numberFormat = "0";
-  sheet.getRange("E14:E14").format.numberFormat = "$#,##0";
-  sheet.getRange("E15:E16").format.numberFormat = "0.00%";
-  sheet.getRange("E17:E17").format.numberFormat = "$#,##0";
-  sheet.getRange("E18:E18").format.numberFormat = "0.00%";
-  sheet.getRange("E19:E19").format.numberFormat = "0";
+  sheet.getRange("E13:E13").format.numberFormat = "0";
+  sheet.getRange("E14:E14").format.numberFormat = "0.00%";
+  sheet.getRange("E15:E15").format.numberFormat = "0";
+  sheet.getRange("E16:E16").format.numberFormat = "$#,##0";
+  sheet.getRange("E17:E18").format.numberFormat = "0.00%";
+  sheet.getRange("E19:E19").format.numberFormat = "$#,##0";
   sheet.getRange("E20:E20").format.numberFormat = "0.00%";
-  sheet.getRange("E21:E21").format.numberFormat = "$#,##0";
-  sheet.getRange("E22:E23").format.numberFormat = "0.00%";
-  sheet.getRange("E24:E24").format.numberFormat = "$#,##0";
+  sheet.getRange("E21:E21").format.numberFormat = "0";
+  sheet.getRange("E22:E22").format.numberFormat = "0.00%";
+  sheet.getRange("E23:E23").format.numberFormat = "$#,##0";
+  sheet.getRange("E24:E25").format.numberFormat = "0.00%";
+  sheet.getRange("E26:E26").format.numberFormat = "$#,##0";
   sheet.getRange("N5:N10").format.numberFormat = "0.00%";
   sheet.getRange("A24:P30").format.numberFormat = "$#,##0";
   sheet.getRange("Q24:Q30").format.numberFormat = "0.00%";
@@ -894,7 +898,7 @@ function buildCalcSheet(sheet, scenarioRows) {
       const currentRate = `IF(${monthCell}<=${mainRef(mainCells.fixedYears)}*12,${mainRef(mainCells.fixedRate)},${mainRef(mainCells.floatRate)})`;
       const housingOaFormula = `IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,MIN(${oaAvailable},${currentMortgage}))`;
       const housingCashFormula = `IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,${mainRef(mainCells.rentMonthly)},${mainRef(`M${mainRow}`)}+${currentMortgage}-(${housingOaFormula}))`;
-      const investableFormula = `(${combinedCashAtMonth})-${mainRef(mainCells.livingMonthly)}-(${housingCashFormula})`;
+      const investableFormula = `(${combinedCashAtMonth})+${mainRef(mainCells.monthlyRsuAfterTax)}-${mainRef(mainCells.monthlyTaxGiro)}-${mainRef(mainCells.livingMonthly)}-(${housingCashFormula})`;
       const nextLoanBalance = `${loanPrevCell}*(1+${currentRate}/12)-IF(${scenarioValueRef(calcCols.isRent, helperRow)}=1,0,${currentMortgage})`;
 
       stockFormulas.push([`=IF(${monthCell}>${calcRef(calcCells.simMonths)},"",MAX(${stockCellPrev}*(1+${mainRef(mainCells.stockAnnualReturn)}/12)+(${investableFormula}),0))`]);

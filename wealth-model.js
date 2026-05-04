@@ -72,7 +72,9 @@
     fixedRate: 0.015,
     fixedYears: 2,
     floatRate: 0.025,
-    simulationYears: 4,
+    simulationYears: 5,
+    monthlyTaxGiro: 700,
+    monthlyRsuAfterTax: 1100,
     loanCap: 1100000,
     ltv: 0.75,
     absdRate: 0.05,
@@ -155,7 +157,7 @@
       projectSlug: 'lakegrande',
       projectKey: 'lakeGrande',
       bucket: '2b2b',
-      fixedCostMonthly: 440,
+      fixedCostMonthly: 330,
       color: '#a29bfe',
       txUrl: 'https://www.99.co/singapore/sale/property/lake-grande-condo-GsAGr4gdbQvabXDFoh2pKQ',
       fallbackTransaction: { price: 1514000, dateLabel: 'Feb2026', sqft: 818 },
@@ -432,6 +434,7 @@
   }
 
   function calcPhaseMonthlyHousing({ loanAmount, fixedRate, floatRate, fixedYears, loanTenorYears, fixedCostMonthly }) {
+    const maintenance = fixedCostMonthly || 0;
     const mortgageFixed = roundNearestDollar(mortgagePmt(loanAmount, fixedRate, loanTenorYears));
     const balanceAfterFixed = fixedYears > 0 ? loanBalance(loanAmount, fixedRate, loanTenorYears, fixedYears) : loanAmount;
     const remainingTenor = Math.max(loanTenorYears - fixedYears, 1);
@@ -439,13 +442,15 @@
     return {
       fixedPhase: {
         mortgage: mortgageFixed,
-        fixedCost: fixedCostMonthly,
-        total: mortgageFixed + fixedCostMonthly,
+        maintenance,
+        fixedCost: maintenance,
+        total: mortgageFixed + maintenance,
       },
       floatPhase: {
         mortgage: mortgageFloat,
-        fixedCost: fixedCostMonthly,
-        total: mortgageFloat + fixedCostMonthly,
+        maintenance,
+        fixedCost: maintenance,
+        total: mortgageFloat + maintenance,
       },
       balanceAfterFixed,
     };
@@ -566,23 +571,33 @@
 
       let housingCash = 0;
       let housingOA = 0;
+      let housingMortgageCash = 0;
+      let housingMaintenanceCash = 0;
       if (plan.isRent) {
         housingCash = assumptions.rentMonthly;
       } else {
         const phase = month <= fixedMonths ? housing.fixedPhase : housing.floatPhase;
         housingOA = Math.min(oaBalance, phase.mortgage);
         oaBalance -= housingOA;
-        housingCash = phase.fixedCost + (phase.mortgage - housingOA);
+        housingMaintenanceCash = phase.maintenance;
+        housingMortgageCash = phase.mortgage - housingOA;
+        housingCash = housingMaintenanceCash + housingMortgageCash;
       }
 
-      const investableCash = monthCpf.combinedCash - assumptions.livingMonthly - housingCash;
+      const monthlyTaxGiro = assumptions.monthlyTaxGiro || 0;
+      const monthlyRsuAfterTax = assumptions.monthlyRsuAfterTax || 0;
+      const investableCash = monthCpf.combinedCash + monthlyRsuAfterTax - monthlyTaxGiro - assumptions.livingMonthly - housingCash;
       stockBalance = Math.max(stockBalance + investableCash, 0);
       monthlyFlows.push({
         month,
         cpfCash: monthCpf.combinedCash,
         cpfOA: monthCpf.combinedOA,
+        monthlyTaxGiro,
+        monthlyRsuAfterTax,
         housingCash,
         housingOA,
+        housingMortgageCash,
+        housingMaintenanceCash,
         investableCash,
         stockBalance,
         oaBalance,
@@ -706,6 +721,7 @@
         propertyGrowthRate,
       });
       return Object.assign({}, plan, {
+        maintenanceMonthly: plan.fixedCostMonthly || 0,
         transaction,
         bsd,
         absd,

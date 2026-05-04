@@ -63,7 +63,7 @@ function runDashboardInlineScript({ search = '?tab=s5', dashboardData = loadDash
     'i_assets', 'i_male_gross', 'i_male_bonus', 'i_male_oa',
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
     'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
-    'i_float_rate', 'i_total_yrs',
+    'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
   ];
   const document = {
     getElementById: getElement,
@@ -134,7 +134,7 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
     'i_assets', 'i_male_gross', 'i_male_bonus', 'i_male_oa',
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
     'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
-    'i_float_rate', 'i_total_yrs',
+    'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
     'lv_focus_content', 'lg_focus_content', 'focus_mapping_cards', 'ura_project_summary',
     'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table',
     'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart',
@@ -156,7 +156,7 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
           'i_assets', 'i_male_gross', 'i_male_bonus', 'i_male_oa',
           'i_female_gross', 'i_female_bonus', 'i_female_oa',
           'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
-          'i_float_rate', 'i_total_yrs',
+          'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
         ].map((id) => elements.get(id));
       }
       return [];
@@ -210,6 +210,8 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
 
   assert.match(elements.get('wealth_table_card').innerHTML, /总财富 CAGR/);
   assert.match(elements.get('wealth_table_card').innerHTML, /起始80万/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /B: LV 2B2B \$1\.26M/);
+  assert.doesNotMatch(elements.get('wealth_table_card').innerHTML, /百万/);
   assert.match(elements.get('wealth_table_card').innerHTML, /前期总资金支出/);
   assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub"[^>]*><td>现金支出/);
   assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub"[^>]*><td>CPF OA 支出/);
