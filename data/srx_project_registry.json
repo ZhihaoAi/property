@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-20T20:12:12",
+  "generated_at": "2026-05-06T23:19:18",
   "projects": {
     "the_skywoods": {
       "slug": "the_skywoods",
@@ -574,7 +574,7 @@
     },
     "lakegrande": {
       "slug": "lakegrande",
-      "record_count": 165,
+      "record_count": 166,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
       "source_label": "propertyforsale.com.sg resale CSV",
@@ -583,7 +583,7 @@
     },
     "lakeville": {
       "slug": "lakeville",
-      "record_count": 191,
+      "record_count": 192,
       "secondary_sources": [],
       "source_kind": "propertyforsale_csv",
       "source_label": "propertyforsale.com.sg resale CSV",

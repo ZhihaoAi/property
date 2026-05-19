@@ -95,7 +95,7 @@ test("wealth workbook default results match wealth-model output on key metrics",
 
   const workbook = await importWorkbook(workbookPath);
   const sheet = workbook.worksheets.getItem("财富模型");
-  const resultTable = sheet.getRange("A23:Q29").values;
+  const resultTable = sheet.getRange("A23:Q30").values;
   const expected = buildDefaultScenario().results;
 
   assert.equal(resultTable[0][0], "方案");

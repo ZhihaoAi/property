@@ -50,7 +50,9 @@ const scenarioBlocks = [
   { startCol: "Y", stockCol: "Z", oaCol: "AA", cashCol: "AB", housingOaCol: "AC", investableCol: "AD", loanCol: "AE" },
   { startCol: "AG", stockCol: "AH", oaCol: "AI", cashCol: "AJ", housingOaCol: "AK", investableCol: "AL", loanCol: "AM" },
   { startCol: "AO", stockCol: "AP", oaCol: "AQ", cashCol: "AR", housingOaCol: "AS", investableCol: "AT", loanCol: "AU" },
+  { startCol: "AW", stockCol: "AX", oaCol: "AY", cashCol: "AZ", housingOaCol: "BA", investableCol: "BB", loanCol: "BC" },
 ];
+const trajectoryValueColumns = ["T", "U", "V", "W", "X", "Y", "Z"];
 
 const mainCells = {
   maleAge: "B3",
@@ -396,7 +398,6 @@ function buildVisibleSheetCacheMap(defaultScenario) {
     ["P", (result) => result.wealth.totalWealth],
     ["Q", (result) => result.wealth.totalCagr],
   ];
-  const chartValueColumns = ["T", "U", "V", "W", "X", "Y"];
   const initialWealth =
     wealthModel.DEFAULT_ASSUMPTIONS.assetsK * 1000 +
     wealthModel.DEFAULT_ASSUMPTIONS.household.male.initialOA +
@@ -418,10 +419,10 @@ function buildVisibleSheetCacheMap(defaultScenario) {
 
   for (let year = 0; year <= 30; year += 1) {
     const row = 36 + year;
-    chartValueColumns.forEach((col, index) => {
+    trajectoryValueColumns.forEach((col, index) => {
       if (year === 0) {
         cache[`${col}${row}`] = initialWealth;
-      } else if (year <= simYears) {
+      } else if (year <= simYears && defaultScenario.results[index]) {
         cache[`${col}${row}`] = defaultScenario.results[index].wealth.trajectory[year - 1].totalWealth;
       } else {
         cache[`${col}${row}`] = "";
@@ -540,6 +541,16 @@ function buildLookupsSheet(sheet) {
 function buildMainSheet(sheet, scenarioRows, options = {}) {
   const { includeCharts = true } = options;
   const defaults = wealthModel.DEFAULT_ASSUMPTIONS;
+  if (scenarioRows.length > scenarioBlocks.length || scenarioRows.length > trajectoryValueColumns.length) {
+    throw new Error(`Workbook builder supports ${scenarioBlocks.length} scenario rows, got ${scenarioRows.length}`);
+  }
+  const scenarioStartRow = 4;
+  const scenarioEndRow = scenarioStartRow + scenarioRows.length - 1;
+  const resultStartRow = 24;
+  const resultEndRow = resultStartRow + scenarioRows.length - 1;
+  const breakdownStartRow = 71;
+  const breakdownEndRow = breakdownStartRow + scenarioRows.length - 1;
+  const trajectoryEndCol = trajectoryValueColumns[scenarioRows.length - 1];
 
   sheet.getRange("A1:Q1").merge();
   sheet.getRange("A1").values = [["财富模型 Excel 工作簿"]];
@@ -596,7 +607,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ["卖方律师费", defaults.sellerLegalFees],
   ];
 
-  sheet.getRange("H3:N9").values = [
+  sheet.getRange(`H3:N${scenarioEndRow}`).values = [
     ["方案", "项目", "类型", "价格", "面积 sqft", "MCST/maintenance", "年增值"],
     ...scenarioRows.map((row) => [
       row.label,
@@ -609,14 +620,11 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ]),
   ];
 
-  for (let row = 4; row <= 9; row += 1) {
+  for (let row = scenarioStartRow; row <= scenarioEndRow; row += 1) {
     const projectCell = `I${row}`;
+    const typeCell = `J${row}`;
     const growthCell = `N${row}`;
-    if (row === 10) {
-      sheet.getRange(growthCell).formulas = [["=0"]];
-    } else {
-      sheet.getRange(growthCell).formulas = [[`=IF(${projectCell}="Lakeville",$E$7,IF(${projectCell}="Lake Grande",$E$8,0))`]];
-    }
+    sheet.getRange(growthCell).formulas = [[`=IF(${typeCell}="rent",0,IF(${projectCell}="Lakeville",${mainRef(mainCells.lakevilleGrowth)},IF(${projectCell}="Lake Grande",${mainRef(mainCells.lakeGrandeGrowth)},0)))`]];
   }
 
   sheet.getRange("H13:K18").values = [
@@ -659,7 +667,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
     ]];
   }
 
-  sheet.getRange("S35:Y35").values = [[
+  sheet.getRange(`S35:${trajectoryEndCol}35`).values = [[
     "Year",
     ...scenarioRows.map((row) => row.label),
   ]];
@@ -678,7 +686,7 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
       const propertyAtYear = `IF(${helperRef(calcCols.isRent, helperRow)}=1,0,${futurePriceAtYear}-INDEX(${loanRange},${yearCell}*12+1)-${sellingCostsFormula(futurePriceAtYear, yearCell)})`;
       formulas.push(`=IF(${yearCell}=0,${calcRef(calcCells.initialWealth)},IF(${yearCell}>${mainRef(mainCells.simulationYears)},"",INDEX(${stockRange},${yearCell}*12+1)+INDEX(${oaRange},${yearCell}*12+1)+${propertyAtYear}))`);
     }
-    sheet.getRange(`S${row}:Y${row}`).formulas = [formulas];
+    sheet.getRange(`S${row}:${trajectoryEndCol}${row}`).formulas = [formulas];
   }
 
   sheet.getRange("S70:V70").values = [["方案", "房产净权益", "期末股票", "期末OA"]];
@@ -699,12 +707,12 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("H3:N3").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
   sheet.getRange("H13:K13").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
   sheet.getRange("A23:Q23").format = { fill: "#16314A", font: { bold: true, color: "#FFFFFF" } };
-  sheet.getRange("S35:Y35").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
+  sheet.getRange(`S35:${trajectoryEndCol}35`).format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
   sheet.getRange("S70:V70").format = { fill: "#1F4E78", font: { bold: true, color: "#FFFFFF" } };
 
   sheet.getRange("B4:B11").format.fill = "#FFF2CC";
   sheet.getRange("E4:E26").format.fill = "#FFF2CC";
-  sheet.getRange("K4:M10").format.fill = "#FFF2CC";
+  sheet.getRange(`K${scenarioStartRow}:M${scenarioEndRow}`).format.fill = "#FFF2CC";
 
   sheet.getRange("B3:B10").format.numberFormat = "0";
   sheet.getRange("B4:B4").format.numberFormat = "$#,##0";
@@ -728,26 +736,26 @@ function buildMainSheet(sheet, scenarioRows, options = {}) {
   sheet.getRange("E23:E23").format.numberFormat = "$#,##0";
   sheet.getRange("E24:E25").format.numberFormat = "0.00%";
   sheet.getRange("E26:E26").format.numberFormat = "$#,##0";
-  sheet.getRange("N5:N10").format.numberFormat = "0.00%";
-  sheet.getRange("A24:P30").format.numberFormat = "$#,##0";
-  sheet.getRange("Q24:Q30").format.numberFormat = "0.00%";
-  sheet.getRange("T36:Y66").format.numberFormat = "$#,##0";
-  sheet.getRange("T71:V76").format.numberFormat = "$#,##0";
+  sheet.getRange(`N${scenarioStartRow}:N${scenarioEndRow}`).format.numberFormat = "0.00%";
+  sheet.getRange(`A${resultStartRow}:P${resultEndRow}`).format.numberFormat = "$#,##0";
+  sheet.getRange(`Q${resultStartRow}:Q${resultEndRow}`).format.numberFormat = "0.00%";
+  sheet.getRange(`T36:${trajectoryEndCol}66`).format.numberFormat = "$#,##0";
+  sheet.getRange(`T${breakdownStartRow}:V${breakdownEndRow}`).format.numberFormat = "$#,##0";
   sheet.getRange("I14:K18").format.numberFormat = "$#,##0";
 
-  sheet.getRange("A3:Q30").format.wrapText = true;
+  sheet.getRange(`A3:Q${resultEndRow}`).format.wrapText = true;
   sheet.getRange("H13:K18").format.wrapText = true;
-  sheet.getRange("A3:Q30").format.autofitColumns();
+  sheet.getRange(`A3:Q${resultEndRow}`).format.autofitColumns();
   sheet.getRange("H13:K18").format.autofitColumns();
-  sheet.getRange("A23:Q30").format.rowHeightPx = 24;
+  sheet.getRange(`A23:Q${resultEndRow}`).format.rowHeightPx = 24;
   sheet.showGridLines = false;
   sheet.freezePanes.freezeRows(2);
 
   if (includeCharts) {
-    const wealthChart = sheet.charts.add("line", sheet.getRange("S35:Y66"));
+    const wealthChart = sheet.charts.add("line", sheet.getRange(`S35:${trajectoryEndCol}66`));
     wealthChart.setPosition("S3", "AE17");
 
-    const breakdownChart = sheet.charts.add("bar", sheet.getRange("S70:V76"));
+    const breakdownChart = sheet.charts.add("bar", sheet.getRange(`S70:V${breakdownEndRow}`));
     breakdownChart.setPosition("S19", "AE33");
   }
 }

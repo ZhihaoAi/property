@@ -29,6 +29,7 @@ OUTPUT_JS_PATH = DATA_DIR / "dashboard_data.js"
 ANALYSIS_PATH = DATA_DIR / "appreciation_analysis.json"
 OFFICIAL_INDICES_PATH = DATA_DIR / "official_private_residential_indices.json"
 FORMAL_REFERENCE_PATH = FORMAL_LAYOUT_DIR / "layout_reference_catalog.csv"
+FORMAL_COVERAGE_PATH = FORMAL_LAYOUT_DIR / "coverage_by_project.csv"
 REGISTRY_PATH = DATA_DIR / "srx_project_registry.json"
 URA_SUMMARY_PATH = DATA_DIR / "ura" / "projects_summary.json"
 URA_INDEX_PATH = DATA_DIR / "ura" / "projects_index.json"
@@ -56,6 +57,67 @@ OWNER_POOL_BUCKETS = ("2b1b", "2b2b")
 OWNER_POOL_DIRECT_2B2B_MIN_COUNT = 18
 OWNER_POOL_DIRECT_MIN_COUNT = 24
 OWNER_POOL_PROXY_MIN_COUNT = 24
+LAYOUT_MAPPING_MIN_COVERAGE_PCT = 95
+WATCHED_LAYOUTS = {
+    "lakegrande": [
+        {
+            "key": "b3_b3a_721",
+            "label": "B3/B3a 721sqft",
+            "source_label": "TYPE B3/B3a · 67 sqm | 721 sqft",
+            "sqft": 721,
+            "sqm": 67,
+            "layout_type": "2b2b",
+            "mapping_note": (
+                "Target-area line only: 721 sqft can be B1P/B1aP 2b1b or B3/B3a 2b2b, "
+                "and the transaction CSV has no stack/unit field to isolate same-size variants."
+            ),
+        }
+    ]
+}
+LAYOUT_SENSITIVITY_SCENARIOS = {
+    "lakegrande": [
+        {
+            "key": "lg_721_as_2b1b",
+            "label": "2b1b + 721全归2b1b",
+            "base_bucket": "2b1b",
+            "assumed_bucket": "2b1b",
+            "ambiguous_sqft": 721,
+            "source_metric_key": "b3_b3a_721",
+            "chart_style": {
+                "color": "#55efc4",
+                "borderDash": [6, 3, 1, 3],
+                "borderWidth": 2.8,
+                "pointStyle": "crossRot",
+                "pointRadius": 3,
+                "pointHoverRadius": 8,
+            },
+            "mapping_note": (
+                "Sensitivity line only: Treats every 721 sqft Lake Grande resale transaction "
+                "as 2b1b while leaving the true mapped 2b1b bucket unchanged."
+            ),
+        },
+        {
+            "key": "lg_721_as_2b2b",
+            "label": "2b2b + 721全归2b2b",
+            "base_bucket": "2b2b",
+            "assumed_bucket": "2b2b",
+            "ambiguous_sqft": 721,
+            "source_metric_key": "b3_b3a_721",
+            "chart_style": {
+                "color": "#fd79a8",
+                "borderDash": [2, 3],
+                "borderWidth": 2.8,
+                "pointStyle": "rectRounded",
+                "pointRadius": 3,
+                "pointHoverRadius": 8,
+            },
+            "mapping_note": (
+                "Sensitivity line only: Treats every 721 sqft Lake Grande resale transaction "
+                "as 2b2b while leaving the true mapped 2b2b bucket unchanged."
+            ),
+        },
+    ]
+}
 SCORE_WEIGHTS = {
     "entry": 0.55,
     "trend": 0.45,
@@ -543,10 +605,16 @@ def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
 
     current = None
     recent_24m_count = 0
+    recent_12m_count = 0
+    previous_12m_count = 0
     if latest_row:
         anchor_ym = (latest_row["year"], latest_row["month"])
         current_rows = rows_in_last_n_months(rows, RECENT_WINDOW_MONTHS, anchor_ym)
+        previous_anchor_ym = _add_months(anchor_ym, -RECENT_WINDOW_MONTHS)
+        previous_rows = rows_in_last_n_months(rows, RECENT_WINDOW_MONTHS, previous_anchor_ym)
         recent_24m_rows = rows_in_last_n_months(rows, CONFIDENCE_WINDOW_MONTHS, anchor_ym)
+        recent_12m_count = len(current_rows)
+        previous_12m_count = len(previous_rows)
         recent_24m_count = len(recent_24m_rows)
         if current_rows:
             current_prices = [row["price"] for row in current_rows]
@@ -585,6 +653,8 @@ def summarize_row_set(rows: list[dict], provenance: str, label: str) -> dict:
         "latest_year_psf": latest_year_data.get("median_psf"),
         "latest_year_count": latest_year_data.get("count"),
         "current": current,
+        "recent_12m_count": recent_12m_count,
+        "previous_12m_count": previous_12m_count,
         "recent_24m_count": recent_24m_count,
     }
 
@@ -611,6 +681,8 @@ def build_metric_snapshot(metric: dict) -> dict:
         "current_psf": metric_current_psf(metric),
         "all_time_cagr": metric.get("all_time_cagr"),
         "current_yoy": metric.get("current_yoy"),
+        "recent_12m_count": metric.get("recent_12m_count"),
+        "previous_12m_count": metric.get("previous_12m_count"),
         "recent_24m_count": metric.get("recent_24m_count"),
         "sample_count": metric.get("count"),
         "cagr_monthly": metric.get("cagr_monthly", {}),
@@ -632,6 +704,72 @@ def select_owner_pool_metric(
     if metric_is_qualified(area_proxy_owner_pool, OWNER_POOL_PROXY_MIN_COUNT):
         return area_proxy_owner_pool
     return overall_reference
+
+
+def build_watched_layout_metrics(slug: str, rows: list[dict]) -> dict[str, dict]:
+    watched_metrics: dict[str, dict] = {}
+    for spec in WATCHED_LAYOUTS.get(slug, []):
+        spec_rows = [row for row in rows if row["sqft"] == spec["sqft"]]
+        metric = summarize_row_set(
+            spec_rows,
+            provenance=f"target_area_{spec['key']}",
+            label=spec["label"],
+        )
+        metric.update(
+            {
+                "key": spec["key"],
+                "label": spec["label"],
+                "source_label": spec["source_label"],
+                "sqft": spec["sqft"],
+                "sqm": spec["sqm"],
+                "layout_type": spec["layout_type"],
+                "target_area_proxy": True,
+                "mapping_note": spec["mapping_note"],
+            }
+        )
+        watched_metrics[spec["key"]] = metric
+    return watched_metrics
+
+
+def rows_for_layout_sensitivity(rows: list[dict], base_bucket: str, ambiguous_sqft: int) -> list[dict]:
+    selected: list[dict] = []
+    seen: set[int] = set()
+    for row in rows:
+        if row["focus_bucket"] != base_bucket and row["sqft"] != ambiguous_sqft:
+            continue
+        row_id = id(row)
+        if row_id in seen:
+            continue
+        selected.append(row)
+        seen.add(row_id)
+    return selected
+
+
+def build_layout_sensitivity_metrics(slug: str, rows: list[dict]) -> dict[str, dict]:
+    sensitivity_metrics: dict[str, dict] = {}
+    for spec in LAYOUT_SENSITIVITY_SCENARIOS.get(slug, []):
+        scenario_rows = rows_for_layout_sensitivity(rows, spec["base_bucket"], spec["ambiguous_sqft"])
+        metric = summarize_row_set(
+            scenario_rows,
+            provenance=f"sensitivity_{spec['key']}",
+            label=spec["label"],
+        )
+        metric.update(
+            {
+                "key": spec["key"],
+                "label": spec["label"],
+                "base_bucket": spec["base_bucket"],
+                "assumed_bucket": spec["assumed_bucket"],
+                "ambiguous_sqft": spec["ambiguous_sqft"],
+                "source_metric_key": spec["source_metric_key"],
+                "sensitivity_line": True,
+                "target_area_proxy": True,
+                "chart_style": spec["chart_style"],
+                "mapping_note": spec["mapping_note"],
+            }
+        )
+        sensitivity_metrics[spec["key"]] = metric
+    return sensitivity_metrics
 
 
 def percentile_position(value: float | None, samples: list[float]) -> float | None:
@@ -781,6 +919,26 @@ def load_layout_catalogs() -> dict[str, list[dict]]:
                 catalogs.setdefault(row["project_slug"], []).append(row)
         return catalogs
     return {}
+
+
+def load_layout_coverage() -> list[dict]:
+    if not FORMAL_COVERAGE_PATH.exists():
+        return []
+    rows: list[dict] = []
+    with FORMAL_COVERAGE_PATH.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            rows.append(
+                {
+                    "project_slug": row["project_slug"],
+                    "total_rows": int(row["total_rows"]),
+                    "matched_rows": int(row["matched_rows"]),
+                    "ambiguous_rows": int(row["ambiguous_rows"]),
+                    "unmapped_rows": int(row["unmapped_rows"]),
+                    "coverage_pct": float(row["coverage_pct"]),
+                }
+            )
+    return sorted(rows, key=lambda item: item["project_slug"])
 
 
 def bucket_from_normalized_type(normalized_type: str) -> str:
@@ -944,6 +1102,8 @@ def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) ->
         provenance="direct_2b2b",
         label="2b2b",
     )
+    watched_layout_metrics = build_watched_layout_metrics(slug, rows)
+    layout_sensitivity_metrics = build_layout_sensitivity_metrics(slug, rows)
 
     provenance = select_owner_pool_metric(
         owner_pool_2b2b,
@@ -975,9 +1135,13 @@ def build_focus_project(slug: str, catalog_by_project: dict[str, list[dict]]) ->
         "owner_pool_area_proxy": owner_pool_area_proxy,
         "owner_pool_filled": provenance,
         "type_breakout": type_breakout,
+        "watched_layout_metrics": watched_layout_metrics,
+        "layout_sensitivity_metrics": layout_sensitivity_metrics,
         "overall_reference": summarize_row_set(rows, provenance="overall_reference", label="全项目"),
         "data_confidence": {
             "coverage_pct": round(len(mapped_rows) / len(rows) * 100, 1) if rows else 0.0,
+            "recent_12m_count": owner_pool_direct.get("recent_12m_count", 0),
+            "previous_12m_count": owner_pool_direct.get("previous_12m_count", 0),
             "recent_24m_count": owner_pool_direct.get("recent_24m_count", 0),
             "score": confidence_score,
             "label": confidence_label(confidence_score),
@@ -1137,6 +1301,8 @@ def build_project_summary(slug: str, analysis: dict, rows: list[dict]) -> dict:
         "owner_pool_pk_included": owner_pool_pk_included,
         "data_confidence": {
             "coverage_pct": 0.0,
+            "recent_12m_count": owner_pool_filled.get("recent_12m_count", 0),
+            "previous_12m_count": owner_pool_filled.get("previous_12m_count", 0),
             "recent_24m_count": owner_pool_filled.get("recent_24m_count", 0),
             "score": confidence_score,
             "label": confidence_label(confidence_score),
@@ -1617,6 +1783,8 @@ def merge_focus_metrics(summary: dict, focus_project: dict | None) -> dict:
         **summary.get("type_breakout", {}),
         **focus_project.get("type_breakout", {}),
     }
+    merged["watched_layout_metrics"] = focus_project.get("watched_layout_metrics", {})
+    merged["layout_sensitivity_metrics"] = focus_project.get("layout_sensitivity_metrics", {})
     merged["overall_reference"] = focus_project["overall_reference"]
     merged["data_confidence"] = focus_project["data_confidence"]
     merged["owner_pool_pk_included"] = merged["owner_pool_filled"].get("current") is not None and (
@@ -1687,6 +1855,7 @@ def build_comparison_scores(projects: list[dict]) -> list[dict]:
 def build_payload() -> dict:
     analysis = load_json(ANALYSIS_PATH)
     layout_catalogs = load_layout_catalogs()
+    layout_coverage = load_layout_coverage()
     transaction_paths = sorted(DATA_DIR.glob("*_transactions.csv"))
 
     project_summaries = []
@@ -1756,12 +1925,21 @@ def build_payload() -> dict:
                 }
             )
 
-    focus_projects = {
+    layout_project_slugs = sorted(
+        path.name.removesuffix("_transaction_layout_map.csv")
+        for path in FORMAL_LAYOUT_DIR.glob("*_transaction_layout_map.csv")
+    )
+    layout_projects = {
         slug: build_focus_project(slug, layout_catalogs)
+        for slug in layout_project_slugs
+    }
+    focus_projects = {
+        slug: layout_projects[slug]
         for slug in ("lakeville", "lakegrande")
+        if slug in layout_projects
     }
     project_summaries = [
-        merge_focus_metrics(summary, focus_projects.get(summary["slug"]))
+        merge_focus_metrics(summary, layout_projects.get(summary["slug"]))
         for summary in project_summaries
     ]
     project_summaries.sort(key=lambda item: item["record_count"], reverse=True)
@@ -1819,10 +1997,12 @@ def build_payload() -> dict:
                 "typed_bucket_metrics": project["typed_bucket_metrics"],
                 "owner_pool_direct": project["owner_pool_direct"],
                 "owner_pool_filled": project["owner_pool_filled"],
+                "watched_layout_metrics": project.get("watched_layout_metrics", {}),
+                "layout_sensitivity_metrics": project.get("layout_sensitivity_metrics", {}),
                 "data_confidence": project["data_confidence"],
                 **build_metric_snapshot(project["owner_pool_direct"]),
             }
-            for project in focus_projects.values()
+            for project in layout_projects.values()
             if project["owner_pool_direct"].get("current") is not None
         ],
         key=lambda item: (item["all_time_cagr"] is not None, item["all_time_cagr"] or float("-inf"), item["name"]),
@@ -1844,6 +2024,12 @@ def build_payload() -> dict:
         1 for project in project_summaries if has_secondary_source_kind(project, "srx_csv")
     )
     ura_matched_count = sum(1 for project in ura_browser_projects if project["localComparison"]["matched"])
+    transaction_project_slugs = {path.name.removesuffix("_transactions.csv") for path in transaction_paths}
+    coverage_by_slug = {row["project_slug"]: row for row in layout_coverage}
+    layout_mapping_complete = bool(transaction_project_slugs) and all(
+        coverage_by_slug.get(slug, {}).get("coverage_pct", 0.0) >= LAYOUT_MAPPING_MIN_COVERAGE_PCT
+        for slug in transaction_project_slugs
+    )
 
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
@@ -1861,6 +2047,10 @@ def build_payload() -> dict:
             "area_proxy_comparison_project_count": len(area_proxy_comparison_projects),
             "layout_comparison_project_count": len(layout_comparison_projects),
             "layout_mapping_source": detect_layout_mapping_source(),
+            "layout_mapping_project_count": len(layout_coverage),
+            "layout_mapping_complete": layout_mapping_complete,
+            "layout_mapping_min_coverage_pct": LAYOUT_MAPPING_MIN_COVERAGE_PCT,
+            "layout_mapping_coverage": layout_coverage,
             "ura_browser_project_count": len(ura_browser_projects),
             "ura_matched_project_count": ura_matched_count,
             "focus_projects": list(focus_projects),

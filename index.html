@@ -74,6 +74,11 @@ table.dt a{color:var(--ac2);text-decoration:none}table.dt a:hover{text-decoratio
 table.dt tr.metric-parent td{background:rgba(108,92,231,.08);font-weight:700}
 table.dt tr.metric-sub td:first-child{padding-left:28px;color:var(--t)}
 table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-size:.82rem}
+table.dt tr.layout-breakdown-row td{background:rgba(116,185,255,.035);color:var(--t2);font-size:.82rem}
+table.dt tr.layout-breakdown-row td:first-child{padding-left:36px}
+table.dt tr.layout-breakdown-row:hover td{background:rgba(116,185,255,.075)}
+.breakdown-label{display:inline-flex;align-items:center;gap:6px;color:var(--t);font-weight:650}
+.breakdown-kind{color:var(--t2);font-size:.78rem}
 .hi{color:var(--g2);font-weight:600}.wr{color:var(--or)}.bd{color:var(--rd)}
 .focus-row{background:rgba(85,239,196,.08)}
 .focus-row td:first-child,.focus-row td:first-child strong{color:var(--g2)}
@@ -108,6 +113,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
 .inp input{width:100%;background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:10px 12px;color:var(--t);font-size:1rem;font-weight:600;outline:none;transition:.2s}
 .inp input:focus{border-color:var(--ac)}
 .inp .unit{font-size:.78rem;color:var(--t2);margin-top:4px}
+#assumptions_card{margin-bottom:28px}
 .insight{background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,184,148,.08));border:1px solid rgba(108,92,231,.2);border-radius:14px;padding:22px 26px;margin:20px 0}
 .insight h3{font-size:1.1rem;margin-bottom:10px;color:var(--ac2)}
 .insight p{color:var(--t2);font-size:.9rem;line-height:1.7}
@@ -168,12 +174,12 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
     </div>
 
     <div class="g2">
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--ac)"></span>5个方案 PSF 对比</div><div class="cc"><canvas id="c_psf"></canvas></div></div>
-      <div class="card"><div class="ct"><span class="dot" style="background:var(--g)"></span>5个方案总价对比（S$千）</div><div class="cc"><canvas id="c_tp"></canvas></div></div>
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--ac)"></span>买房方案 PSF 对比</div><div class="cc"><canvas id="c_psf"></canvas></div></div>
+      <div class="card"><div class="ct"><span class="dot" style="background:var(--g)"></span>买房方案总价对比（S$千）</div><div class="cc"><canvas id="c_tp"></canvas></div></div>
     </div>
 
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>5个方案核心参数对比表</div>
+      <div class="ct"><span class="dot" style="background:var(--cy)"></span>买房方案核心参数对比表</div>
       <div style="overflow-x:auto" id="core_plan_table"></div>
     </div>
   </div>
@@ -203,7 +209,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
         <div class="ct"><span class="dot" style="background:var(--or)"></span>贷款上限 $1.1M 对各方案的约束</div>
         <div class="alert" style="margin-bottom:16px">
           <h4>$1.1M 贷款封顶影响</h4>
-          <p>银行确认先生最高可贷 $1.1M。方案 A/B/C 在 75% LTV 范围内不受影响；<strong>方案 D/E 贷款封顶</strong>，首付比例从 25% 飙升至 35-39%，大幅增加现金/CPF 需求。</p>
+          <p>银行确认先生最高可贷 $1.1M。每个方案按 75% LTV 与 $1.1M 上限实时计算；总价越高，贷款封顶后首付比例越高，现金/CPF 压力越大。</p>
         </div>
         <div style="overflow-x:auto" id="loan_cap_table"></div>
       </div>
@@ -213,10 +219,10 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
   <!-- ===== S3: COSTS ===== -->
   <div id="s3" class="sec">
     <div class="st">🏦 购房成本全景拆解（贷款上限 $1.1M）</div>
-    <p class="sd">5个方案的首付 + 印花税 + 律师费详细对比 · 方案D/E受贷款封顶影响，首付大幅增加</p>
+    <p class="sd">各买房方案的首付 + 印花税 + 律师费详细对比 · 贷款封顶方案会自动体现更高首付压力</p>
 
     <div class="alert" style="margin-bottom:20px">
-      <h4>⚠️ 贷款封顶对方案 D/E 的影响</h4>
+      <h4>⚠️ 贷款封顶影响</h4>
       <p id="cost_alert_text">银行确认最高贷款 $1.1M。默认场景下将按统一公式实时计算首付、BSD、ABSD、CPF OA 使用与现金补差。</p>
     </div>
 
@@ -226,7 +232,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
     </div>
 
     <div class="card" style="margin-top:20px">
-      <div class="ct"><span class="dot" style="background:var(--cy)"></span>五方案购房成本明细表</div>
+      <div class="ct"><span class="dot" style="background:var(--cy)"></span>购房成本明细表</div>
       <div style="overflow-x:auto" id="cost_detail_table"></div>
       <p style="color:var(--rd);font-size:.82rem;margin-top:12px" id="cost_detail_note">* 默认女方初始 OA 为 8000，CPF 可支付部分会先吃 OA，不足再转现金。</p>
     </div>
@@ -288,6 +294,8 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       <div class="inp"><label>月生活费（不含住房）</label><input type="number" id="i_living" step="200"><div class="unit">S$/月</div></div>
       <div class="inp"><label>月税款 GIRO</label><input type="number" id="i_tax_giro" step="50" min="0"><div class="unit">S$/月 · 现金流扣款</div></div>
       <div class="inp"><label>RSU 税后月现金</label><input type="number" id="i_rsu_after_tax" step="100" min="0"><div class="unit">S$/月 · 默认投入股票</div></div>
+      <div class="inp"><label>自定义户型面积</label><input type="number" id="i_custom_sqft" step="1" min="1"><div class="unit">sqft · 默认 LG 2B2B 最新面积</div></div>
+      <div class="inp"><label>自定义户型 PSF</label><input type="number" id="i_custom_psf" step="0.001" min="1"><div class="unit">S$/sqft · 默认 LG 2B2B 最新尺价</div></div>
       <div class="inp"><label>股票年化回报</label><input type="number" id="i_stock" step="0.5" min="0" max="20"><div class="unit">% / 年</div></div>
       <div class="inp"><label>Lakeville 房产年增值</label><input type="number" id="i_rate_lv" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史 CAGR 2.4%</div></div>
       <div class="inp"><label>Lake Grande 房产年增值</label><input type="number" id="i_rate_lg" step="0.5" min="0" max="15"><div class="unit">% / 年 · 历史 CAGR 4.12%</div></div>
@@ -393,9 +401,9 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
         <div class="fs">
           <div class="fn" style="background:var(--or);color:#000">!</div>
           <div class="fc">
-            <h4>注意：方案 D/E 贷款封顶</h4>
-            <p>LG 3B2B ($1.7M) 和 LV 3B2B ($1.8M) 的75%LTV贷款额分别为$1,275K和$1,350K，超出$1.1M上限。需要额外提高首付至35-39%，大幅增加现金/CPF压力。</p>
-            <div class="vd nu">→ 方案D/E可行但资金压力大，方案E前期投入已超起始资产</div>
+            <h4>注意：高总价方案会触发贷款封顶</h4>
+            <p>当 75% LTV 理论贷款额超出 $1.1M 上限时，模型会把超出部分转成首付，现金/CPF 压力随总价上升。</p>
+            <div class="vd nu">→ 可行性需要结合“购房成本”里的实时现金支出判断</div>
           </div>
         </div>
         <div class="fs">
@@ -419,12 +427,12 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
         <div class="ct"><span class="dot" style="background:var(--ac)"></span>成交数据来源</div>
         <ul class="sl">
           <li><strong>`data/*_transactions.csv`</strong> — 当前默认口径的 resale 成交 CSV</li>
-          <li><strong>`data/layout_mapping/*`</strong> — Lakeville / Lake Grande 99.co 确认的户型映射</li>
+          <li><strong>`data/layout_mapping/*`</strong> — Lakeville / Lake Grande 经 developer brochure / floor-plan 验证的户型映射</li>
           <li><strong>`data/appreciation_analysis.json`</strong> — `analyze.py` 生成的小区 PK 年度统计</li>
           <li><strong>`data/dashboard_data.json`</strong> — `build_dashboard_data.py` 生成的前端统一数据源</li>
           <li><strong>propertyforsale.com.sg</strong> — 默认 resale 主成交来源</li>
           <li><strong>URA Data Service</strong> — propertyforsale 不可用时的 resale fallback</li>
-          <li><strong>99.co</strong> — 用于确认各交易的 bed/bath 户型分类</li>
+          <li><strong>99.co / 公开列表缓存</strong> — 仅作 bed/bath 辅助线索，不作为唯一判定源</li>
         </ul>
       </div>
       <div class="card">
@@ -461,7 +469,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
   <!-- ===== S9: RENTAL TRENDS ===== -->
   <div id="s9" class="sec">
     <div class="st">📈 URA 租金走势 · Lakeville vs Lake Grande</div>
-    <p class="sd">项目级样本来自 URA 租赁合同（2021Q1 ~ 2026Q1），户型分类基于 layout catalog 面积映射。长期市场基准另补官方 URA 非有地私宅租金指数（2004Q1 ~ 2025Q4），用于给长期 <code>g</code> 提供锚点。Lake Grande 700-800 sqft 的 2BR 合同中可能混入少量 2B1B（721sqft），已按 2B2B 处理。</p>
+    <p class="sd">项目级样本来自 URA 租赁合同（2021Q1 ~ 2026Q1）。租赁合同没有 stack/unit/bathroom，租金图按 URA unit type 与面积段估算，和 resale transaction 的 brochure/floor-plan mapping 是独立样本。长期市场基准另补官方 URA 非有地私宅租金指数（2004Q1 ~ 2025Q4），用于给长期 <code>g</code> 提供锚点。Lake Grande 700-800 sqft 的 2BR 租赁合同可能混入少量 2B1B（721sqft），不能等同于已验证 2B2B。</p>
 
     <div class="g2" style="margin-top:1.2rem">
       <div class="card">
@@ -510,14 +518,14 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
   <!-- ===== S10: CONDO COMPARISON ===== -->
   <div id="s10" class="sec on">
     <div class="st">🏘️ 小区PK · 当前已爬数据</div>
-    <p class="sd">当前默认口径是 `resale-only`。S10 同时展示四套 PK lens：`全项目`、`真实户型映射`、`面积代理`、`自住口径`。每套 lens 只看三张图：`All-time CAGR`、`Rolling 3Y CAGR` 和 `YoY`；表格默认折叠，只做小区 agg 汇总。</p>
+    <p class="sd">当前默认口径是 `resale-only`。S10 同时展示四套 PK lens：`全项目`、`真实 2BR 映射池`、`面积代理`、`自住口径`。每套 lens 只看三张图：`All-time CAGR`、`Rolling 3Y CAGR` 和 `YoY`；表格默认折叠，只做小区 agg 汇总。</p>
 
     <div class="kpi-r" id="pk_kpis"></div>
 
     <div class="alert info">
       <h4>📡 数据源与覆盖范围说明</h4>
       <p><strong>当前前端数据源：</strong>`data/dashboard_data.json` / `data/dashboard_data.js`。这两个文件由本地脚本从 `data/*_transactions.csv`、`data/appreciation_analysis.json`、`data/layout_mapping/*` 自动生成。<br>
-      <strong>四套 lens：</strong>口径 1 = `全项目`；口径 2 = `真实户型映射`；口径 3 = `面积代理`；口径 4 = `自住口径`。<br>
+      <strong>四套 lens：</strong>口径 1 = `全项目`；口径 2 = `真实 2BR 映射池`；口径 3 = `面积代理`；口径 4 = `自住口径`。<br>
       <strong>All-time CAGR：</strong>起点是最早可用的 `12个月 median PSF`，终点是最新 `12个月 median PSF`，按真实月份跨度年化。<br>
       <strong>Rolling 3Y CAGR：</strong>当前滚动 `12个月 median PSF` 相对 `36个月前` 对应滚动窗口的 3 年年化 CAGR；若缺少 36 个月前窗口则不出点。<br>
       <strong>YoY：</strong>最新滚动 `12个月 median PSF` 相对 `12个月前` 对应滚动窗口的同比；若缺少去年同期窗口则留空。<br>
@@ -525,7 +533,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       <strong>注意：</strong>默认不再把 `New Sale / Sub Sale` 混进主 CSV。历史 `SRX` 窗口只保留在 `data/srx/*` 作为备份，不再进入主排序。</p>
     </div>
 
-    <details class="card collapsible-card" style="margin-bottom:20px" open>
+    <details class="card collapsible-card" style="margin-bottom:20px">
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label">
           <span class="dot" style="background:var(--ac)"></span>
@@ -547,7 +555,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="overall_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>总户数</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>总户数</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>近12m成交量</th><th>前12m成交量</th><th>样本数</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -555,7 +563,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
 
     <details class="card collapsible-card" style="margin-top:20px" open>
       <summary class="ct collapsible-toggle">
-        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实户型映射</span>
+        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实 2BR 映射池</span>
       </summary>
       <div class="lens-note" id="layout_lens_note"></div>
       <div class="ct"><span class="dot" style="background:var(--g)"></span>Cumulative CAGR</div>
@@ -564,24 +572,24 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       <div class="cc t"><canvas id="layout_rolling_3y_cagr_chart"></canvas></div>
       <div class="ct" style="margin-top:16px"><span class="dot" style="background:var(--or)"></span>YoY</div>
       <div class="cc t"><canvas id="layout_yoy_chart"></canvas></div>
-      <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--bl)"></span>Lakeville / Lake Grande 细分线</div>
+      <div class="ct" style="margin-top:18px"><span class="dot" style="background:var(--bl)"></span>Lakeville / Lake Grande 真实 2BR 细分线 + B3/B3a 721sqft + 721归类假设</div>
       <div class="chart-switch" id="layout_focus_metric_toggle"></div>
       <div class="cc t"><canvas id="layout_focus_detail_chart"></canvas></div>
     </details>
 
     <details class="card collapsible-card" style="margin-top:20px">
       <summary class="ct collapsible-toggle">
-        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实户型映射汇总</span>
+        <span class="collapsible-label"><span class="dot" style="background:var(--bl)"></span>口径 2 · 真实 2BR 映射池汇总</span>
       </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="layout_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>映射覆盖率</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>映射覆盖率</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>近12m成交量</th><th>前12m成交量</th><th>样本数</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </details>
 
-    <details class="card collapsible-card" style="margin-top:20px" open>
+    <details class="card collapsible-card" style="margin-top:20px" data-pk-lens="area_proxy">
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积代理</span>
       </summary>
@@ -594,13 +602,13 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       <div class="cc t"><canvas id="area_proxy_yoy_chart"></canvas></div>
     </details>
 
-    <details class="card collapsible-card" style="margin-top:20px">
+    <details class="card collapsible-card" style="margin-top:20px" data-pk-lens="area_proxy">
       <summary class="ct collapsible-toggle">
         <span class="collapsible-label"><span class="dot" style="background:var(--cy)"></span>口径 3 · 面积代理汇总</span>
       </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="area_proxy_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>TOP</th><th>地契</th><th>来源</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>近12m成交量</th><th>前12m成交量</th><th>样本数</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -628,7 +636,7 @@ table.dt tr.metric-sub2 td:first-child{padding-left:44px;color:var(--t2);font-si
       </summary>
       <div style="overflow-x:auto">
         <table class="dt" id="owner_pool_projects_table">
-          <thead><tr><th>楼盘</th><th>区域</th><th>主口径</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>最近24m成交量</th><th>样本数</th><th>映射覆盖率</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th><th>confidence</th></tr></thead>
+          <thead><tr><th>楼盘</th><th>区域</th><th>主口径</th><th>当前PSF</th><th>All-time CAGR</th><th>YoY</th><th>近12m成交量</th><th>前12m成交量</th><th>样本数</th><th>映射覆盖率</th><th>2b1b 当前PSF</th><th>2b2b 当前PSF</th><th>confidence</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -821,7 +829,7 @@ const SCATTER_DATA={
   lakeGrande:[{x:516,y:785},{x:613,y:1275},{x:624,y:1100},{x:721,y:1360},{x:721,y:1285},{x:775,y:1430},{x:775,y:1446},{x:775,y:1468},{x:775,y:1510},{x:818,y:1514},{x:818,y:1495},{x:861,y:1630},{x:904,y:1739},{x:947,y:1600}],
 };
 let psfChart,tpChart,scatterChart,upfrontChart,cashCpfChart,m30Chart,m25Chart,rateJumpChart,wealthChart,breakdownChart,flowChart,leverageChart,loanCapChart,tenureChart,sensitivityChart,yieldChart,rentBenchmarkChart,leaseBalaChart,leaseDragChart;
-let activeDashboardData=null;
+let activeDashboardData=window.__DASHBOARD_DATA__ || null;
 
 function toK(v){return v/1000}
 function fmtMoney(v){return '$'+Math.round(v).toLocaleString()}
@@ -876,9 +884,23 @@ function buildListingVerdict(targetPsf,quantiles){
   if(targetPsf<quantiles[90]) return 'RICH (P75–P90)';
   return 'OVERPRICED (above P90)';
 }
+function getCustomUnitPlan(){return BASE_PLANS.find(plan=>plan.isCustomUnit)}
+function getDefaultCustomUnitTransaction(focusProjects=activeDashboardData?.focus_projects){
+  const plan=getCustomUnitPlan();
+  return plan?WM.resolveLatestTransaction(plan,focusProjects,DEFAULTS):null;
+}
+function setCustomUnitDefaultInputs(focusProjects=activeDashboardData?.focus_projects,force=false){
+  const tx=getDefaultCustomUnitTransaction(focusProjects);
+  const sqftEl=document.getElementById('i_custom_sqft');
+  const psfEl=document.getElementById('i_custom_psf');
+  if(!tx||!sqftEl||!psfEl)return;
+  if(force||!(sqftEl.dataset?.touched||sqftEl.__touched))sqftEl.value=Math.round(tx.sqft);
+  if(force||!(psfEl.dataset?.touched||psfEl.__touched))psfEl.value=(tx.psf || 0).toFixed(3).replace(/\.?0+$/,'');
+}
 
 function setScenarioInputDefaults(){
   const {household}=DEFAULTS;
+  const customTx=getDefaultCustomUnitTransaction();
   const values={
     i_assets:DEFAULTS.assetsK,
     i_male_gross:household.male.grossMonthly,
@@ -890,6 +912,8 @@ function setScenarioInputDefaults(){
     i_living:DEFAULTS.livingMonthly,
     i_tax_giro:DEFAULTS.monthlyTaxGiro,
     i_rsu_after_tax:DEFAULTS.monthlyRsuAfterTax,
+    i_custom_sqft:customTx?.sqft?Math.round(customTx.sqft):DEFAULTS.customUnitSqft,
+    i_custom_psf:customTx?.psf?customTx.psf.toFixed(3).replace(/\.?0+$/,''):DEFAULTS.customUnitPsf,
     i_stock:DEFAULTS.stockAnnualReturn*100,
     i_rate_lv:DEFAULTS.lakevilleAnnualGrowth*100,
     i_rate_lg:DEFAULTS.lakeGrandeAnnualGrowth*100,
@@ -914,6 +938,8 @@ function readScenarioInputs(){
     livingMonthly:readNumericInput('i_living',DEFAULTS.livingMonthly),
     monthlyTaxGiro:readNumericInput('i_tax_giro',DEFAULTS.monthlyTaxGiro),
     monthlyRsuAfterTax:readNumericInput('i_rsu_after_tax',DEFAULTS.monthlyRsuAfterTax),
+    customUnitSqft:readNumericInput('i_custom_sqft',DEFAULTS.customUnitSqft),
+    customUnitPsf:readNumericInput('i_custom_psf',DEFAULTS.customUnitPsf),
     stockAnnualReturn:readNumericInput('i_stock',DEFAULTS.stockAnnualReturn*100)/100,
     lakevilleAnnualGrowth:readNumericInput('i_rate_lv',DEFAULTS.lakevilleAnnualGrowth*100)/100,
     lakeGrandeAnnualGrowth:readNumericInput('i_rate_lg',DEFAULTS.lakeGrandeAnnualGrowth*100)/100,
@@ -973,6 +999,8 @@ function renderAssumptionsBox(assumptions,householdCpf){
   const y3=schedule[24]||schedule[schedule.length-1]||y2;
   const bonusCashMonthly=person=>(person.takeHomeAnnualBonus||0)/12;
   const cpfLine=(label,flow)=>label+' 男方月均现金 '+fmtCnMoney(flow.male.monthlyCashIncludingBonus)+' = 薪资到手 '+fmtCnMoney(flow.male.takeHomeMonthly)+' + 奖金摊销 '+fmtCnMoney(bonusCashMonthly(flow.male))+' / OA '+fmtCnMoney(flow.male.monthlyOAIncludingBonus)+'；家庭月均现金 '+fmtCnMoney(flow.combinedCash)+' / OA '+fmtCnMoney(flow.combinedOA);
+  const customPlan=getCustomUnitPlan();
+  const customTx=customPlan?WM.resolveLatestTransaction(customPlan,activeDashboardData?.focus_projects,assumptions):null;
   document.getElementById('assumptions_box').innerHTML=
     '<div class="ag">'+
       '<div class="ai"><div class="l">起始投入资金</div><div class="v">'+fmtCnMoney(assumptions.assetsK*1000)+'（现金+股票）</div></div>'+
@@ -980,6 +1008,7 @@ function renderAssumptionsBox(assumptions,householdCpf){
       '<div class="ai"><div class="l">女方默认收入</div><div class="v">'+fmtCnMoney(assumptions.household.female.grossMonthly)+'/月 + '+assumptions.household.female.annualBonusMonths+' 薪 · 初始 OA '+fmtCnMoney(assumptions.household.female.initialOA)+'</div></div>'+
       '<div class="ai"><div class="l">生活费 / 租金</div><div class="v">'+fmtCnMoney(assumptions.livingMonthly)+'/月 · 纯租房基准 '+fmtCnMoney(assumptions.rentMonthly)+'/月</div></div>'+
       '<div class="ai"><div class="l">税款 / RSU 现金流</div><div class="v">每月税款 GIRO '+fmtCnMoney(assumptions.monthlyTaxGiro || 0)+' · RSU 税后月现金 '+fmtCnMoney(assumptions.monthlyRsuAfterTax || 0)+'，统一进入每月可投股票现金流。</div></div>'+
+      (customTx?'<div class="ai"><div class="l">自定义户型</div><div class="v">'+fmtCnAmount(customTx.sqft)+' sqft × $'+fmtCompactNumber(customTx.psf,1)+'/sqft = '+fmtCnMoney(customTx.price)+'；默认取 LG 2B2B 最新面积与尺价。</div></div>':'')+
       '<div class="ai"><div class="l">CPF 规则</div><div class="v">'+assumptions.cpfRulesVersion+'</div></div>'+
       '<div class="ai"><div class="l">税费 / 卖房规则</div><div class="v">'+assumptions.irasRulesVersion+' · 期末卖房扣中介 '+fmtPct(assumptions.sellerAgentCommissionRate)+' + GST '+fmtPct(assumptions.gstRate)+' + 卖方律师费 '+fmtCnMoney(assumptions.sellerLegalFees)+'</div></div>'+
       '<div class="ai"><div class="l">男方 CPF 修正</div><div class="v">旧口径误按 full CPF；现改为 Y1 员工5%/总9%，Y2 员工15%/总24%，Y3+ full CPF。</div></div>'+
@@ -1196,7 +1225,7 @@ function renderScenario(){
 }
 
 setScenarioInputDefaults();
-document.querySelectorAll('.inputs input').forEach(el=>el.addEventListener('input',renderScenario));
+document.querySelectorAll('.inputs input').forEach(el=>el.addEventListener('input',()=>{if(el.dataset)el.dataset.touched='1';else el.__touched=true;renderScenario();}));
 renderScenario();
 
 // ===== Local dashboard data: S2 / S10 / S12 =====
@@ -1212,10 +1241,11 @@ const PK_METRIC_TOGGLE_OPTIONS = {
   yoy_monthly: { label: 'YoY', axisText: 'YoY (%)' },
 };
 const PK_DETAIL_LINE_STYLES = {
-  primary: { label: '主线', borderDash: [], borderWidth: 3 },
-  '2b1b': { label: '2b1b', borderDash: [10, 6], borderWidth: 2 },
-  '2b2b': { label: '2b2b', borderDash: [2, 6], borderWidth: 2 },
+  primary: { label: '主线', borderDash: [], borderWidth: 3.4, pointStyle: 'circle', pointRadius: 0, pointHoverRadius: 7 },
+  '2b1b': { label: '2b1b', borderDash: [14, 6], borderWidth: 2.4, pointStyle: 'rectRot', pointRadius: 2.5, pointHoverRadius: 7 },
+  '2b2b': { label: '2b2b', borderDash: [3, 5], borderWidth: 2.6, pointStyle: 'triangle', pointRadius: 2.5, pointHoverRadius: 7 },
 };
+const PK_EXTRA_DETAIL_LINE_STYLE = { color: C.or, borderDash: [9, 4, 2, 4], borderWidth: 3, pointStyle: 'star', pointRadius: 3.2, pointHoverRadius: 8 };
 const PK_LENS_CONFIG = {
   overall: {
     projectsKey: 'overall_comparison_projects',
@@ -1240,29 +1270,33 @@ const PK_LENS_CONFIG = {
   layout: {
     projectsKey: 'layout_comparison_projects',
     noteId: 'layout_lens_note',
-    describe: () => '只基于已正式映射的真实户型样本；focus 细分图里的 2b1b/2b2b 是真实映射线。',
+    describe: () => '主线 = 已正式映射的 2b1b + 2b2b transaction，不使用面积代理或全项目 fallback。focus 细分图里的 2b1b/2b2b 是真实映射线；B3/B3a 721sqft 目标面积线来自 Lake Grande 721sqft resale 样本，因 CSV 没有 stack/unit，不能保证每笔都是 B3/B3a；两条 721 归类假设线只用于敏感性对比，不改真实映射口径。',
     cagr: {
       canvasId: 'layout_cagr_chart',
-      yAxisTitle: '真实户型累积 CAGR (%)',
-      emptyMessage: '当前没有可用于真实户型映射 cumulative CAGR 对比的项目。'
+      yAxisTitle: '真实 2BR 映射池累积 CAGR (%)',
+      emptyMessage: '当前没有可用于真实 2BR 映射池 cumulative CAGR 对比的项目。'
     },
     rolling3y: {
       canvasId: 'layout_rolling_3y_cagr_chart',
-      yAxisTitle: '真实户型 Rolling 3Y CAGR (%)',
-      emptyMessage: '当前没有可用于真实户型映射 rolling 3Y CAGR 对比的项目。'
+      yAxisTitle: '真实 2BR 映射池 Rolling 3Y CAGR (%)',
+      emptyMessage: '当前没有可用于真实 2BR 映射池 rolling 3Y CAGR 对比的项目。'
     },
     yoy: {
       canvasId: 'layout_yoy_chart',
-      yAxisTitle: '真实户型 YoY (%)',
-      emptyMessage: '当前没有可用于真实户型映射 YoY 对比的项目。'
+      yAxisTitle: '真实 2BR 映射池 YoY (%)',
+      emptyMessage: '当前没有可用于真实 2BR 映射池 YoY 对比的项目。'
     },
     focusDetail: {
       stateKey: 'layout',
       toggleId: 'layout_focus_metric_toggle',
       chartId: 'layout_focus_detail_chart',
-      emptyMessage: '当前没有可用于真实户型 focus 细分的项目。',
+      emptyMessage: '当前没有可用于真实 2BR 映射池 focus 细分的项目。',
       mainMetric: project => project.owner_pool_direct || project,
-      axisPrefix: '真实户型 focus 细分'
+      extraMetrics: project => ({
+        ...(project.watched_layout_metrics || {}),
+        ...(project.layout_sensitivity_metrics || {}),
+      }),
+      axisPrefix: '真实 2BR 映射池 focus 细分'
     },
   },
   area_proxy: {
@@ -1361,6 +1395,38 @@ function confidenceLabel(meta){
 
 function currentPsf(metric){
   return metric?.current?.median_psf != null ? fmtMoney(metric.current.median_psf) : '-';
+}
+
+function layoutBreakdownRow(label, metric, kindLabel){
+  if (!metric || !metric.count) return '';
+  const detailNote = metric.source_label || metric.period_label || '';
+  return '<tr class="layout-breakdown-row">' +
+    '<td><span class="breakdown-label">↳ ' + label + '</span></td>' +
+    '<td><span class="breakdown-kind">' + kindLabel + '</span></td>' +
+    '<td>-</td>' +
+    '<td class="hi">' + currentPsf(metric) + '</td>' +
+    '<td>' + fmtPct(metric.all_time_cagr) + '</td>' +
+    '<td>' + fmtPct(metric.current_yoy) + '</td>' +
+    '<td>' + fmtCount(metric.recent_12m_count) + '</td>' +
+    '<td>' + fmtCount(metric.previous_12m_count) + '</td>' +
+    '<td>' + fmtCount(metric.count) + '</td>' +
+    '<td colspan="2"><span class="mini-note">' + safeText(detailNote) + '</span></td>' +
+  '</tr>';
+}
+
+function layoutBreakdownRows(project){
+  if (!isFocusComparisonProject(project)) return '';
+  const rows = [
+    layoutBreakdownRow('2b1b', project.type_breakout?.['2b1b'], '真实映射'),
+    layoutBreakdownRow('2b2b', project.type_breakout?.['2b2b'], '真实映射'),
+  ];
+  Object.values(project.watched_layout_metrics || {}).forEach(metric => {
+    rows.push(layoutBreakdownRow(metric.label || metric.source_label || metric.key || '目标户型', metric, '目标面积线'));
+  });
+  Object.values(project.layout_sensitivity_metrics || {}).forEach(metric => {
+    rows.push(layoutBreakdownRow(metric.label || metric.key || '721归类假设', metric, '721归类假设'));
+  });
+  return rows.join('');
 }
 
 function cagrPair(metric){
@@ -1591,8 +1657,10 @@ function prepareMetricTrendData(seriesDescriptors) {
         borderDash: descriptor.borderDash || [],
         tension: 0.25,
         spanGaps: true,
-        pointRadius: 0,
-        pointHitRadius: 6
+        pointRadius: descriptor.pointRadius ?? 0,
+        pointHoverRadius: descriptor.pointHoverRadius ?? 6,
+        pointHitRadius: descriptor.pointHitRadius ?? 8,
+        pointStyle: descriptor.pointStyle || 'circle'
       };
     });
   return { labels, datasets };
@@ -1621,6 +1689,7 @@ function renderLineChart(canvasId, seriesDescriptors, yAxisTitle, emptyMessage) 
   }
   const chartCanvas = document.getElementById(canvasId);
   if (s10ChartInstances[canvasId]) s10ChartInstances[canvasId].destroy();
+  const usesPointStyle = trendData.datasets.some(dataset => dataset.pointRadius > 0 || dataset.pointStyle !== 'circle');
   s10ChartInstances[canvasId] = new Chart(chartCanvas, {
     type: 'line',
     data: trendData,
@@ -1639,7 +1708,7 @@ function renderLineChart(canvasId, seriesDescriptors, yAxisTitle, emptyMessage) 
         }
       },
       plugins: {
-        legend: { position: 'top', labels: { boxWidth: 12 }, onClick: legendClickHandlerA },
+        legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: usesPointStyle }, onClick: legendClickHandlerA },
         tooltip: {
           callbacks: {
             title: (items) => items.length ? formatMonthLabel(items[0].label) : '',
@@ -1690,7 +1759,7 @@ function renderFocusMetricToggle(toggleId, stateKey) {
   });
 }
 
-function buildFocusDetailSeries(projects, metricKey, mainMetricAccessor) {
+function buildFocusDetailSeries(projects, metricKey, mainMetricAccessor, extraMetricAccessor) {
   const detailDescriptors = [];
   getOrderedFocusProjects(projects).forEach((project, index) => {
     const color = getS10ProjectColor(project, index);
@@ -1706,9 +1775,29 @@ function buildFocusDetailSeries(projects, metricKey, mainMetricAccessor) {
       detailDescriptors.push({
         label: project.name + ' · ' + style.label,
         slug: project.slug,
-        color,
+        color: style.color || color,
         borderDash: style.borderDash,
         borderWidth: style.borderWidth,
+        pointRadius: style.pointRadius,
+        pointHoverRadius: style.pointHoverRadius,
+        pointStyle: style.pointStyle,
+        series,
+      });
+    });
+    const extraMetrics = extraMetricAccessor ? extraMetricAccessor(project) : {};
+    Object.values(extraMetrics || {}).forEach(metric => {
+      const series = metric?.[metricKey] || {};
+      if (!Object.keys(series).length) return;
+      const metricStyle = { ...PK_EXTRA_DETAIL_LINE_STYLE, ...(metric.chart_style || {}) };
+      detailDescriptors.push({
+        label: project.name + ' · ' + (metric.label || metric.source_label || metric.key || '目标户型'),
+        slug: project.slug,
+        color: metric.color || metricStyle.color || color,
+        borderDash: metricStyle.borderDash,
+        borderWidth: metricStyle.borderWidth,
+        pointRadius: metricStyle.pointRadius,
+        pointHoverRadius: metricStyle.pointHoverRadius,
+        pointStyle: metricStyle.pointStyle,
         series,
       });
     });
@@ -1722,7 +1811,7 @@ function renderFocusDetailChart(config, projects) {
   renderFocusMetricToggle(detailConfig.toggleId, detailConfig.stateKey);
   const metricKey = pkFocusDetailState[detailConfig.stateKey] || 'cagr_monthly';
   const axisLabel = PK_METRIC_TOGGLE_OPTIONS[metricKey]?.axisText || 'All-time CAGR (%)';
-  const seriesDescriptors = buildFocusDetailSeries(projects, metricKey, detailConfig.mainMetric);
+  const seriesDescriptors = buildFocusDetailSeries(projects, metricKey, detailConfig.mainMetric, detailConfig.extraMetrics);
   renderLineChart(
     detailConfig.chartId,
     seriesDescriptors,
@@ -1736,6 +1825,11 @@ function renderPk(data){
   const layoutProjects = (data.layout_comparison_projects || []).slice();
   const areaProxyProjects = (data.area_proxy_comparison_projects || []).slice();
   const ownerPoolProjects = (data.comparison_projects || []).slice();
+  const hideAreaProxyLens = Boolean(data.meta?.layout_mapping_complete);
+  document.querySelectorAll('[data-pk-lens="area_proxy"]').forEach(section => {
+    section.hidden = hideAreaProxyLens;
+    section.style.display = hideAreaProxyLens ? 'none' : '';
+  });
   s10ProjectColorMap = buildS10ProjectColorMap(data);
   const directProjectCount = ownerPoolProjects.filter(project => project.owner_pool_filled?.provenance === 'direct_2b2b' || project.owner_pool_filled?.provenance === 'direct_owner_pool').length;
   const lensProjects = {
@@ -1748,7 +1842,7 @@ function renderPk(data){
   document.getElementById('pk_kpis').innerHTML = [
     '<div class="kpi"><div class="l">当前已爬楼盘</div><div class="v" style="color:var(--g2)">' + (data.meta?.project_count || 0) + '</div><div class="c">来自本地 CSV</div></div>',
     '<div class="kpi"><div class="l">口径 1 · 全项目</div><div class="v" style="color:var(--pr)">' + overallProjects.length + '</div><div class="c">全项目 All-time CAGR / YoY</div></div>',
-    '<div class="kpi"><div class="l">口径 2 · 真实映射</div><div class="v" style="color:var(--ac2)">' + layoutProjects.length + '</div><div class="c">正式户型映射项目</div></div>',
+    '<div class="kpi"><div class="l">口径 2 · 真实 2BR</div><div class="v" style="color:var(--ac2)">' + layoutProjects.length + '</div><div class="c">formal mapping 后 2b1b+2b2b</div></div>',
     '<div class="kpi"><div class="l">口径 3 · 面积代理</div><div class="v" style="color:var(--cy)">' + (data.meta?.area_proxy_comparison_project_count || areaProxyProjects.length) + '</div><div class="c">600-849 sqft 自住代理</div></div>',
     '<div class="kpi"><div class="l">口径 4 · 自住口径</div><div class="v" style="color:var(--pk)">' + ownerPoolProjects.length + '</div><div class="c">2b2b → 2b1b+2b2b → 面积代理 → 全项目</div></div>',
     '<div class="kpi"><div class="l">真实自住口径</div><div class="v" style="color:var(--or)">' + directProjectCount + '</div><div class="c">真实 2b2b / 真实 2b1b+2b2b</div></div>',
@@ -1779,7 +1873,8 @@ function renderPk(data){
       '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
       '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
       '<td>' + fmtPct(project.current_yoy) + '</td>' +
-      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.recent_12m_count) + '</td>' +
+      '<td>' + fmtCount(project.previous_12m_count) + '</td>' +
       '<td>' + fmtCount(project.sample_count) + '</td>' +
     '</tr>';
   }).join('');
@@ -1787,18 +1882,20 @@ function renderPk(data){
   const layoutBody = document.querySelector('#layout_projects_table tbody');
   layoutBody.innerHTML = layoutProjects.map(project => {
     const rowClass = isFocusComparisonProject(project) ? ' class="focus-row"' : '';
-    return '<tr' + rowClass + '>' +
+    const projectRow = '<tr' + rowClass + '>' +
       '<td><strong>' + project.name + '</strong></td>' +
       '<td>' + safeText(project.region_group) + '</td>' +
       '<td>' + safeText(project.coverage_pct != null ? project.coverage_pct + '%' : '-') + '</td>' +
       '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
       '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
       '<td>' + fmtPct(project.current_yoy) + '</td>' +
-      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.recent_12m_count) + '</td>' +
+      '<td>' + fmtCount(project.previous_12m_count) + '</td>' +
       '<td>' + fmtCount(project.sample_count) + '</td>' +
       '<td>' + currentPsf(project.type_breakout?.['2b1b']) + '</td>' +
       '<td>' + currentPsf(project.type_breakout?.['2b2b']) + '</td>' +
     '</tr>';
+    return projectRow + layoutBreakdownRows(project);
   }).join('');
 
   const areaProxyBody = document.querySelector('#area_proxy_projects_table tbody');
@@ -1814,7 +1911,8 @@ function renderPk(data){
       '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
       '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
       '<td>' + fmtPct(project.current_yoy) + '</td>' +
-      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.recent_12m_count) + '</td>' +
+      '<td>' + fmtCount(project.previous_12m_count) + '</td>' +
       '<td>' + fmtCount(project.sample_count) + '</td>' +
     '</tr>';
   }).join('');
@@ -1829,7 +1927,8 @@ function renderPk(data){
       '<td class="hi">' + (project.current_psf != null ? fmtMoney(project.current_psf) : '-') + '</td>' +
       '<td>' + fmtPct(project.all_time_cagr) + '</td>' +
       '<td>' + fmtPct(project.current_yoy) + '</td>' +
-      '<td>' + fmtCount(project.recent_24m_count) + '</td>' +
+      '<td>' + fmtCount(project.recent_12m_count) + '</td>' +
+      '<td>' + fmtCount(project.previous_12m_count) + '</td>' +
       '<td>' + fmtCount(project.sample_count) + '</td>' +
       '<td>' + safeText(project.data_confidence?.coverage_pct != null ? project.data_confidence.coverage_pct + '%' : '-') + '</td>' +
       '<td>' + currentPsf(project.type_breakout?.['2b1b']) + '</td>' +
@@ -1838,6 +1937,8 @@ function renderPk(data){
     '</tr>';
   }).join('');
 }
+
+window.__renderPkForTest = renderPk;
 
 function renderScrapedData(data){
   document.getElementById('scrape_kpis').innerHTML = [
@@ -2726,6 +2827,7 @@ function dashboardLoadErrorMessage(error){
 loadDashboardData()
   .then(data => {
     activeDashboardData=data;
+    setCustomUnitDefaultInputs(data.focus_projects);
     renderScenario();
     renderFocusProject('lv_focus_content', data.focus_projects?.lakeville);
     renderFocusProject('lg_focus_content', data.focus_projects?.lakegrande);

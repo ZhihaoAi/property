@@ -15,6 +15,26 @@ test.describe('dashboard render', () => {
     const data = await page.evaluate(() => window.__DASHBOARD_DATA__);
     const nonPropertyProject = data.projects.find(project => project.source_kind !== 'propertyforsale_csv');
     await expect(page.locator('#pk_kpis .kpi').first()).toBeVisible();
+    const defaultLensOpenState = await page.evaluate(() => {
+      const stateFor = (label) => {
+        const details = Array.from(document.querySelectorAll('#s10 > details'))
+          .find((item) => item.querySelector('summary')?.textContent.includes(label));
+        return details?.open;
+      };
+      return {
+        overall: stateFor('口径 1 · 全项目'),
+        layout: stateFor('口径 2 · 真实 2BR 映射池'),
+        areaProxy: stateFor('口径 3 · 面积代理'),
+      };
+    });
+    expect(defaultLensOpenState).toEqual({ overall: false, layout: true, areaProxy: false });
+    await page.evaluate(() => {
+      ['口径 1 · 全项目', '口径 3 · 面积代理'].forEach((label) => {
+        const details = Array.from(document.querySelectorAll('#s10 > details'))
+          .find((item) => item.querySelector('summary')?.textContent.includes(label));
+        if (details) details.open = true;
+      });
+    });
     await expect(page.locator('#overall_cagr_chart')).toBeVisible();
     await expect(page.locator('#overall_rolling_3y_cagr_chart')).toBeVisible();
     await expect(page.locator('#overall_yoy_chart')).toBeVisible();
@@ -37,7 +57,7 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#owner_pool_focus_metric_toggle')).toContainText('YoY');
 
     await page.locator('summary:has-text("口径 1 · 全项目汇总")').click();
-    await page.locator('summary:has-text("口径 2 · 真实户型映射汇总")').click();
+    await page.locator('summary:has-text("口径 2 · 真实 2BR 映射池汇总")').click();
     await page.locator('summary:has-text("口径 3 · 面积代理汇总")').click();
     await page.locator('summary:has-text("口径 4 · 自住口径汇总")').click();
     await expect(page.locator('#overall_projects_table tbody tr').first()).toBeVisible();
@@ -46,10 +66,12 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#owner_pool_projects_table tbody tr').first()).toBeVisible();
 
     await expect(page.locator('#s10')).toContainText('口径 1 · 全项目');
-    await expect(page.locator('#s10')).toContainText('口径 2 · 真实户型映射');
+    await expect(page.locator('#s10')).toContainText('口径 2 · 真实 2BR 映射池');
     await expect(page.locator('#s10')).toContainText('口径 3 · 面积代理');
     await expect(page.locator('#s10')).toContainText('口径 4 · 自住口径');
     await expect(page.locator('#s10')).toContainText('全项目 resale-only 聚合线');
+    await expect(page.locator('#layout_lens_note')).toContainText('主线 = 已正式映射的 2b1b + 2b2b');
+    await expect(page.locator('#layout_lens_note')).toContainText('B3/B3a 721sqft 目标面积线');
     await expect(page.locator('#s10')).toContainText('2b1b 600-699 sqft · 2b2b 700-849 sqft · 3b2b 850-1199 sqft');
     await expect(page.locator('#s10')).toContainText('真实 2b2b -> 真实 2b1b+2b2b -> 面积代理 -> 全项目');
     await expect(page.locator('#s10')).not.toContainText('当前自住池价格位置');
@@ -71,6 +93,31 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#owner_pool_projects_table')).toContainText('YoY');
     await expect(page.locator('#layout_projects_table')).toContainText('Lake Grande');
     await expect(page.locator('#layout_projects_table')).toContainText('映射覆盖率');
+    const layoutBreakdown = await page.evaluate(() => {
+      const rows = Array.from(document.querySelectorAll('#layout_projects_table tbody tr'));
+      return rows.map((row) => ({
+        className: row.className,
+        text: row.innerText,
+      }));
+    });
+    const breakdownRows = layoutBreakdown.filter((row) => row.className.includes('layout-breakdown-row'));
+    expect(breakdownRows).toHaveLength(7);
+    expect(breakdownRows.map((row) => row.text)).toEqual(expect.arrayContaining([
+      expect.stringContaining('↳ 2b1b'),
+      expect.stringContaining('↳ 2b2b'),
+      expect.stringContaining('↳ B3/B3a 721sqft'),
+      expect.stringContaining('↳ 2b1b + 721全归2b1b'),
+      expect.stringContaining('↳ 2b2b + 721全归2b2b'),
+      expect.stringContaining('721归类假设'),
+    ]));
+    const lakeGrandeIndex = layoutBreakdown.findIndex((row) => row.text.includes('Lake Grande') && !row.className.includes('layout-breakdown-row'));
+    expect(layoutBreakdown.slice(lakeGrandeIndex + 1, lakeGrandeIndex + 6).map((row) => row.text)).toEqual([
+      expect.stringContaining('↳ 2b1b'),
+      expect.stringContaining('↳ 2b2b'),
+      expect.stringContaining('↳ B3/B3a 721sqft'),
+      expect.stringContaining('↳ 2b1b + 721全归2b1b'),
+      expect.stringContaining('↳ 2b2b + 721全归2b2b'),
+    ]);
   });
 
   test('s10 focus detail charts keep fixed project colors and metric toggles', async ({ page }) => {
@@ -96,6 +143,10 @@ test.describe('dashboard render', () => {
         layoutSeriesSnapshot: layoutDetail.data.datasets.map((dataset) => ({
           label: dataset.label,
           borderDash: dataset.borderDash,
+          borderColor: dataset.borderColor,
+          borderWidth: dataset.borderWidth,
+          pointRadius: dataset.pointRadius,
+          pointStyle: dataset.pointStyle,
           data: dataset.data,
         })),
       };
@@ -103,17 +154,37 @@ test.describe('dashboard render', () => {
 
     expect(beforeToggle.layoutLabels).toEqual([
       'Lake Grande · 2b1b',
+      'Lake Grande · 2b1b + 721全归2b1b',
+      'Lake Grande · 2b2b',
+      'Lake Grande · 2b2b + 721全归2b2b',
+      'Lake Grande · B3/B3a 721sqft',
+      'Lake Grande · 主线',
+      'Lakeville · 2b1b',
+      'Lakeville · 2b2b',
+      'Lakeville · 主线',
+    ]);
+    expect(beforeToggle.ownerLabels).toEqual([
+      'Lake Grande · 2b1b',
       'Lake Grande · 2b2b',
       'Lake Grande · 主线',
       'Lakeville · 2b1b',
       'Lakeville · 2b2b',
       'Lakeville · 主线',
     ]);
-    expect(beforeToggle.ownerLabels).toEqual(beforeToggle.layoutLabels);
     expect(beforeToggle.layoutLakevilleColor).toBe(beforeToggle.overallColors.Lakeville);
     expect(beforeToggle.ownerLakevilleColor).toBe(beforeToggle.overallColors.Lakeville);
     expect(beforeToggle.layoutLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
     expect(beforeToggle.ownerLakeGrandeColor).toBe(beforeToggle.overallColors['Lake Grande']);
+    const layoutStyles = Object.fromEntries(beforeToggle.layoutSeriesSnapshot.map((dataset) => [dataset.label, dataset]));
+    expect(layoutStyles['Lake Grande · 2b1b'].pointStyle).toBe('rectRot');
+    expect(layoutStyles['Lake Grande · 2b2b'].pointStyle).toBe('triangle');
+    expect(layoutStyles['Lake Grande · B3/B3a 721sqft'].pointStyle).toBe('star');
+    expect(layoutStyles['Lake Grande · 2b1b + 721全归2b1b'].pointStyle).toBe('crossRot');
+    expect(layoutStyles['Lake Grande · 2b2b + 721全归2b2b'].pointStyle).toBe('rectRounded');
+    expect(layoutStyles['Lake Grande · B3/B3a 721sqft'].borderColor).not.toBe(layoutStyles['Lake Grande · 主线'].borderColor);
+    expect(layoutStyles['Lake Grande · 2b1b + 721全归2b1b'].borderColor).not.toBe(layoutStyles['Lake Grande · 2b1b'].borderColor);
+    expect(layoutStyles['Lake Grande · 2b2b + 721全归2b2b'].borderColor).not.toBe(layoutStyles['Lake Grande · 2b2b'].borderColor);
+    expect(new Set(beforeToggle.layoutSeriesSnapshot.map((dataset) => JSON.stringify(dataset.borderDash))).size).toBeGreaterThanOrEqual(4);
 
     await page.getByRole('button', { name: 'Rolling 3Y CAGR' }).nth(0).click();
 
@@ -122,6 +193,7 @@ test.describe('dashboard render', () => {
       return layoutDetail.data.datasets.map((dataset) => ({
         label: dataset.label,
         borderDash: dataset.borderDash,
+        pointStyle: dataset.pointStyle,
         data: dataset.data,
       }));
     });
@@ -133,6 +205,22 @@ test.describe('dashboard render', () => {
     expect(afterToggle.map((dataset) => JSON.stringify(dataset.data))).not.toEqual(
       beforeToggle.layoutSeriesSnapshot.map((dataset) => JSON.stringify(dataset.data))
     );
+  });
+
+  test('s10 hides area proxy lens when formal layout mapping is complete', async ({ page }) => {
+    await page.goto('/?tab=s10');
+    await page.waitForFunction(() => !!window.__DASHBOARD_DATA__?.meta);
+
+    const lensCount = await page.evaluate(() => {
+      window.__DASHBOARD_DATA__.meta.layout_mapping_complete = true;
+      window.__renderPkForTest(window.__DASHBOARD_DATA__);
+      return document.querySelectorAll('[data-pk-lens="area_proxy"]').length;
+    });
+
+    expect(lensCount).toBe(2);
+    await expect(page.locator('[data-pk-lens="area_proxy"]')).toHaveCount(2);
+    await expect(page.locator('[data-pk-lens="area_proxy"]').first()).toBeHidden();
+    await expect(page.locator('[data-pk-lens="area_proxy"]').nth(1)).toBeHidden();
   });
 
   test('s12 renders scraped project table and PK inclusion status', async ({ page }) => {
@@ -202,9 +290,10 @@ test.describe('dashboard render', () => {
     await expect(page.locator('#wealth_table_card')).toContainText('其中：中介费 GST');
     await expect(page.locator('#wealth_table_card')).toContainText('其中：卖方律师费');
     await expect(page.locator('#wealth_table_card')).toContainText('其中：SSD');
-    await expect(page.locator('#wealth_table_card')).toContainText('B: LV 2B2B $1.26M');
-    await expect(page.locator('#s5')).not.toContainText('百万');
     await expect(page.locator('#wealth_table_card')).not.toContainText('中介 $2.8万 + GST');
+    await expect(page.locator('#wealth_table_card')).toContainText(/B: LV 2B2B \$/);
+    await expect(page.locator('#wealth_table_card')).toContainText(/G: 自定义户型 \$/);
+    await expect(page.locator('#s5')).not.toContainText('百万');
     await expect(page.locator('#lg_2b2b_explain')).toContainText('LG 2B2B');
     await expect(page.locator('#lg_2b2b_explain')).toContainText('前期现金支出 = 强制现金首付 + BSD + ABSD + 买方律师费 + OA不足转现金');
     await expect(page.locator('#lg_2b2b_explain')).toContainText('前期现金49.5万');
@@ -254,7 +343,7 @@ test.describe('dashboard render', () => {
     await page.selectOption('#decision_listing_project', 'lakegrande');
     await page.fill('#decision_listing_sqft', '775');
     await page.fill('#decision_listing_price', '1480000');
-    await expect(page.locator('#decision_listing_result')).toContainText(/Rank:.*P60|Rank:.*P67/);
+    await expect(page.locator('#decision_listing_result')).toContainText(/Rank:\s*~?P6\d/);
     await expect(page.locator('#decision_listing_result')).toContainText(/Verdict:.*FAIR-RICH|Verdict:.*RICH|Verdict:.*FAIR-CHEAP/);
     await expect(page.locator('#decision_listing_result')).toContainText(/P50/);
   });

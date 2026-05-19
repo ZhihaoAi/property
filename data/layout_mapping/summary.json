@@ -2,54 +2,43 @@
   "projects": {
     "lakeville": {
       "project_slug": "lakeville",
-      "total_rows": 191,
-      "matched_rows": 142,
-      "ambiguous_rows": 26,
-      "unmapped_rows": 23,
-      "coverage_pct": 74.3,
+      "total_rows": 192,
+      "matched_rows": 192,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 0,
+      "coverage_pct": 100.0,
       "layout_counts": {
+        "4b3b": 28,
         "2b1b": 26,
-        "3b3b": 13,
+        "3b3b": 29,
         "1b1b": 8,
-        "2b2b": 57,
-        "4b3b": 10,
-        "3b2b": 28
+        "2b2b": 58,
+        "3b2b": 32,
+        "4b4b": 8,
+        "5b4b": 3
       },
-      "unresolved_sizes": [
-        {
-          "sqft": 1140,
-          "count": 15
-        },
-        {
-          "sqft": 1302,
-          "count": 11
-        },
-        {
-          "sqft": 1280,
-          "count": 7
-        },
-        {
-          "sqft": 1474,
-          "count": 5
-        },
-        {
-          "sqft": 947,
-          "count": 4
-        },
-        {
-          "sqft": 1528,
-          "count": 3
-        },
-        {
-          "sqft": 1323,
-          "count": 1
-        },
-        {
-          "sqft": 2271,
-          "count": 1
-        }
-      ],
+      "unresolved_sizes": [],
       "recent_matched_examples": [
+        {
+          "project_slug": "lakeville",
+          "date": "Feb2018",
+          "sqft": "1302",
+          "psf": "1305",
+          "price": "1700000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1302",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_brochure | sale_listing_snippet",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
+          "evidence_notes": "Developer brochure Type D2 floor plan lists 1302 sqft under 4 Bedroom Suites and shows Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms."
+        },
         {
           "project_slug": "lakeville",
           "date": "Mar2018",
@@ -69,6 +58,26 @@
           "evidence_kinds": "sale_listing_snippet",
           "evidence_urls": "https://www.99.co/singapore/sale/property/enc7omp6g4MdoByhypgdq5",
           "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 635 sqft."
+        },
+        {
+          "project_slug": "lakeville",
+          "date": "Aug2018",
+          "sqft": "1140",
+          "psf": "1472",
+          "price": "1680000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_brochure | sale_listing_snippet",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-SdGaxqTDqzBFkhBzoiDVZZ",
+          "evidence_notes": "Developer brochure Type C5/C6 floor plans list 1141 sqft under 3 Bedroom Suites and show Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet shows 3 Beds, 2 Baths, 1141 sqft."
         },
         {
           "project_slug": "lakeville",
@@ -109,195 +118,30 @@
           "evidence_kinds": "rent_listing_snippet",
           "evidence_urls": "https://www.99.co/singapore/rent/property/lakeville-condo-GvFJWLMEpM5uZAf87JZPDd",
           "evidence_notes": "Direct 99.co rent listing snippet shows 3 Beds, 3 Baths, 1163 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Jan2019",
-          "sqft": "559",
-          "psf": "1357",
-          "price": "760000",
-          "mapping_status": "matched",
-          "resolved_layout": "1b1b",
-          "bedrooms": "1",
-          "bathrooms": "1",
-          "layout_options": "1b1b (1b/1ba)",
-          "reference_area_sqft": "560",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
-          "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-PTfSGp3A2nGwEW4XoTbmpP",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 1 Bed, 1 Bath, 560 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Mar2019",
-          "sqft": "775",
-          "psf": "1470",
-          "price": "1140000",
-          "mapping_status": "matched",
-          "resolved_layout": "2b2b",
-          "bedrooms": "2",
-          "bathrooms": "2",
-          "layout_options": "2b2b (2b/2ba)",
-          "reference_area_sqft": "775",
-          "area_diff_sqft": "0",
-          "match_rule": "exact_area",
-          "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/SuVf2eW4wsdA3SWrQNna2A",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 2 Baths, 775 sqft."
         }
       ],
-      "recent_ambiguous_examples": [
-        {
-          "project_slug": "lakeville",
-          "date": "Feb2018",
-          "sqft": "1302",
-          "psf": "1305",
-          "price": "1700000",
-          "mapping_status": "ambiguous",
-          "resolved_layout": "",
-          "bedrooms": "",
-          "bathrooms": "",
-          "layout_options": "4b2b (4b/2ba) | 4b3b (4b/3ba)",
-          "reference_area_sqft": "1302",
-          "area_diff_sqft": "0",
-          "match_rule": "exact_area",
-          "mapping_confidence": "high",
-          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-NDbfSjXgfP4eV6jo9VR6cZ | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
-          "evidence_notes": "Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms. | Direct 99.co sale listing snippet shows 4 Beds, 3 Baths, 1302 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Aug2018",
-          "sqft": "1140",
-          "psf": "1472",
-          "price": "1680000",
-          "mapping_status": "ambiguous",
-          "resolved_layout": "",
-          "bedrooms": "",
-          "bathrooms": "",
-          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
-          "reference_area_sqft": "1141",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
-          "mapping_confidence": "high",
-          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-BNbWQENTan92fN9bxfkYkF | https://www.99.co/singapore/sale/property/lakeville-condo-SdGaxqTDqzBFkhBzoiDVZZ",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 3 Beds, 2 Baths, 1141 sqft. | Direct 99.co sale listing snippet shows 3 Beds, 3 Baths, 1141 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Aug2020",
-          "sqft": "1302",
-          "psf": "1443",
-          "price": "1880000",
-          "mapping_status": "ambiguous",
-          "resolved_layout": "",
-          "bedrooms": "",
-          "bathrooms": "",
-          "layout_options": "4b2b (4b/2ba) | 4b3b (4b/3ba)",
-          "reference_area_sqft": "1302",
-          "area_diff_sqft": "0",
-          "match_rule": "exact_area",
-          "mapping_confidence": "high",
-          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-NDbfSjXgfP4eV6jo9VR6cZ | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
-          "evidence_notes": "Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms. | Direct 99.co sale listing snippet shows 4 Beds, 3 Baths, 1302 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Apr2021",
-          "sqft": "1302",
-          "psf": "1520",
-          "price": "1980000",
-          "mapping_status": "ambiguous",
-          "resolved_layout": "",
-          "bedrooms": "",
-          "bathrooms": "",
-          "layout_options": "4b2b (4b/2ba) | 4b3b (4b/3ba)",
-          "reference_area_sqft": "1302",
-          "area_diff_sqft": "0",
-          "match_rule": "exact_area",
-          "mapping_confidence": "high",
-          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-NDbfSjXgfP4eV6jo9VR6cZ | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
-          "evidence_notes": "Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms. | Direct 99.co sale listing snippet shows 4 Beds, 3 Baths, 1302 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "May2021",
-          "sqft": "1140",
-          "psf": "1305",
-          "price": "1490000",
-          "mapping_status": "ambiguous",
-          "resolved_layout": "",
-          "bedrooms": "",
-          "bathrooms": "",
-          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
-          "reference_area_sqft": "1141",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
-          "mapping_confidence": "high",
-          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lakeville-condo-BNbWQENTan92fN9bxfkYkF | https://www.99.co/singapore/sale/property/lakeville-condo-SdGaxqTDqzBFkhBzoiDVZZ",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 3 Beds, 2 Baths, 1141 sqft. | Direct 99.co sale listing snippet shows 3 Beds, 3 Baths, 1141 sqft."
-        }
-      ]
+      "recent_ambiguous_examples": []
     },
     "lakegrande": {
       "project_slug": "lakegrande",
-      "total_rows": 165,
-      "matched_rows": 148,
-      "ambiguous_rows": 0,
-      "unmapped_rows": 17,
-      "coverage_pct": 89.7,
+      "total_rows": 166,
+      "matched_rows": 147,
+      "ambiguous_rows": 19,
+      "unmapped_rows": 0,
+      "coverage_pct": 88.6,
       "layout_counts": {
-        "2b2b": 48,
-        "2b1b": 57,
-        "3b2b": 14,
-        "1b1b": 10,
+        "2b2b": 53,
+        "3b2b": 19,
+        "1b1b": 24,
+        "2b1b": 28,
         "studio1b": 13,
-        "5b4b": 4,
-        "4b3b": 2
+        "4b3b": 6,
+        "5b4b": 4
       },
       "unresolved_sizes": [
         {
-          "sqft": 925,
-          "count": 4
-        },
-        {
-          "sqft": 1173,
-          "count": 3
-        },
-        {
-          "sqft": 505,
-          "count": 2
-        },
-        {
-          "sqft": 882,
-          "count": 2
-        },
-        {
-          "sqft": 839,
-          "count": 1
-        },
-        {
-          "sqft": 871,
-          "count": 1
-        },
-        {
-          "sqft": 1076,
-          "count": 1
+          "sqft": 721,
+          "count": 18
         },
         {
           "sqft": 1011,
@@ -327,23 +171,63 @@
         },
         {
           "project_slug": "lakegrande",
+          "date": "Sep2020",
+          "sqft": "925",
+          "psf": "1566",
+          "price": "1450000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "925",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_floor_plan",
+          "evidence_urls": "https://www.thelakegrandecondo.com/lake-grande-floor-plan/",
+          "evidence_notes": "Developer floor plan summary lists 3 Bedroom as 904-980 sqft; classified as 3b2b to align with direct 99.co 3 Bed 2 Bath evidence for 904/947/969/980 sqft stacks."
+        },
+        {
+          "project_slug": "lakegrande",
+          "date": "Nov2020",
+          "sqft": "505",
+          "psf": "1344",
+          "price": "680000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "506",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_brochure",
+          "evidence_urls": "https://cos.sg/wp-content/uploads/2016/06/sitemap1-scaled.jpg",
+          "evidence_notes": "Lake Grande unit distribution chart lists A2-R/A2-P at 506 sqft under 1 Bedroom."
+        },
+        {
+          "project_slug": "lakegrande",
           "date": "Dec2020",
           "sqft": "516",
           "psf": "1654",
           "price": "855000",
           "mapping_status": "matched",
-          "resolved_layout": "2b1b",
-          "bedrooms": "2",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
           "bathrooms": "1",
-          "layout_options": "2b1b (2b/1ba)",
+          "layout_options": "1b1b (1b/1ba)",
           "reference_area_sqft": "517",
           "area_diff_sqft": "1",
           "match_rule": "nearest_1sqft",
           "mapping_confidence": "high",
           "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lake-grande-condo-FBTzPtnGAEEsNVQGZ7dqee",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 517 sqft."
+          "evidence_kinds": "developer_floor_plan | sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/sale/property/lake-grande-condo-FBTzPtnGAEEsNVQGZ7dqee | https://www.thelakegrandecondo.com/lake-grande-floor-plan/",
+          "evidence_notes": "Developer floor plan summary lists 1 Bedroom as 409-517 sqft. | Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 517 sqft."
         },
         {
           "project_slug": "lakegrande",
@@ -364,49 +248,110 @@
           "evidence_kinds": "sale_listing_snippet",
           "evidence_urls": "https://www.99.co/singapore/sale/property/lake-grande-condo-frPa6VYz6pQHDT6tYzEMcx",
           "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 2 Baths, 861 sqft."
-        },
-        {
-          "project_slug": "lakegrande",
-          "date": "Feb2021",
-          "sqft": "613",
-          "psf": "1556",
-          "price": "955000",
-          "mapping_status": "matched",
-          "resolved_layout": "2b1b",
-          "bedrooms": "2",
-          "bathrooms": "1",
-          "layout_options": "2b1b (2b/1ba)",
-          "reference_area_sqft": "614",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
-          "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/YTYDkuJdgRYTZvgbBgLcf9",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 614 sqft."
-        },
+        }
+      ],
+      "recent_ambiguous_examples": [
         {
           "project_slug": "lakegrande",
           "date": "Feb2021",
           "sqft": "721",
           "psf": "1594",
           "price": "1150000",
-          "mapping_status": "matched",
-          "resolved_layout": "2b1b",
-          "bedrooms": "2",
-          "bathrooms": "1",
-          "layout_options": "2b1b (2b/1ba)",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b1b (2b/1ba) | 2b2b (2b/2ba)",
           "reference_area_sqft": "721",
           "area_diff_sqft": "0",
           "match_rule": "exact_area",
           "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/lake-grande-condo-bP4zmSZV9NDLwceygZwgGr",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 721 sqft."
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "auxiliary_listing | sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/condos-apartments/lake-grande | https://www.99.co/singapore/sale/property/lake-grande-condo-bP4zmSZV9NDLwceygZwgGr",
+          "evidence_notes": "99.co project floor-plan index lists Lake Grande TYPE B3 / B3a at 67 sqm / 721 sqft as 2 Beds, 2 Bath; same 721 sqft area also appears as B1P/B1aP 2 Beds, 1 Bath, so transaction CSV rows without stack/unit should stay ambiguous. | Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 721 sqft."
+        },
+        {
+          "project_slug": "lakegrande",
+          "date": "Sep2021",
+          "sqft": "721",
+          "psf": "1594",
+          "price": "1150000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b1b (2b/1ba) | 2b2b (2b/2ba)",
+          "reference_area_sqft": "721",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "auxiliary_listing | sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/condos-apartments/lake-grande | https://www.99.co/singapore/sale/property/lake-grande-condo-bP4zmSZV9NDLwceygZwgGr",
+          "evidence_notes": "99.co project floor-plan index lists Lake Grande TYPE B3 / B3a at 67 sqm / 721 sqft as 2 Beds, 2 Bath; same 721 sqft area also appears as B1P/B1aP 2 Beds, 1 Bath, so transaction CSV rows without stack/unit should stay ambiguous. | Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 721 sqft."
+        },
+        {
+          "project_slug": "lakegrande",
+          "date": "Jan2022",
+          "sqft": "721",
+          "psf": "1647",
+          "price": "1188000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b1b (2b/1ba) | 2b2b (2b/2ba)",
+          "reference_area_sqft": "721",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "auxiliary_listing | sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/condos-apartments/lake-grande | https://www.99.co/singapore/sale/property/lake-grande-condo-bP4zmSZV9NDLwceygZwgGr",
+          "evidence_notes": "99.co project floor-plan index lists Lake Grande TYPE B3 / B3a at 67 sqm / 721 sqft as 2 Beds, 2 Bath; same 721 sqft area also appears as B1P/B1aP 2 Beds, 1 Bath, so transaction CSV rows without stack/unit should stay ambiguous. | Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 721 sqft."
+        },
+        {
+          "project_slug": "lakegrande",
+          "date": "Apr2022",
+          "sqft": "721",
+          "psf": "1601",
+          "price": "1155000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b1b (2b/1ba) | 2b2b (2b/2ba)",
+          "reference_area_sqft": "721",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "auxiliary_listing | sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/condos-apartments/lake-grande | https://www.99.co/singapore/sale/property/lake-grande-condo-bP4zmSZV9NDLwceygZwgGr",
+          "evidence_notes": "99.co project floor-plan index lists Lake Grande TYPE B3 / B3a at 67 sqm / 721 sqft as 2 Beds, 2 Bath; same 721 sqft area also appears as B1P/B1aP 2 Beds, 1 Bath, so transaction CSV rows without stack/unit should stay ambiguous. | Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 721 sqft."
+        },
+        {
+          "project_slug": "lakegrande",
+          "date": "Apr2022",
+          "sqft": "1011",
+          "psf": "1502",
+          "price": "1520000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b2b (3b/2ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "high",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "developer_brochure",
+          "evidence_urls": "https://cos.sg/wp-content/uploads/2016/06/sitemap1-scaled.jpg",
+          "evidence_notes": "Lake Grande unit distribution chart lists B7-R at 1012 sqft under 2 Bedroom + Study; same area is also used by C1-R 3 Bedroom, so transaction-only matching should remain ambiguous. | Lake Grande unit distribution chart lists C1-R at 1012 sqft under 3 Bedroom; same area is also used by B7-R 2 Bedroom + Study, so transaction-only matching should remain ambiguous."
         }
-      ],
-      "recent_ambiguous_examples": []
+      ]
     }
   }
 }

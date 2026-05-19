@@ -27,9 +27,20 @@ PROJECTS = {
     "lakeville": DATA_DIR / "lakeville_transactions.csv",
     "lakegrande": DATA_DIR / "lakegrande_transactions.csv",
 }
+DEFAULT_PROJECTS = ("lakeville", "lakegrande")
 
 MATCH_TOLERANCE_SQFT = 1
 CONFIDENCE_RANK = {"high": 3, "medium": 2, "low": 1}
+EVIDENCE_KIND_PRIORITY = {
+    "developer_floor_plan": 4,
+    "developer_brochure": 4,
+    "third_party_original_brochure": 4,
+    "project_configuration": 3,
+    "auxiliary_listing": 2,
+    "sale_listing_snippet": 2,
+    "rent_listing_snippet": 1,
+}
+MIN_2B1B_SQFT = 600
 
 CATALOG_FIELDS = [
     "project_slug",
@@ -67,20 +78,55 @@ MAP_FIELDS = [
     "evidence_notes",
 ]
 
+COVERAGE_FIELDS = [
+    "project_slug",
+    "total_rows",
+    "matched_rows",
+    "ambiguous_rows",
+    "unmapped_rows",
+    "coverage_pct",
+    "layout_counts",
+    "unresolved_sizes",
+]
+
 
 def confidence_sort_key(value: str) -> int:
     return CONFIDENCE_RANK.get(value, 0)
 
 
+def evidence_kind_priority(value: str) -> int:
+    return max((EVIDENCE_KIND_PRIORITY.get(part.strip(), 0) for part in (value or "").split("|")), default=0)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Build mapping outputs for every root-level data/*_transactions.csv project.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print selected project discovery details without writing outputs.",
+    )
+    parser.add_argument(
         "--projects",
         nargs="*",
-        default=["lakeville", "lakegrande"],
+        default=list(DEFAULT_PROJECTS),
         help="Project slugs to build. Defaults to Lakeville and Lake Grande.",
     )
     return parser.parse_args()
+
+
+def discover_transaction_projects() -> dict[str, Path]:
+    projects: dict[str, Path] = {}
+    for path in sorted(DATA_DIR.glob("*_transactions.csv")):
+        if not path.is_file():
+            continue
+        slug = path.name.removesuffix("_transactions.csv")
+        projects[slug] = path
+    return projects
 
 
 def load_reference_rows() -> list[dict[str, str]]:
@@ -104,17 +150,23 @@ def build_catalog(reference_rows: list[dict[str, str]]) -> tuple[dict[str, list[
         project_catalog: list[dict[str, str]] = []
         for area_sqft in sorted(area_map):
             refs = area_map[area_sqft]
-            unique_layouts = sorted({normalize_layout_option(ref) for ref in refs})
+            best_evidence_priority = max(evidence_kind_priority(ref["evidence_kind"]) for ref in refs)
+            decisive_refs = [ref for ref in refs if evidence_kind_priority(ref["evidence_kind"]) == best_evidence_priority]
+            unique_layouts = sorted({normalize_layout_option(ref) for ref in decisive_refs})
+            all_layouts = sorted({normalize_layout_option(ref) for ref in refs})
             evidence_urls = " | ".join(sorted({ref["evidence_url"] for ref in refs}))
             evidence_notes = " | ".join(sorted({ref["evidence_note"] for ref in refs}))
             evidence_kinds = " | ".join(sorted({ref["evidence_kind"] for ref in refs}))
-            best_confidence = max((ref["confidence"] for ref in refs), key=confidence_sort_key)
+            best_confidence = max((ref["confidence"] for ref in decisive_refs), key=confidence_sort_key)
             resolved = len(unique_layouts) == 1
             chosen = unique_layouts[0] if resolved else ("", "", "")
+            status = "resolved" if resolved else "conflicting"
+            if resolved and len(all_layouts) > 1:
+                status = "resolved_with_lower_priority_conflict"
             row = {
                 "project_slug": project_slug,
                 "reference_area_sqft": str(area_sqft),
-                "catalog_status": "resolved" if resolved else "conflicting",
+                "catalog_status": status,
                 "layout_options": " | ".join(
                     f"{layout_type} ({beds}b/{baths}ba)" for layout_type, beds, baths in unique_layouts
                 ),
@@ -134,6 +186,24 @@ def build_catalog(reference_rows: list[dict[str, str]]) -> tuple[dict[str, list[
     return catalogs_by_project, catalog_rows
 
 
+def unresolved_mapping(review_note: str) -> dict[str, str]:
+    return {
+        "mapping_status": "unmapped",
+        "resolved_layout": "",
+        "bedrooms": "",
+        "bathrooms": "",
+        "layout_options": "",
+        "reference_area_sqft": "",
+        "area_diff_sqft": "",
+        "match_rule": "",
+        "mapping_confidence": "",
+        "review_note": review_note,
+        "evidence_kinds": "",
+        "evidence_urls": "",
+        "evidence_notes": "",
+    }
+
+
 def classify_transaction(sqft: int, catalog: list[dict[str, str]]) -> dict[str, str]:
     candidates = []
     for entry in catalog:
@@ -143,21 +213,7 @@ def classify_transaction(sqft: int, catalog: list[dict[str, str]]) -> dict[str, 
             candidates.append((gap, entry))
 
     if not candidates:
-        return {
-            "mapping_status": "unmapped",
-            "resolved_layout": "",
-            "bedrooms": "",
-            "bathrooms": "",
-            "layout_options": "",
-            "reference_area_sqft": "",
-            "area_diff_sqft": "",
-            "match_rule": "",
-            "mapping_confidence": "",
-            "review_note": "No nearby reference area found within +/- 1 sqft.",
-            "evidence_kinds": "",
-            "evidence_urls": "",
-            "evidence_notes": "",
-        }
+        return unresolved_mapping("No nearby reference area found within +/- 1 sqft.")
 
     candidates.sort(key=lambda item: (item[0], -confidence_sort_key(item[1]["best_confidence"])))
     gap, chosen = candidates[0]
@@ -179,6 +235,22 @@ def classify_transaction(sqft: int, catalog: list[dict[str, str]]) -> dict[str, 
             "evidence_urls": chosen["evidence_urls"],
             "evidence_notes": chosen["evidence_notes"],
         }
+
+    if chosen["resolved_layout"] == "2b1b" and sqft < MIN_2B1B_SQFT:
+        mapping = unresolved_mapping(f"Rejected 2b1b mapping for sub-{MIN_2B1B_SQFT} sqft transaction.")
+        mapping.update(
+            {
+                "layout_options": chosen["layout_options"],
+                "reference_area_sqft": chosen["reference_area_sqft"],
+                "area_diff_sqft": str(gap),
+                "match_rule": match_rule,
+                "mapping_confidence": chosen["best_confidence"],
+                "evidence_kinds": chosen["evidence_kinds"],
+                "evidence_urls": chosen["evidence_urls"],
+                "evidence_notes": chosen["evidence_notes"],
+            }
+        )
+        return mapping
 
     return {
         "mapping_status": "matched",
@@ -249,12 +321,25 @@ def build_project_mappings(project_slug: str, catalog: list[dict[str, str]], tx_
     return rows, summary
 
 
+def coverage_csv_row(summary: dict) -> dict[str, str]:
+    return {
+        "project_slug": summary["project_slug"],
+        "total_rows": str(summary["total_rows"]),
+        "matched_rows": str(summary["matched_rows"]),
+        "ambiguous_rows": str(summary["ambiguous_rows"]),
+        "unmapped_rows": str(summary["unmapped_rows"]),
+        "coverage_pct": str(summary["coverage_pct"]),
+        "layout_counts": json.dumps(summary["layout_counts"], sort_keys=True),
+        "unresolved_sizes": json.dumps(summary["unresolved_sizes"], sort_keys=True),
+    }
+
+
 def build_summary_markdown(summary_payload: dict) -> str:
     lines = [
         "# Project Layout Mapping Summary",
         "",
-        "This formal mapping uses the manually curated 99.co evidence table as the layout reference catalog.",
-        "Matching rule: exact area first, then nearest within +/- 1 sqft. Conflicting layout evidence remains ambiguous.",
+        "This formal mapping uses manually curated developer/floor-plan evidence first, then project-level configuration, with 99.co and rental/sale listing snippets as secondary evidence.",
+        "Matching rule: exact area first, then nearest within +/- 1 sqft. Highest-priority evidence resolves lower-priority listing conflicts; equal-priority conflicts remain ambiguous.",
         "",
     ]
 
@@ -289,25 +374,41 @@ def build_summary_markdown(summary_payload: dict) -> str:
 
 def main() -> int:
     args = parse_args()
-    selected_projects = [project for project in args.projects if project in PROJECTS]
+    available_projects = discover_transaction_projects()
+    selected_projects = sorted(available_projects) if args.all else [project for project in args.projects if project in available_projects]
     if not selected_projects:
         raise SystemExit("No valid projects selected.")
 
     reference_rows = load_reference_rows()
     catalogs_by_project, catalog_rows = build_catalog(reference_rows)
+
+    if args.dry_run:
+        projects_with_reference = {row["project_slug"] for row in reference_rows}
+        unmapped_projects = [project for project in selected_projects if project not in projects_with_reference]
+        print(f"selected_projects={len(selected_projects)}")
+        print(f"reference_projects={len(projects_with_reference & set(selected_projects))}")
+        print(f"unmapped_projects={len(unmapped_projects)}")
+        print("projects=" + ",".join(selected_projects))
+        if unmapped_projects:
+            print("projects_without_reference=" + ",".join(unmapped_projects))
+        return 0
+
     write_csv(OUTPUT_DIR / "layout_reference_catalog.csv", CATALOG_FIELDS, catalog_rows)
 
     summary_payload = {"projects": {}}
+    coverage_rows = []
     for project_slug in selected_projects:
         catalog = catalogs_by_project.get(project_slug, [])
-        tx_rows, summary = build_project_mappings(project_slug, catalog, PROJECTS[project_slug])
+        tx_rows, summary = build_project_mappings(project_slug, catalog, available_projects[project_slug])
         write_csv(OUTPUT_DIR / f"{project_slug}_transaction_layout_map.csv", MAP_FIELDS, tx_rows)
         summary_payload["projects"][project_slug] = summary
+        coverage_rows.append(coverage_csv_row(summary))
         print(
             f"{project_slug}: matched {summary['matched_rows']}/{summary['total_rows']} "
             f"({summary['coverage_pct']}%), ambiguous {summary['ambiguous_rows']}, unmapped {summary['unmapped_rows']}"
         )
 
+    write_csv(OUTPUT_DIR / "coverage_by_project.csv", COVERAGE_FIELDS, coverage_rows)
     write_json(OUTPUT_DIR / "summary.json", summary_payload)
     (OUTPUT_DIR / "summary.md").write_text(build_summary_markdown(summary_payload), encoding="utf-8")
     print(f"wrote {OUTPUT_DIR}")

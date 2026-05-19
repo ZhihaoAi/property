@@ -41,6 +41,29 @@ test('resolveLatestTransaction uses latest focus bucket transaction for each pla
   assert.equal(txE.sqft, 990);
 });
 
+test('custom unit defaults to latest LG 2B2B sqft and psf and can be overridden', () => {
+  const data = loadDashboardData();
+  const planG = BASE_PLANS.find(plan => plan.id === 'G');
+
+  const defaultTx = resolveLatestTransaction(planG, data.focus_projects, DEFAULT_ASSUMPTIONS);
+  const customTx = resolveLatestTransaction(planG, data.focus_projects, {
+    ...DEFAULT_ASSUMPTIONS,
+    customUnitSqft: 800,
+    customUnitPsf: 2000,
+  });
+
+  assert.equal(planG.label, 'G: 自定义户型');
+  assert.equal(defaultTx.price, 1480000);
+  assert.equal(defaultTx.dateLabel, 'Mar 2026');
+  assert.equal(defaultTx.sqft, 775);
+  assert.equal(Math.round(defaultTx.psf), Math.round(1480000 / 775));
+  assert.equal(defaultTx.source, 'custom_lg_2b2b_latest');
+
+  assert.equal(customTx.price, 1600000);
+  assert.equal(customTx.sqft, 800);
+  assert.equal(customTx.psf, 2000);
+});
+
 test('calcBSD and calcABSD match current scenario expectations for latest LG 2B2B transaction', () => {
   const price = 1480000;
 

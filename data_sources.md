@@ -38,7 +38,7 @@
 | 外部原始源 | `propertyforsale.com.sg` | 默认 resale 主交易源 | `data/*_transactions.csv`、`data/propertyforsale_html/*` | `scripts/fetch_missing_propertyforsale_transactions.py` | 只保留显式标记为 `Resale` 的成交 |
 | 外部原始源 | `URA Data Service` | 默认 resale fallback | `data/*_transactions.csv`、`data/ura/*` | `scripts/fetch_missing_propertyforsale_transactions.py`、`scripts/fetch_ura_private_residential.py` | 只取 `typeOfSale = 转售`，并在 propertyforsale resale 不可用时顶上 |
 | 外部原始源 | `SRX last-transacted-prices` | 历史备份源 | `data/srx/*` | `scripts/fetch_missing_srx_transactions.cjs` | 不再作为默认主源，只留作备查 |
-| 外部原始源 | `99.co` 搜索缓存片段 | 户型证据源 | `data/poc_layout/layout_reference_poc.csv`、`data/layout_mapping/*` | `scripts/build_layout_mappings.py` | `layout_reference_poc.csv` 仍是正式 mapping 的输入证据；正式输出统一写入 `data/layout_mapping/*` |
+| 外部原始源 | developer brochure / floor-plan + `99.co` 辅助片段 | 户型证据源 | `data/poc_layout/layout_reference_poc.csv`、`data/layout_mapping/*` | `scripts/build_layout_mappings.py` | brochure / floor-plan 优先，`99.co` 仅作辅助线索；正式输出统一写入 `data/layout_mapping/*` |
 | 本地派生产物 | 统一 dashboard 数据 | 前端唯一直接读取的数据 | `data/dashboard_data.json`、`data/dashboard_data.js` | `build_dashboard_data.py` | 聚合了默认 resale CSV、分析结果、layout mapping、URA 浏览数据 |
 | 本地派生产物 | 年度统计与 CAGR | 分析中间层 | `data/appreciation_analysis.json` | `analyze.py` | 基于默认 resale CSV 计算 |
 | 本地派生产物 | 详细 resale 明细 | 辅助分析层 | `data/detailed/*`、`data/resale_transactions_detailed.csv` | `extract_resale_detailed.py` | 只覆盖部分项目，且来自 propertyforsale 原始缓存页 |
@@ -120,9 +120,9 @@
 - 默认 dashboard 不再依赖 `SRX` 当主口径
 - 即使来源列里还会显示 `SRX`，那也只是 secondary source
 
-### 4. 99.co 搜索缓存片段
+### 4. 户型证据源
 
-这不是成交主源，只是户型证据源。
+这不是成交主源，只是户型证据源。当前规则是 developer brochure / floor-plan 优先；`99.co` 和公开列表缓存只能作为辅助线索，不能单独覆盖 brochure 证据。
 
 用途：
 
@@ -204,7 +204,7 @@
 
 ### 户型映射线
 
-1. 用 `99.co` 缓存片段整理面积到户型的证据表
+1. 用 developer brochure / floor-plan 验证面积到户型的证据表，`99.co` 只补充辅助线索
 2. 输出正式 `data/layout_mapping/*`
 3. `build_dashboard_data.py` 把 mapping 结果拼进 dashboard payload
 4. 前端展示 `细户型 CAGR` 和 `面积近似 CAGR`
@@ -216,7 +216,8 @@
 - `propertyforsale resale`：默认主交易源
 - `URA resale`：默认 fallback
 - `SRX`：历史备份，不再是默认主源
-- `99.co`：户型证据源
+- developer brochure / floor-plan：户型主证据源
+- `99.co`：户型辅助线索
 
 前端真正直接读取的不是这些原始源，而是统一产物：
 

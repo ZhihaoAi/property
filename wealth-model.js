@@ -75,6 +75,8 @@
     simulationYears: 5,
     monthlyTaxGiro: 700,
     monthlyRsuAfterTax: 1100,
+    customUnitSqft: null,
+    customUnitPsf: null,
     loanCap: 1100000,
     ltv: 0.75,
     absdRate: 0.05,
@@ -204,6 +206,26 @@
       mrtInfo: 'Lakeside 10min',
     },
     {
+      id: 'G',
+      name: '自定义户型',
+      label: 'G: 自定义户型',
+      projectName: 'Lake Grande',
+      projectSlug: 'lakegrande',
+      projectKey: 'lakeGrande',
+      bucket: '2b2b',
+      isCustomUnit: true,
+      customSourcePlanId: 'C',
+      fixedCostMonthly: 330,
+      color: '#ff7675',
+      txUrl: 'https://www.99.co/singapore/sale/property/lake-grande-condo-GsAGr4gdbQvabXDFoh2pKQ',
+      fallbackTransaction: { price: 1514000, dateLabel: 'Feb2026', sqft: 818 },
+      address: '3 Gateway Drive',
+      topInfo: '2019（7年）',
+      leaseInfo: '~94年',
+      leaseRemainingYears: 94,
+      mrtInfo: 'Lakeside 7min',
+    },
+    {
       id: 'F',
       name: '纯租房',
       label: 'F: 纯租房',
@@ -284,20 +306,26 @@
     return roundNearestDollar(price * (buyerProfile?.absdRate || 0));
   }
 
-  function resolveLatestTransaction(plan, focusProjects) {
-    if (!plan || plan.isRent) return null;
+  function positiveNumberOrNull(value) {
+    const number = Number(value);
+    return Number.isFinite(number) && number > 0 ? number : null;
+  }
+
+  function resolveFocusBucketTransaction(plan, focusProjects) {
     const rows = focusProjects?.[plan.projectSlug]?.recent_by_bucket?.[plan.bucket] || [];
     const latest = rows[0];
-    if (latest) {
-      return {
-        price: Number(latest.price),
-        dateLabel: latest.date_label,
-        sqft: Number(latest.sqft),
-        psf: latest.psf != null ? Number(latest.psf) : Number(latest.price) / Number(latest.sqft),
-        url: plan.txUrl || null,
-        source: 'focus_project_latest',
-      };
-    }
+    if (!latest) return null;
+    return {
+      price: Number(latest.price),
+      dateLabel: latest.date_label,
+      sqft: Number(latest.sqft),
+      psf: latest.psf != null ? Number(latest.psf) : Number(latest.price) / Number(latest.sqft),
+      url: plan.txUrl || null,
+      source: 'focus_project_latest',
+    };
+  }
+
+  function resolveFallbackTransaction(plan) {
     const fallback = plan.fallbackTransaction || {};
     const fallbackPrice = Number(fallback.price || 0);
     const fallbackSqft = Number(fallback.sqft || 0);
@@ -309,6 +337,35 @@
       url: plan.txUrl || null,
       source: 'fallback',
     };
+  }
+
+  function resolveCustomUnitTransaction(plan, focusProjects, assumptions) {
+    const sourcePlan = BASE_PLANS.find((candidate) => candidate.id === plan.customSourcePlanId) || plan;
+    const source = resolveFocusBucketTransaction(sourcePlan, focusProjects) || resolveFallbackTransaction(sourcePlan);
+    const defaultSqft = positiveNumberOrNull(source.sqft) || positiveNumberOrNull(plan.fallbackTransaction?.sqft) || 0;
+    const defaultPsf = positiveNumberOrNull(source.price) && defaultSqft
+      ? source.price / defaultSqft
+      : positiveNumberOrNull(source.psf) || 0;
+    const sqft = positiveNumberOrNull(assumptions?.customUnitSqft) || defaultSqft;
+    const psf = positiveNumberOrNull(assumptions?.customUnitPsf) || defaultPsf;
+    const price = roundNearestDollar(sqft * psf);
+    return {
+      price,
+      dateLabel: source.dateLabel,
+      sqft,
+      psf,
+      url: plan.txUrl || source.url || null,
+      source: 'custom_lg_2b2b_latest',
+      customBasePrice: source.price,
+      customBaseSqft: source.sqft,
+      customBasePsf: defaultPsf,
+    };
+  }
+
+  function resolveLatestTransaction(plan, focusProjects, assumptions = DEFAULT_ASSUMPTIONS) {
+    if (!plan || plan.isRent) return null;
+    if (plan.isCustomUnit) return resolveCustomUnitTransaction(plan, focusProjects, assumptions);
+    return resolveFocusBucketTransaction(plan, focusProjects) || resolveFallbackTransaction(plan);
   }
 
   function calcLoan(price, ltv, loanCap) {
@@ -694,7 +751,7 @@
   function buildScenario({ assumptions = DEFAULT_ASSUMPTIONS, plans = BASE_PLANS, focusProjects }) {
     const householdCpf = combineHouseholdCpf(assumptions);
     const buyResults = plans.filter((plan) => !plan.isRent).map((plan) => {
-      const transaction = resolveLatestTransaction(plan, focusProjects);
+      const transaction = resolveLatestTransaction(plan, focusProjects, assumptions);
       const bsd = calcBSD(transaction.price);
       const absd = calcABSD(transaction.price, { absdRate: assumptions.absdRate });
       const loan = calcLoan(transaction.price, assumptions.ltv, assumptions.loanCap);

@@ -1,0 +1,8 @@
+project_slug,date,sqft,psf,price,mapping_status,resolved_layout,bedrooms,bathrooms,layout_options,reference_area_sqft,area_diff_sqft,match_rule,mapping_confidence,review_note,evidence_kinds,evidence_urls,evidence_notes
+normanton_park,Feb2026,968,1950,1890000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Feb2026,1194,2165,2587000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Feb2026,764,1987,1518888,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Feb2026,1087,1994,2168000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Feb2026,516,1867,965000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Jan2026,828,2135,1770000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,
+normanton_park,Dec2025,914,2022,1850000,unmapped,,,,,,,,,No nearby reference area found within +/- 1 sqft.,,,

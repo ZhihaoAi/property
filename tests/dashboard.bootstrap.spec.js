@@ -64,6 +64,7 @@ function runDashboardInlineScript({ search = '?tab=s5', dashboardData = loadDash
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
     'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
     'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
+    'i_custom_sqft', 'i_custom_psf',
   ];
   const document = {
     getElementById: getElement,
@@ -135,6 +136,7 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
     'i_female_gross', 'i_female_bonus', 'i_female_oa',
     'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
     'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
+    'i_custom_sqft', 'i_custom_psf',
     'lv_focus_content', 'lg_focus_content', 'focus_mapping_cards', 'ura_project_summary',
     'ura_project_compare', 'ura_transactions_table', 'ura_rental_median_table', 'ura_rental_contracts_table',
     'overall_cagr_chart', 'overall_yoy_chart', 'layout_cagr_chart', 'layout_yoy_chart',
@@ -157,6 +159,7 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
           'i_female_gross', 'i_female_bonus', 'i_female_oa',
           'i_living', 'i_stock', 'i_rate_lv', 'i_rate_lg', 'i_rent', 'i_fixed_rate', 'i_fixed_yrs',
           'i_float_rate', 'i_total_yrs', 'i_tax_giro', 'i_rsu_after_tax',
+          'i_custom_sqft', 'i_custom_psf',
         ].map((id) => elements.get(id));
       }
       return [];
@@ -210,7 +213,8 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
 
   assert.match(elements.get('wealth_table_card').innerHTML, /总财富 CAGR/);
   assert.match(elements.get('wealth_table_card').innerHTML, /起始80万/);
-  assert.match(elements.get('wealth_table_card').innerHTML, /B: LV 2B2B \$1\.26M/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /B: LV 2B2B \$/);
+  assert.match(elements.get('wealth_table_card').innerHTML, /G: 自定义户型 \$1\.48M/);
   assert.doesNotMatch(elements.get('wealth_table_card').innerHTML, /百万/);
   assert.match(elements.get('wealth_table_card').innerHTML, /前期总资金支出/);
   assert.match(elements.get('wealth_table_card').innerHTML, /class="metric-sub"[^>]*><td>现金支出/);
@@ -222,6 +226,8 @@ test('dashboard bootstrap renders wealth and cost tables under a stubbed DOM', a
   assert.match(elements.get('cost_detail_table').innerHTML, /实际 CPF OA 支出/);
   assert.doesNotMatch(elements.get('assumptions_box').innerHTML, /1997-06-25/);
   assert.equal(elements.get('i_assets').value, 800);
+  assert.equal(elements.get('i_custom_sqft').value, 775);
+  assert.equal(elements.get('i_custom_psf').value, '1909.677');
 });
 
 test('listing valuation preserves explicit zero local CAGR', async () => {
