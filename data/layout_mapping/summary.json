@@ -1,125 +1,1625 @@
 {
   "projects": {
-    "lakeville": {
-      "project_slug": "lakeville",
-      "total_rows": 192,
-      "matched_rows": 192,
+    "alexis": {
+      "project_slug": "alexis",
+      "total_rows": 107,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 107,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 398,
+          "count": 19
+        },
+        {
+          "sqft": 387,
+          "count": 9
+        },
+        {
+          "sqft": 409,
+          "count": 6
+        },
+        {
+          "sqft": 527,
+          "count": 5
+        },
+        {
+          "sqft": 505,
+          "count": 5
+        },
+        {
+          "sqft": 602,
+          "count": 4
+        },
+        {
+          "sqft": 516,
+          "count": 4
+        },
+        {
+          "sqft": 828,
+          "count": 4
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "artra": {
+      "project_slug": "artra",
+      "total_rows": 36,
+      "matched_rows": 18,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 18,
+      "coverage_pct": 50.0,
+      "layout_counts": {
+        "1b1b": 18
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 1044,
+          "count": 8
+        },
+        {
+          "sqft": 1227,
+          "count": 6
+        },
+        {
+          "sqft": 1119,
+          "count": 3
+        },
+        {
+          "sqft": 1410,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "artra",
+          "date": "Aug2025",
+          "sqft": "828",
+          "psf": "2338",
+          "price": "1938000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "829",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Artra/Artra @ Alexandra View Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A2 at 829 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "artra",
+          "date": "Apr2025",
+          "sqft": "828",
+          "psf": "2314",
+          "price": "1918000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "829",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Artra/Artra @ Alexandra View Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A2 at 829 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "artra",
+          "date": "Apr2025",
+          "sqft": "785",
+          "psf": "2359",
+          "price": "1854000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "786",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Artra/Artra @ Alexandra View Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 786 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "artra",
+          "date": "Apr2025",
+          "sqft": "785",
+          "psf": "2341",
+          "price": "1840000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "786",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Artra/Artra @ Alexandra View Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 786 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "artra",
+          "date": "Apr2025",
+          "sqft": "785",
+          "psf": "2290",
+          "price": "1800000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "786",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Artra/Artra @ Alexandra View Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 786 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "avenue_south_residence": {
+      "project_slug": "avenue_south_residence",
+      "total_rows": 87,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 87,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 656,
+          "count": 16
+        },
+        {
+          "sqft": 731,
+          "count": 15
+        },
+        {
+          "sqft": 688,
+          "count": 14
+        },
+        {
+          "sqft": 947,
+          "count": 9
+        },
+        {
+          "sqft": 1108,
+          "count": 7
+        },
+        {
+          "sqft": 527,
+          "count": 7
+        },
+        {
+          "sqft": 1496,
+          "count": 6
+        },
+        {
+          "sqft": 807,
+          "count": 5
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "caspian": {
+      "project_slug": "caspian",
+      "total_rows": 226,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 226,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1237,
+          "count": 36
+        },
+        {
+          "sqft": 1001,
+          "count": 31
+        },
+        {
+          "sqft": 936,
+          "count": 24
+        },
+        {
+          "sqft": 1399,
+          "count": 16
+        },
+        {
+          "sqft": 871,
+          "count": 15
+        },
+        {
+          "sqft": 1194,
+          "count": 13
+        },
+        {
+          "sqft": 1205,
+          "count": 13
+        },
+        {
+          "sqft": 1216,
+          "count": 10
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "clavon": {
+      "project_slug": "clavon",
+      "total_rows": 15,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 15,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1689,
+          "count": 3
+        },
+        {
+          "sqft": 678,
+          "count": 3
+        },
+        {
+          "sqft": 764,
+          "count": 2
+        },
+        {
+          "sqft": 957,
+          "count": 2
+        },
+        {
+          "sqft": 1130,
+          "count": 2
+        },
+        {
+          "sqft": 1356,
+          "count": 1
+        },
+        {
+          "sqft": 1582,
+          "count": 1
+        },
+        {
+          "sqft": 527,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "clement_canopy": {
+      "project_slug": "clement_canopy",
+      "total_rows": 136,
+      "matched_rows": 8,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 128,
+      "coverage_pct": 5.9,
+      "layout_counts": {
+        "5b4b": 8
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 990,
+          "count": 33
+        },
+        {
+          "sqft": 731,
+          "count": 22
+        },
+        {
+          "sqft": 1108,
+          "count": 17
+        },
+        {
+          "sqft": 635,
+          "count": 16
+        },
+        {
+          "sqft": 656,
+          "count": 13
+        },
+        {
+          "sqft": 710,
+          "count": 13
+        },
+        {
+          "sqft": 1345,
+          "count": 12
+        },
+        {
+          "sqft": 1162,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "clement_canopy",
+          "date": "Oct2024",
+          "sqft": "1140",
+          "psf": "1884",
+          "price": "2150000",
+          "mapping_status": "matched",
+          "resolved_layout": "5b4b",
+          "bedrooms": "5",
+          "bathrooms": "4",
+          "layout_options": "5b4b (5b/4ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Clement Canopy/Clement Canopy Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE E at 1141 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "clement_canopy",
+          "date": "Nov2023",
+          "sqft": "1140",
+          "psf": "1866",
+          "price": "2130000",
+          "mapping_status": "matched",
+          "resolved_layout": "5b4b",
+          "bedrooms": "5",
+          "bathrooms": "4",
+          "layout_options": "5b4b (5b/4ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Clement Canopy/Clement Canopy Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE E at 1141 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "clement_canopy",
+          "date": "Aug2023",
+          "sqft": "1140",
+          "psf": "1858",
+          "price": "2120000",
+          "mapping_status": "matched",
+          "resolved_layout": "5b4b",
+          "bedrooms": "5",
+          "bathrooms": "4",
+          "layout_options": "5b4b (5b/4ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Clement Canopy/Clement Canopy Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE E at 1141 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "clement_canopy",
+          "date": "May2023",
+          "sqft": "1140",
+          "psf": "1823",
+          "price": "2080000",
+          "mapping_status": "matched",
+          "resolved_layout": "5b4b",
+          "bedrooms": "5",
+          "bathrooms": "4",
+          "layout_options": "5b4b (5b/4ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Clement Canopy/Clement Canopy Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE E at 1141 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "clement_canopy",
+          "date": "Nov2022",
+          "sqft": "1140",
+          "psf": "1779",
+          "price": "2030000",
+          "mapping_status": "matched",
+          "resolved_layout": "5b4b",
+          "bedrooms": "5",
+          "bathrooms": "4",
+          "layout_options": "5b4b (5b/4ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Clement Canopy/Clement Canopy Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE E at 1141 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "commonwealth_towers": {
+      "project_slug": "commonwealth_towers",
+      "total_rows": 302,
+      "matched_rows": 302,
       "ambiguous_rows": 0,
       "unmapped_rows": 0,
       "coverage_pct": 100.0,
       "layout_counts": {
-        "4b3b": 28,
-        "2b1b": 26,
-        "3b3b": 29,
-        "1b1b": 8,
-        "2b2b": 58,
-        "3b2b": 32,
-        "4b4b": 8,
-        "5b4b": 3
+        "1b1b": 146,
+        "3b3b": 58,
+        "2b2b": 89,
+        "4b4b": 9
       },
       "unresolved_sizes": [],
       "recent_matched_examples": [
         {
-          "project_slug": "lakeville",
-          "date": "Feb2018",
-          "sqft": "1302",
-          "psf": "1305",
-          "price": "1700000",
+          "project_slug": "commonwealth_towers",
+          "date": "Feb2026",
+          "sqft": "473",
+          "psf": "2174",
+          "price": "1030000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "474",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Commonwealth Towers/Commonwealth Towers Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type (1)c at 474 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "commonwealth_towers",
+          "date": "Feb2026",
+          "sqft": "1054",
+          "psf": "2464",
+          "price": "2600000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1055",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Commonwealth Towers/Commonwealth Towers Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type (3y)c at 1055 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "commonwealth_towers",
+          "date": "Feb2026",
+          "sqft": "1033",
+          "psf": "2624",
+          "price": "2712000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1033",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Commonwealth Towers/Commonwealth Towers Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type (3y)b at 1033 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "commonwealth_towers",
+          "date": "Jan2026",
+          "sqft": "753",
+          "psf": "2362",
+          "price": "1780000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "753",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Commonwealth Towers/Commonwealth Towers Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type (2)c at 753 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "commonwealth_towers",
+          "date": "Dec2025",
+          "sqft": "473",
+          "psf": "1953",
+          "price": "925000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "474",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Commonwealth Towers/Commonwealth Towers Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type (1)c at 474 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "daintree_residence": {
+      "project_slug": "daintree_residence",
+      "total_rows": 55,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 55,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 710,
+          "count": 11
+        },
+        {
+          "sqft": 775,
+          "count": 9
+        },
+        {
+          "sqft": 742,
+          "count": 7
+        },
+        {
+          "sqft": 667,
+          "count": 5
+        },
+        {
+          "sqft": 1054,
+          "count": 4
+        },
+        {
+          "sqft": 678,
+          "count": 3
+        },
+        {
+          "sqft": 753,
+          "count": 2
+        },
+        {
+          "sqft": 1001,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "dairy_farm_residences": {
+      "project_slug": "dairy_farm_residences",
+      "total_rows": 6,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 6,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 624,
+          "count": 2
+        },
+        {
+          "sqft": 710,
+          "count": 2
+        },
+        {
+          "sqft": 721,
+          "count": 1
+        },
+        {
+          "sqft": 936,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "eco_sanctuary": {
+      "project_slug": "eco_sanctuary",
+      "total_rows": 182,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 182,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 667,
+          "count": 42
+        },
+        {
+          "sqft": 990,
+          "count": 22
+        },
+        {
+          "sqft": 699,
+          "count": 21
+        },
+        {
+          "sqft": 775,
+          "count": 17
+        },
+        {
+          "sqft": 731,
+          "count": 16
+        },
+        {
+          "sqft": 979,
+          "count": 13
+        },
+        {
+          "sqft": 505,
+          "count": 9
+        },
+        {
+          "sqft": 753,
+          "count": 8
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "eight_riversuites": {
+      "project_slug": "eight_riversuites",
+      "total_rows": 460,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 460,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 699,
+          "count": 116
+        },
+        {
+          "sqft": 441,
+          "count": 98
+        },
+        {
+          "sqft": 936,
+          "count": 42
+        },
+        {
+          "sqft": 807,
+          "count": 35
+        },
+        {
+          "sqft": 979,
+          "count": 34
+        },
+        {
+          "sqft": 1194,
+          "count": 22
+        },
+        {
+          "sqft": 1076,
+          "count": 17
+        },
+        {
+          "sqft": 839,
+          "count": 16
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "foresque_residences": {
+      "project_slug": "foresque_residences",
+      "total_rows": 181,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 181,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1130,
+          "count": 28
+        },
+        {
+          "sqft": 1184,
+          "count": 25
+        },
+        {
+          "sqft": 731,
+          "count": 19
+        },
+        {
+          "sqft": 462,
+          "count": 17
+        },
+        {
+          "sqft": 1270,
+          "count": 15
+        },
+        {
+          "sqft": 742,
+          "count": 14
+        },
+        {
+          "sqft": 1237,
+          "count": 12
+        },
+        {
+          "sqft": 1280,
+          "count": 10
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "gem_residences": {
+      "project_slug": "gem_residences",
+      "total_rows": 50,
+      "matched_rows": 40,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 10,
+      "coverage_pct": 80.0,
+      "layout_counts": {
+        "4b3b": 4,
+        "2b2b": 11,
+        "1b1b": 7,
+        "3b3b": 5,
+        "5b4b": 3,
+        "3b2b": 10
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 570,
+          "count": 5
+        },
+        {
+          "sqft": 592,
+          "count": 5
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "gem_residences",
+          "date": "Jul2024",
+          "sqft": "1248",
+          "psf": "1906",
+          "price": "2380000",
           "mapping_status": "matched",
           "resolved_layout": "4b3b",
           "bedrooms": "4",
           "bathrooms": "3",
           "layout_options": "4b3b (4b/3ba)",
-          "reference_area_sqft": "1302",
-          "area_diff_sqft": "0",
-          "match_rule": "exact_area",
-          "mapping_confidence": "high",
+          "reference_area_sqft": "1249",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
           "review_note": "",
-          "evidence_kinds": "developer_brochure | sale_listing_snippet",
-          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
-          "evidence_notes": "Developer brochure Type D2 floor plan lists 1302 sqft under 4 Bedroom Suites and shows Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms."
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Gem Residences/Gem Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE D1 at 1249 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
         },
         {
-          "project_slug": "lakeville",
-          "date": "Mar2018",
-          "sqft": "635",
-          "psf": "1385",
-          "price": "880000",
+          "project_slug": "gem_residences",
+          "date": "Aug2024",
+          "sqft": "678",
+          "psf": "1900",
+          "price": "1288888",
           "mapping_status": "matched",
-          "resolved_layout": "2b1b",
+          "resolved_layout": "2b2b",
           "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "678",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Gem Residences/Gem Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B3 at 678 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "gem_residences",
+          "date": "Sep2024",
+          "sqft": "678",
+          "psf": "1973",
+          "price": "1338000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "678",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Gem Residences/Gem Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B3 at 678 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "gem_residences",
+          "date": "Sep2024",
+          "sqft": "678",
+          "psf": "2020",
+          "price": "1370000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "678",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Gem Residences/Gem Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B3 at 678 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "gem_residences",
+          "date": "Sep2024",
+          "sqft": "1248",
+          "psf": "2082",
+          "price": "2600000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1249",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Gem Residences/Gem Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE D1 at 1249 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "harbour_view_gardens": {
+      "project_slug": "harbour_view_gardens",
+      "total_rows": 8,
+      "matched_rows": 5,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 3,
+      "coverage_pct": 62.5,
+      "layout_counts": {
+        "1b1b": 5
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 839,
+          "count": 1
+        },
+        {
+          "sqft": 818,
+          "count": 1
+        },
+        {
+          "sqft": 656,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "harbour_view_gardens",
+          "date": "Mar2025",
+          "sqft": "624",
+          "psf": "1981",
+          "price": "1237000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
           "bathrooms": "1",
-          "layout_options": "2b1b (2b/1ba)",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "624",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Harbour View Gardens/Harbour View Gardens Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A3-G at 624 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "harbour_view_gardens",
+          "date": "Feb2025",
+          "sqft": "635",
+          "psf": "1889",
+          "price": "1200000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
           "reference_area_sqft": "635",
           "area_diff_sqft": "0",
           "match_rule": "exact_area",
-          "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "sale_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/sale/property/enc7omp6g4MdoByhypgdq5",
-          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 635 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Aug2018",
-          "sqft": "1140",
-          "psf": "1472",
-          "price": "1680000",
-          "mapping_status": "matched",
-          "resolved_layout": "3b3b",
-          "bedrooms": "3",
-          "bathrooms": "3",
-          "layout_options": "3b3b (3b/3ba)",
-          "reference_area_sqft": "1141",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
-          "mapping_confidence": "high",
-          "review_note": "",
-          "evidence_kinds": "developer_brochure | sale_listing_snippet",
-          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-SdGaxqTDqzBFkhBzoiDVZZ",
-          "evidence_notes": "Developer brochure Type C5/C6 floor plans list 1141 sqft under 3 Bedroom Suites and show Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet shows 3 Beds, 2 Baths, 1141 sqft."
-        },
-        {
-          "project_slug": "lakeville",
-          "date": "Sep2018",
-          "sqft": "1162",
-          "psf": "1505",
-          "price": "1750000",
-          "mapping_status": "matched",
-          "resolved_layout": "3b3b",
-          "bedrooms": "3",
-          "bathrooms": "3",
-          "layout_options": "3b3b (3b/3ba)",
-          "reference_area_sqft": "1163",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
           "mapping_confidence": "medium",
           "review_note": "",
-          "evidence_kinds": "rent_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/rent/property/lakeville-condo-GvFJWLMEpM5uZAf87JZPDd",
-          "evidence_notes": "Direct 99.co rent listing snippet shows 3 Beds, 3 Baths, 1163 sqft."
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Harbour View Gardens/Harbour View Gardens Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A4-G at 635 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
         },
         {
-          "project_slug": "lakeville",
-          "date": "Nov2018",
-          "sqft": "1162",
-          "psf": "1505",
-          "price": "1750000",
+          "project_slug": "harbour_view_gardens",
+          "date": "Sep2024",
+          "sqft": "624",
+          "psf": "1890",
+          "price": "1180000",
           "mapping_status": "matched",
-          "resolved_layout": "3b3b",
-          "bedrooms": "3",
-          "bathrooms": "3",
-          "layout_options": "3b3b (3b/3ba)",
-          "reference_area_sqft": "1163",
-          "area_diff_sqft": "1",
-          "match_rule": "nearest_1sqft",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "624",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
           "mapping_confidence": "medium",
           "review_note": "",
-          "evidence_kinds": "rent_listing_snippet",
-          "evidence_urls": "https://www.99.co/singapore/rent/property/lakeville-condo-GvFJWLMEpM5uZAf87JZPDd",
-          "evidence_notes": "Direct 99.co rent listing snippet shows 3 Beds, 3 Baths, 1163 sqft."
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Harbour View Gardens/Harbour View Gardens Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A3-G at 624 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "harbour_view_gardens",
+          "date": "Dec2023",
+          "sqft": "635",
+          "psf": "1936",
+          "price": "1230000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "635",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Harbour View Gardens/Harbour View Gardens Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A4-G at 635 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "harbour_view_gardens",
+          "date": "Oct2023",
+          "sqft": "635",
+          "psf": "2094",
+          "price": "1330000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "635",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Harbour View Gardens/Harbour View Gardens Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A4-G at 635 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
         }
       ],
+      "recent_ambiguous_examples": []
+    },
+    "hillion_residences": {
+      "project_slug": "hillion_residences",
+      "total_rows": 173,
+      "matched_rows": 173,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 0,
+      "coverage_pct": 100.0,
+      "layout_counts": {
+        "1b1b": 111,
+        "2b2b": 49,
+        "5b4b": 2,
+        "4b4b": 6,
+        "3b3b": 5
+      },
+      "unresolved_sizes": [],
+      "recent_matched_examples": [
+        {
+          "project_slug": "hillion_residences",
+          "date": "Jan2019",
+          "sqft": "462",
+          "psf": "1642",
+          "price": "760000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "463",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Hillion Residences/Hillion Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2/A2s at 463 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "hillion_residences",
+          "date": "Jan2019",
+          "sqft": "462",
+          "psf": "1836",
+          "price": "850000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "463",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Hillion Residences/Hillion Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2/A2s at 463 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "hillion_residences",
+          "date": "Apr2019",
+          "sqft": "710",
+          "psf": "1379",
+          "price": "980000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Hillion Residences/Hillion Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1, B1s at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "hillion_residences",
+          "date": "Apr2019",
+          "sqft": "710",
+          "psf": "1478",
+          "price": "1050000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Hillion Residences/Hillion Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1, B1s at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "hillion_residences",
+          "date": "Jun2019",
+          "sqft": "710",
+          "psf": "1492",
+          "price": "1060000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Hillion Residences/Hillion Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1, B1s at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "hillsta": {
+      "project_slug": "hillsta",
+      "total_rows": 205,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 205,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 570,
+          "count": 47
+        },
+        {
+          "sqft": 538,
+          "count": 26
+        },
+        {
+          "sqft": 527,
+          "count": 24
+        },
+        {
+          "sqft": 753,
+          "count": 15
+        },
+        {
+          "sqft": 1205,
+          "count": 14
+        },
+        {
+          "sqft": 861,
+          "count": 14
+        },
+        {
+          "sqft": 635,
+          "count": 12
+        },
+        {
+          "sqft": 624,
+          "count": 11
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "hillview_peak": {
+      "project_slug": "hillview_peak",
+      "total_rows": 194,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 194,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 516,
+          "count": 31
+        },
+        {
+          "sqft": 828,
+          "count": 27
+        },
+        {
+          "sqft": 527,
+          "count": 24
+        },
+        {
+          "sqft": 548,
+          "count": 19
+        },
+        {
+          "sqft": 775,
+          "count": 14
+        },
+        {
+          "sqft": 850,
+          "count": 14
+        },
+        {
+          "sqft": 1097,
+          "count": 10
+        },
+        {
+          "sqft": 785,
+          "count": 6
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "hundred_trees": {
+      "project_slug": "hundred_trees",
+      "total_rows": 118,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 118,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 914,
+          "count": 30
+        },
+        {
+          "sqft": 785,
+          "count": 26
+        },
+        {
+          "sqft": 1474,
+          "count": 21
+        },
+        {
+          "sqft": 1162,
+          "count": 14
+        },
+        {
+          "sqft": 484,
+          "count": 9
+        },
+        {
+          "sqft": 1302,
+          "count": 8
+        },
+        {
+          "sqft": 1313,
+          "count": 2
+        },
+        {
+          "sqft": 1894,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "j_gateway": {
+      "project_slug": "j_gateway",
+      "total_rows": 229,
+      "matched_rows": 165,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 64,
+      "coverage_pct": 72.1,
+      "layout_counts": {
+        "2b2b": 61,
+        "3b2b": 48,
+        "1b1b": 48,
+        "4b3b": 7,
+        "3b3b": 1
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 473,
+          "count": 35
+        },
+        {
+          "sqft": 602,
+          "count": 10
+        },
+        {
+          "sqft": 527,
+          "count": 9
+        },
+        {
+          "sqft": 1162,
+          "count": 3
+        },
+        {
+          "sqft": 581,
+          "count": 2
+        },
+        {
+          "sqft": 1410,
+          "count": 1
+        },
+        {
+          "sqft": 2023,
+          "count": 1
+        },
+        {
+          "sqft": 1517,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "j_gateway",
+          "date": "Dec2025",
+          "sqft": "742",
+          "psf": "2030",
+          "price": "1508000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "743",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/J Gateway/J Gateway Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists SB2 at 743 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "j_gateway",
+          "date": "Dec2025",
+          "sqft": "893",
+          "psf": "2182",
+          "price": "1950000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "893",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/J Gateway/J Gateway Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists C1a at 893 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "j_gateway",
+          "date": "Nov2025",
+          "sqft": "893",
+          "psf": "2216",
+          "price": "1980000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "893",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/J Gateway/J Gateway Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists C1a at 893 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "j_gateway",
+          "date": "Nov2025",
+          "sqft": "893",
+          "psf": "2137",
+          "price": "1910000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "893",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/J Gateway/J Gateway Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists C1a at 893 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "j_gateway",
+          "date": "Nov2025",
+          "sqft": "688",
+          "psf": "2191",
+          "price": "1510000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "689",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/J Gateway/J Gateway Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists B1c at 689 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "kent_ridge_hill": {
+      "project_slug": "kent_ridge_hill",
+      "total_rows": 33,
+      "matched_rows": 28,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 5,
+      "coverage_pct": 84.8,
+      "layout_counts": {
+        "2b2b": 18,
+        "1b1b": 6,
+        "3b3b": 2,
+        "3b2b": 2
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 602,
+          "count": 3
+        },
+        {
+          "sqft": 473,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "kent_ridge_hill",
+          "date": "Jan2026",
+          "sqft": "775",
+          "psf": "2096",
+          "price": "1625000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "775",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Kent Ridge Hill Residences/Kent Ridge Hill Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE BS3 at 775 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "kent_ridge_hill",
+          "date": "Jan2026",
+          "sqft": "484",
+          "psf": "1971",
+          "price": "955000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "484",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Kent Ridge Hill Residences/Kent Ridge Hill Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A2-P at 484 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "kent_ridge_hill",
+          "date": "Dec2025",
+          "sqft": "1076",
+          "psf": "1940",
+          "price": "2088888",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1076",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Kent Ridge Hill Residences/Kent Ridge Hill Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE CP2 at 1076 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "kent_ridge_hill",
+          "date": "Dec2025",
+          "sqft": "775",
+          "psf": "2038",
+          "price": "1580000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "775",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Kent Ridge Hill Residences/Kent Ridge Hill Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE BS3 at 775 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "kent_ridge_hill",
+          "date": "Dec2025",
+          "sqft": "775",
+          "psf": "1929",
+          "price": "1495000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "775",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Kent Ridge Hill Residences/Kent Ridge Hill Residences Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE BS3 at 775 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "lakefront": {
+      "project_slug": "lakefront",
+      "total_rows": 211,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 211,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1001,
+          "count": 31
+        },
+        {
+          "sqft": 721,
+          "count": 25
+        },
+        {
+          "sqft": 1216,
+          "count": 19
+        },
+        {
+          "sqft": 990,
+          "count": 18
+        },
+        {
+          "sqft": 505,
+          "count": 14
+        },
+        {
+          "sqft": 495,
+          "count": 13
+        },
+        {
+          "sqft": 775,
+          "count": 9
+        },
+        {
+          "sqft": 764,
+          "count": 8
+        }
+      ],
+      "recent_matched_examples": [],
       "recent_ambiguous_examples": []
     },
     "lakegrande": {
@@ -352,6 +1852,2235 @@
           "evidence_notes": "Lake Grande unit distribution chart lists B7-R at 1012 sqft under 2 Bedroom + Study; same area is also used by C1-R 3 Bedroom, so transaction-only matching should remain ambiguous. | Lake Grande unit distribution chart lists C1-R at 1012 sqft under 3 Bedroom; same area is also used by B7-R 2 Bedroom + Study, so transaction-only matching should remain ambiguous."
         }
       ]
+    },
+    "lakeville": {
+      "project_slug": "lakeville",
+      "total_rows": 192,
+      "matched_rows": 192,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 0,
+      "coverage_pct": 100.0,
+      "layout_counts": {
+        "4b3b": 28,
+        "2b1b": 26,
+        "3b3b": 29,
+        "1b1b": 8,
+        "2b2b": 58,
+        "3b2b": 32,
+        "4b4b": 8,
+        "5b4b": 3
+      },
+      "unresolved_sizes": [],
+      "recent_matched_examples": [
+        {
+          "project_slug": "lakeville",
+          "date": "Feb2018",
+          "sqft": "1302",
+          "psf": "1305",
+          "price": "1700000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1302",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_brochure | sale_listing_snippet",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-cEY7xM2ETn6mDEfnBAg6Xa",
+          "evidence_notes": "Developer brochure Type D2 floor plan lists 1302 sqft under 4 Bedroom Suites and shows Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet describes 1302 sqft as 4 Bedrooms and 2 Bathrooms."
+        },
+        {
+          "project_slug": "lakeville",
+          "date": "Mar2018",
+          "sqft": "635",
+          "psf": "1385",
+          "price": "880000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b1b",
+          "bedrooms": "2",
+          "bathrooms": "1",
+          "layout_options": "2b1b (2b/1ba)",
+          "reference_area_sqft": "635",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "sale_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/sale/property/enc7omp6g4MdoByhypgdq5",
+          "evidence_notes": "Direct 99.co sale listing snippet shows 2 Beds, 1 Bath, 635 sqft."
+        },
+        {
+          "project_slug": "lakeville",
+          "date": "Aug2018",
+          "sqft": "1140",
+          "psf": "1472",
+          "price": "1680000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1141",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "high",
+          "review_note": "",
+          "evidence_kinds": "developer_brochure | sale_listing_snippet",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Lakeville/Lakeville%20Brochure.pdf | https://www.99.co/singapore/sale/property/lakeville-condo-SdGaxqTDqzBFkhBzoiDVZZ",
+          "evidence_notes": "Developer brochure Type C5/C6 floor plans list 1141 sqft under 3 Bedroom Suites and show Bath 2, Master Bath, and WC. | Direct 99.co sale listing snippet shows 3 Beds, 2 Baths, 1141 sqft."
+        },
+        {
+          "project_slug": "lakeville",
+          "date": "Sep2018",
+          "sqft": "1162",
+          "psf": "1505",
+          "price": "1750000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1163",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "rent_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/rent/property/lakeville-condo-GvFJWLMEpM5uZAf87JZPDd",
+          "evidence_notes": "Direct 99.co rent listing snippet shows 3 Beds, 3 Baths, 1163 sqft."
+        },
+        {
+          "project_slug": "lakeville",
+          "date": "Nov2018",
+          "sqft": "1162",
+          "psf": "1505",
+          "price": "1750000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1163",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "rent_listing_snippet",
+          "evidence_urls": "https://www.99.co/singapore/rent/property/lakeville-condo-GvFJWLMEpM5uZAf87JZPDd",
+          "evidence_notes": "Direct 99.co rent listing snippet shows 3 Beds, 3 Baths, 1163 sqft."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "le_quest": {
+      "project_slug": "le_quest",
+      "total_rows": 113,
+      "matched_rows": 66,
+      "ambiguous_rows": 41,
+      "unmapped_rows": 6,
+      "coverage_pct": 58.4,
+      "layout_counts": {
+        "1b1b": 28,
+        "2b2b": 24,
+        "4b3b": 2,
+        "4b4b": 4,
+        "3b3b": 5,
+        "3b2b": 3
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 936,
+          "count": 20
+        },
+        {
+          "sqft": 979,
+          "count": 12
+        },
+        {
+          "sqft": 613,
+          "count": 5
+        },
+        {
+          "sqft": 592,
+          "count": 5
+        },
+        {
+          "sqft": 818,
+          "count": 4
+        },
+        {
+          "sqft": 1140,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "le_quest",
+          "date": "Apr2021",
+          "sqft": "495",
+          "psf": "1555",
+          "price": "770000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Oct2021",
+          "sqft": "430",
+          "psf": "1559",
+          "price": "671500",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "431",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A1 at 431 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Oct2021",
+          "sqft": "495",
+          "psf": "1520",
+          "price": "753000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Mar2022",
+          "sqft": "495",
+          "psf": "1490",
+          "price": "738000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Mar2022",
+          "sqft": "495",
+          "psf": "1498",
+          "price": "742000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": [
+        {
+          "project_slug": "le_quest",
+          "date": "Mar2021",
+          "sqft": "979",
+          "psf": "1405",
+          "price": "1377000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "980",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C5 at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C5P at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Apr2021",
+          "sqft": "979",
+          "psf": "1428",
+          "price": "1398888",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "980",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C5 at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C5P at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Oct2022",
+          "sqft": "818",
+          "psf": "1508",
+          "price": "1234000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "818",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C1 at 818 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C1P at 818 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Feb2023",
+          "sqft": "818",
+          "psf": "1488",
+          "price": "1218000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "818",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C1 at 818 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C1P at 818 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "le_quest",
+          "date": "Mar2023",
+          "sqft": "979",
+          "psf": "1633",
+          "price": "1600000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b2b (3b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "980",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Le Quest/Le Quest Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C5 at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C5P at 980 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ]
+    },
+    "margaret_ville": {
+      "project_slug": "margaret_ville",
+      "total_rows": 71,
+      "matched_rows": 71,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 0,
+      "coverage_pct": 100.0,
+      "layout_counts": {
+        "2b2b": 25,
+        "1b1b": 14,
+        "3b2b": 20,
+        "4b3b": 11,
+        "4b4b": 1
+      },
+      "unresolved_sizes": [],
+      "recent_matched_examples": [
+        {
+          "project_slug": "margaret_ville",
+          "date": "Jan2026",
+          "sqft": "656",
+          "psf": "2025",
+          "price": "1330000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "657",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Margaret Ville/Margaret Ville Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B1 at 657 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "margaret_ville",
+          "date": "Jan2026",
+          "sqft": "462",
+          "psf": "2160",
+          "price": "1000000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "463",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Margaret Ville/Margaret Ville Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 463 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "margaret_ville",
+          "date": "Dec2025",
+          "sqft": "818",
+          "psf": "2322",
+          "price": "1900000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "818",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Margaret Ville/Margaret Ville Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B2-R at 818 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "margaret_ville",
+          "date": "Dec2025",
+          "sqft": "914",
+          "psf": "2459",
+          "price": "2250000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "915",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Margaret Ville/Margaret Ville Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE C1 at 915 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "margaret_ville",
+          "date": "Nov2025",
+          "sqft": "1184",
+          "psf": "2195",
+          "price": "2600000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1184",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Margaret Ville/Margaret Ville Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE D1 at 1184 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "midwood": {
+      "project_slug": "midwood",
+      "total_rows": 78,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 78,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 484,
+          "count": 20
+        },
+        {
+          "sqft": 688,
+          "count": 12
+        },
+        {
+          "sqft": 699,
+          "count": 11
+        },
+        {
+          "sqft": 990,
+          "count": 9
+        },
+        {
+          "sqft": 775,
+          "count": 5
+        },
+        {
+          "sqft": 785,
+          "count": 5
+        },
+        {
+          "sqft": 635,
+          "count": 5
+        },
+        {
+          "sqft": 548,
+          "count": 4
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "normanton_park": {
+      "project_slug": "normanton_park",
+      "total_rows": 7,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 7,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 968,
+          "count": 1
+        },
+        {
+          "sqft": 1194,
+          "count": 1
+        },
+        {
+          "sqft": 764,
+          "count": 1
+        },
+        {
+          "sqft": 1087,
+          "count": 1
+        },
+        {
+          "sqft": 516,
+          "count": 1
+        },
+        {
+          "sqft": 828,
+          "count": 1
+        },
+        {
+          "sqft": 914,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "parc_clematis": {
+      "project_slug": "parc_clematis",
+      "total_rows": 86,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 86,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 452,
+          "count": 18
+        },
+        {
+          "sqft": 721,
+          "count": 9
+        },
+        {
+          "sqft": 968,
+          "count": 7
+        },
+        {
+          "sqft": 914,
+          "count": 6
+        },
+        {
+          "sqft": 688,
+          "count": 6
+        },
+        {
+          "sqft": 1044,
+          "count": 5
+        },
+        {
+          "sqft": 1496,
+          "count": 4
+        },
+        {
+          "sqft": 710,
+          "count": 4
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "parc_riviera": {
+      "project_slug": "parc_riviera",
+      "total_rows": 337,
+      "matched_rows": 334,
+      "ambiguous_rows": 3,
+      "unmapped_rows": 0,
+      "coverage_pct": 99.1,
+      "layout_counts": {
+        "3b3b": 5,
+        "3b2b": 49,
+        "4b3b": 67,
+        "2b2b": 152,
+        "1b1b": 60,
+        "4b4b": 1
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 925,
+          "count": 2
+        },
+        {
+          "sqft": 667,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "parc_riviera",
+          "date": "Feb2026",
+          "sqft": "1011",
+          "psf": "1788",
+          "price": "1810000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C2-P at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Feb2026",
+          "sqft": "990",
+          "psf": "1868",
+          "price": "1850000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b2b",
+          "bedrooms": "3",
+          "bathrooms": "2",
+          "layout_options": "3b2b (3b/2ba)",
+          "reference_area_sqft": "990",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type C2 at 990 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Feb2026",
+          "sqft": "1151",
+          "psf": "1649",
+          "price": "1900000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1152",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type D1 at 1152 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Jan2026",
+          "sqft": "602",
+          "psf": "1741",
+          "price": "1050000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "603",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1 at 603 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Jan2026",
+          "sqft": "1184",
+          "psf": "1841",
+          "price": "2180000",
+          "mapping_status": "matched",
+          "resolved_layout": "4b3b",
+          "bedrooms": "4",
+          "bathrooms": "3",
+          "layout_options": "4b3b (4b/3ba)",
+          "reference_area_sqft": "1184",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type D2 at 1184 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": [
+        {
+          "project_slug": "parc_riviera",
+          "date": "Jul2025",
+          "sqft": "925",
+          "psf": "1566",
+          "price": "1450000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b2b (3b/2ba)",
+          "reference_area_sqft": "926",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1-R at 926 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C1-P at 926 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Aug2023",
+          "sqft": "667",
+          "psf": "1588",
+          "price": "1060000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "1b1b (1b/1ba) | 2b2b (2b/2ba)",
+          "reference_area_sqft": "667",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type A2-R at 667 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type B2-P at 667 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "parc_riviera",
+          "date": "Mar2022",
+          "sqft": "925",
+          "psf": "1377",
+          "price": "1275000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b2b (3b/2ba)",
+          "reference_area_sqft": "926",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Parc Riviera/Parc Riviera Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type B1-R at 926 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type C1-P at 926 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ]
+    },
+    "queens_peak": {
+      "project_slug": "queens_peak",
+      "total_rows": 181,
+      "matched_rows": 129,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 52,
+      "coverage_pct": 71.3,
+      "layout_counts": {
+        "2b2b": 51,
+        "1b1b": 71,
+        "3b2b": 7
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 839,
+          "count": 12
+        },
+        {
+          "sqft": 850,
+          "count": 10
+        },
+        {
+          "sqft": 861,
+          "count": 10
+        },
+        {
+          "sqft": 1506,
+          "count": 5
+        },
+        {
+          "sqft": 1001,
+          "count": 5
+        },
+        {
+          "sqft": 936,
+          "count": 5
+        },
+        {
+          "sqft": 1054,
+          "count": 3
+        },
+        {
+          "sqft": 2002,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "queens_peak",
+          "date": "Jan2026",
+          "sqft": "624",
+          "psf": "2139",
+          "price": "1336000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "624",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Queens Peak/Queens Peak Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B1a at 624 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "queens_peak",
+          "date": "Jan2026",
+          "sqft": "430",
+          "psf": "2201",
+          "price": "948000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "431",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Queens Peak/Queens Peak Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 431 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "queens_peak",
+          "date": "Jan2026",
+          "sqft": "775",
+          "psf": "2064",
+          "price": "1600000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "775",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Queens Peak/Queens Peak Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B2 at 775 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "queens_peak",
+          "date": "Dec2025",
+          "sqft": "441",
+          "psf": "2220",
+          "price": "980000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "441",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Queens Peak/Queens Peak Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A2a at 441 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "queens_peak",
+          "date": "Dec2025",
+          "sqft": "430",
+          "psf": "2218",
+          "price": "955000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "431",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Queens Peak/Queens Peak Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 431 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "seahill": {
+      "project_slug": "seahill",
+      "total_rows": 166,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 166,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 861,
+          "count": 31
+        },
+        {
+          "sqft": 495,
+          "count": 20
+        },
+        {
+          "sqft": 505,
+          "count": 17
+        },
+        {
+          "sqft": 667,
+          "count": 12
+        },
+        {
+          "sqft": 1130,
+          "count": 10
+        },
+        {
+          "sqft": 710,
+          "count": 9
+        },
+        {
+          "sqft": 1044,
+          "count": 8
+        },
+        {
+          "sqft": 785,
+          "count": 8
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "skysuites_anson": {
+      "project_slug": "skysuites_anson",
+      "total_rows": 235,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 235,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 699,
+          "count": 57
+        },
+        {
+          "sqft": 365,
+          "count": 55
+        },
+        {
+          "sqft": 667,
+          "count": 49
+        },
+        {
+          "sqft": 398,
+          "count": 32
+        },
+        {
+          "sqft": 1011,
+          "count": 17
+        },
+        {
+          "sqft": 957,
+          "count": 17
+        },
+        {
+          "sqft": 1001,
+          "count": 3
+        },
+        {
+          "sqft": 505,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "sol_acres": {
+      "project_slug": "sol_acres",
+      "total_rows": 540,
+      "matched_rows": 534,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 6,
+      "coverage_pct": 98.9,
+      "layout_counts": {
+        "2b2b": 194,
+        "1b1b": 117,
+        "3b3b": 105,
+        "4b3b": 40,
+        "3b2b": 72,
+        "5b4b": 5,
+        "4b4b": 1
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 979,
+          "count": 6
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "sol_acres",
+          "date": "Dec2020",
+          "sqft": "613",
+          "psf": "1043",
+          "price": "640000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "614",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Sol Acres/Sol Acres (EC) Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B1 at 614 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "sol_acres",
+          "date": "Dec2020",
+          "sqft": "731",
+          "psf": "956",
+          "price": "700000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "732",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Sol Acres/Sol Acres (EC) Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B3 at 732 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "sol_acres",
+          "date": "Jan2021",
+          "sqft": "495",
+          "psf": "1050",
+          "price": "520000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Sol Acres/Sol Acres (EC) Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "sol_acres",
+          "date": "Jan2021",
+          "sqft": "1097",
+          "psf": "1001",
+          "price": "1100000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1098",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Sol Acres/Sol Acres (EC) Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE C6P at 1098 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "sol_acres",
+          "date": "Feb2021",
+          "sqft": "495",
+          "psf": "1159",
+          "price": "574000",
+          "mapping_status": "matched",
+          "resolved_layout": "1b1b",
+          "bedrooms": "1",
+          "bathrooms": "1",
+          "layout_options": "1b1b (1b/1ba)",
+          "reference_area_sqft": "495",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/Sol Acres/Sol Acres (EC) Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A1 at 495 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": []
+    },
+    "spottiswoode_suites": {
+      "project_slug": "spottiswoode_suites",
+      "total_rows": 60,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 60,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 441,
+          "count": 16
+        },
+        {
+          "sqft": 581,
+          "count": 12
+        },
+        {
+          "sqft": 452,
+          "count": 8
+        },
+        {
+          "sqft": 742,
+          "count": 7
+        },
+        {
+          "sqft": 538,
+          "count": 3
+        },
+        {
+          "sqft": 462,
+          "count": 2
+        },
+        {
+          "sqft": 1033,
+          "count": 2
+        },
+        {
+          "sqft": 839,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "stirling_residences": {
+      "project_slug": "stirling_residences",
+      "total_rows": 293,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 293,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 635,
+          "count": 37
+        },
+        {
+          "sqft": 656,
+          "count": 37
+        },
+        {
+          "sqft": 505,
+          "count": 32
+        },
+        {
+          "sqft": 624,
+          "count": 32
+        },
+        {
+          "sqft": 678,
+          "count": 30
+        },
+        {
+          "sqft": 688,
+          "count": 27
+        },
+        {
+          "sqft": 441,
+          "count": 22
+        },
+        {
+          "sqft": 764,
+          "count": 21
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "the_hillier": {
+      "project_slug": "the_hillier",
+      "total_rows": 226,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 226,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 624,
+          "count": 62
+        },
+        {
+          "sqft": 839,
+          "count": 30
+        },
+        {
+          "sqft": 516,
+          "count": 29
+        },
+        {
+          "sqft": 807,
+          "count": 22
+        },
+        {
+          "sqft": 818,
+          "count": 17
+        },
+        {
+          "sqft": 505,
+          "count": 16
+        },
+        {
+          "sqft": 592,
+          "count": 15
+        },
+        {
+          "sqft": 613,
+          "count": 12
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "the_lakeshore": {
+      "project_slug": "the_lakeshore",
+      "total_rows": 294,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 294,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1108,
+          "count": 66
+        },
+        {
+          "sqft": 1184,
+          "count": 41
+        },
+        {
+          "sqft": 1140,
+          "count": 26
+        },
+        {
+          "sqft": 861,
+          "count": 25
+        },
+        {
+          "sqft": 925,
+          "count": 24
+        },
+        {
+          "sqft": 1162,
+          "count": 21
+        },
+        {
+          "sqft": 947,
+          "count": 18
+        },
+        {
+          "sqft": 1173,
+          "count": 14
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "the_skywoods": {
+      "project_slug": "the_skywoods",
+      "total_rows": 140,
+      "matched_rows": 122,
+      "ambiguous_rows": 18,
+      "unmapped_rows": 0,
+      "coverage_pct": 87.1,
+      "layout_counts": {
+        "2b2b": 30,
+        "3b3b": 40,
+        "4b4b": 8,
+        "3b2b": 33,
+        "1b1b": 8,
+        "4b3b": 3
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 1173,
+          "count": 7
+        },
+        {
+          "sqft": 1291,
+          "count": 7
+        },
+        {
+          "sqft": 1194,
+          "count": 3
+        },
+        {
+          "sqft": 1119,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "the_skywoods",
+          "date": "Dec2018",
+          "sqft": "613",
+          "psf": "1316",
+          "price": "808000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "614",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 2(C1) at 614 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Apr2019",
+          "sqft": "710",
+          "psf": "1365",
+          "price": "970000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 2(S1) at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Jul2019",
+          "sqft": "710",
+          "psf": "1309",
+          "price": "930000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 2(S1) at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Jul2019",
+          "sqft": "1044",
+          "psf": "1340",
+          "price": "1400000",
+          "mapping_status": "matched",
+          "resolved_layout": "3b3b",
+          "bedrooms": "3",
+          "bathrooms": "3",
+          "layout_options": "3b3b (3b/3ba)",
+          "reference_area_sqft": "1044",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S3)A at 1044 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Aug2019",
+          "sqft": "710",
+          "psf": "1351",
+          "price": "960000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "710",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 2(S1) at 710 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": [
+        {
+          "project_slug": "the_skywoods",
+          "date": "Sep2019",
+          "sqft": "1173",
+          "psf": "1235",
+          "price": "1450000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b3b (3b/3ba) | 4b3b (4b/3ba)",
+          "reference_area_sqft": "1173",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S2)P at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type 4(C2)A at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Dec2020",
+          "sqft": "1173",
+          "psf": "1252",
+          "price": "1470000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b3b (3b/3ba) | 4b3b (4b/3ba)",
+          "reference_area_sqft": "1173",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S2)P at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type 4(C2)A at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Jan2021",
+          "sqft": "1291",
+          "psf": "1285",
+          "price": "1660000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b3b (3b/3ba) | 4b4b (4b/4ba)",
+          "reference_area_sqft": "1292",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S1)PH (A) at 1292 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type 4(S1)A at 1292 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Mar2021",
+          "sqft": "1291",
+          "psf": "1300",
+          "price": "1680000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b3b (3b/3ba) | 4b4b (4b/4ba)",
+          "reference_area_sqft": "1292",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S1)PH (A) at 1292 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type 4(S1)A at 1292 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_skywoods",
+          "date": "Apr2021",
+          "sqft": "1173",
+          "psf": "1214",
+          "price": "1425000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "3b3b (3b/3ba) | 4b3b (4b/3ba)",
+          "reference_area_sqft": "1173",
+          "area_diff_sqft": "0",
+          "match_rule": "exact_area",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Skywoods/Skywoods @ Dairy Farm Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists Type 3(S2)P at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists Type 4(C2)A at 1173 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ]
+    },
+    "the_tennery": {
+      "project_slug": "the_tennery",
+      "total_rows": 184,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 184,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 613,
+          "count": 123
+        },
+        {
+          "sqft": 861,
+          "count": 16
+        },
+        {
+          "sqft": 882,
+          "count": 13
+        },
+        {
+          "sqft": 624,
+          "count": 11
+        },
+        {
+          "sqft": 871,
+          "count": 9
+        },
+        {
+          "sqft": 850,
+          "count": 5
+        },
+        {
+          "sqft": 893,
+          "count": 4
+        },
+        {
+          "sqft": 936,
+          "count": 3
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "the_tre_ver": {
+      "project_slug": "the_tre_ver",
+      "total_rows": 111,
+      "matched_rows": 76,
+      "ambiguous_rows": 12,
+      "unmapped_rows": 23,
+      "coverage_pct": 68.5,
+      "layout_counts": {
+        "2b2b": 37,
+        "3b3b": 15,
+        "1b1b": 22,
+        "4b4b": 2
+      },
+      "unresolved_sizes": [
+        {
+          "sqft": 699,
+          "count": 23
+        },
+        {
+          "sqft": 1011,
+          "count": 8
+        },
+        {
+          "sqft": 613,
+          "count": 4
+        }
+      ],
+      "recent_matched_examples": [
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Jul2024",
+          "sqft": "645",
+          "psf": "1981",
+          "price": "1280000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "646",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B1 at 646 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Jul2024",
+          "sqft": "688",
+          "psf": "2003",
+          "price": "1380000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "689",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B3P at 689 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Jul2024",
+          "sqft": "742",
+          "psf": "1976",
+          "price": "1468000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "743",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B7 at 743 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Aug2024",
+          "sqft": "645",
+          "psf": "1919",
+          "price": "1240000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "646",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B1 at 646 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Aug2024",
+          "sqft": "742",
+          "psf": "1925",
+          "price": "1430000",
+          "mapping_status": "matched",
+          "resolved_layout": "2b2b",
+          "bedrooms": "2",
+          "bathrooms": "2",
+          "layout_options": "2b2b (2b/2ba)",
+          "reference_area_sqft": "743",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B7 at 743 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ],
+      "recent_ambiguous_examples": [
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Jul2024",
+          "sqft": "613",
+          "psf": "2004",
+          "price": "1230000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "1b1b (1b/1ba) | 2b2b (2b/2ba)",
+          "reference_area_sqft": "614",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE A4 at 614 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists TYPE B2 at 614 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Aug2024",
+          "sqft": "1011",
+          "psf": "2105",
+          "price": "2130000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B8P at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists TYPE C1 at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Sep2024",
+          "sqft": "1011",
+          "psf": "1976",
+          "price": "2000000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B8P at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists TYPE C1 at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Nov2024",
+          "sqft": "1011",
+          "psf": "1867",
+          "price": "1890000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B8P at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists TYPE C1 at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        },
+        {
+          "project_slug": "the_tre_ver",
+          "date": "Dec2024",
+          "sqft": "1011",
+          "psf": "2124",
+          "price": "2150000",
+          "mapping_status": "ambiguous",
+          "resolved_layout": "",
+          "bedrooms": "",
+          "bathrooms": "",
+          "layout_options": "2b2b (2b/2ba) | 3b3b (3b/3ba)",
+          "reference_area_sqft": "1012",
+          "area_diff_sqft": "1",
+          "match_rule": "nearest_1sqft",
+          "mapping_confidence": "medium",
+          "review_note": "Conflicting bath/layout evidence exists for this area. Keep unresolved.",
+          "evidence_kinds": "third_party_original_brochure",
+          "evidence_urls": "https://stacked-condo-database.sgp1.digitaloceanspaces.com/stacked-condo-database/brochure/The Tre Ver/The Tre Ver Brochure.pdf",
+          "evidence_notes": "[auto-stacked] Stacked-hosted original brochure text lists TYPE B8P at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention. | [auto-stacked] Stacked-hosted original brochure text lists TYPE C1 at 1012 sqft; bedroom count comes from brochure type/category and bathroom count is inferred from floor-plan labels/standard layout convention."
+        }
+      ]
+    },
+    "the_trilinq": {
+      "project_slug": "the_trilinq",
+      "total_rows": 279,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 279,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 538,
+          "count": 46
+        },
+        {
+          "sqft": 914,
+          "count": 42
+        },
+        {
+          "sqft": 1108,
+          "count": 32
+        },
+        {
+          "sqft": 710,
+          "count": 30
+        },
+        {
+          "sqft": 936,
+          "count": 21
+        },
+        {
+          "sqft": 1345,
+          "count": 18
+        },
+        {
+          "sqft": 1517,
+          "count": 17
+        },
+        {
+          "sqft": 1044,
+          "count": 16
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "the_vision": {
+      "project_slug": "the_vision",
+      "total_rows": 128,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 128,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 904,
+          "count": 33
+        },
+        {
+          "sqft": 1313,
+          "count": 29
+        },
+        {
+          "sqft": 1302,
+          "count": 22
+        },
+        {
+          "sqft": 818,
+          "count": 16
+        },
+        {
+          "sqft": 1259,
+          "count": 8
+        },
+        {
+          "sqft": 4962,
+          "count": 7
+        },
+        {
+          "sqft": 1603,
+          "count": 7
+        },
+        {
+          "sqft": 5005,
+          "count": 3
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "tree_house": {
+      "project_slug": "tree_house",
+      "total_rows": 189,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 189,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 1151,
+          "count": 37
+        },
+        {
+          "sqft": 1248,
+          "count": 28
+        },
+        {
+          "sqft": 796,
+          "count": 20
+        },
+        {
+          "sqft": 1410,
+          "count": 19
+        },
+        {
+          "sqft": 1227,
+          "count": 15
+        },
+        {
+          "sqft": 807,
+          "count": 12
+        },
+        {
+          "sqft": 861,
+          "count": 10
+        },
+        {
+          "sqft": 742,
+          "count": 8
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "twin_vew": {
+      "project_slug": "twin_vew",
+      "total_rows": 95,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 95,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 742,
+          "count": 13
+        },
+        {
+          "sqft": 484,
+          "count": 8
+        },
+        {
+          "sqft": 1054,
+          "count": 8
+        },
+        {
+          "sqft": 710,
+          "count": 8
+        },
+        {
+          "sqft": 904,
+          "count": 7
+        },
+        {
+          "sqft": 818,
+          "count": 7
+        },
+        {
+          "sqft": 731,
+          "count": 7
+        },
+        {
+          "sqft": 570,
+          "count": 7
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "village_pasir_panjang": {
+      "project_slug": "village_pasir_panjang",
+      "total_rows": 37,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 37,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 839,
+          "count": 5
+        },
+        {
+          "sqft": 828,
+          "count": 4
+        },
+        {
+          "sqft": 1011,
+          "count": 3
+        },
+        {
+          "sqft": 1560,
+          "count": 3
+        },
+        {
+          "sqft": 1076,
+          "count": 3
+        },
+        {
+          "sqft": 1087,
+          "count": 2
+        },
+        {
+          "sqft": 1097,
+          "count": 2
+        },
+        {
+          "sqft": 1539,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "viva_vista": {
+      "project_slug": "viva_vista",
+      "total_rows": 52,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 52,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 376,
+          "count": 16
+        },
+        {
+          "sqft": 387,
+          "count": 9
+        },
+        {
+          "sqft": 419,
+          "count": 3
+        },
+        {
+          "sqft": 398,
+          "count": 3
+        },
+        {
+          "sqft": 721,
+          "count": 3
+        },
+        {
+          "sqft": 344,
+          "count": 3
+        },
+        {
+          "sqft": 355,
+          "count": 2
+        },
+        {
+          "sqft": 322,
+          "count": 2
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "whistler_grand": {
+      "project_slug": "whistler_grand",
+      "total_rows": 158,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 158,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 613,
+          "count": 27
+        },
+        {
+          "sqft": 764,
+          "count": 27
+        },
+        {
+          "sqft": 441,
+          "count": 19
+        },
+        {
+          "sqft": 505,
+          "count": 18
+        },
+        {
+          "sqft": 1065,
+          "count": 11
+        },
+        {
+          "sqft": 602,
+          "count": 11
+        },
+        {
+          "sqft": 957,
+          "count": 10
+        },
+        {
+          "sqft": 1280,
+          "count": 9
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
+    },
+    "whitehaven": {
+      "project_slug": "whitehaven",
+      "total_rows": 34,
+      "matched_rows": 0,
+      "ambiguous_rows": 0,
+      "unmapped_rows": 34,
+      "coverage_pct": 0.0,
+      "layout_counts": {},
+      "unresolved_sizes": [
+        {
+          "sqft": 538,
+          "count": 13
+        },
+        {
+          "sqft": 1054,
+          "count": 3
+        },
+        {
+          "sqft": 785,
+          "count": 3
+        },
+        {
+          "sqft": 1151,
+          "count": 2
+        },
+        {
+          "sqft": 613,
+          "count": 2
+        },
+        {
+          "sqft": 947,
+          "count": 2
+        },
+        {
+          "sqft": 775,
+          "count": 2
+        },
+        {
+          "sqft": 1001,
+          "count": 1
+        }
+      ],
+      "recent_matched_examples": [],
+      "recent_ambiguous_examples": []
     }
   }
 }
